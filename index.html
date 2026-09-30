@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Không Gian Làm Việc Chung</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#3b82f6', // Blue-500
+                        primaryHover: '#2563eb', // Blue-600
+                        dark: '#1e293b' // Slate-800
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+
+        /* Ẩn hiện màn hình */
+        .hidden-screen { display: none !important; }
+
+        /* Tùy chỉnh input cho inline edit */
+        .inline-input {
+            width: 100%;
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            padding: 0.35rem 0.5rem;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        .inline-input:hover {
+            border-color: #e2e8f0;
+            background-color: #f8fafc;
+        }
+        .inline-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 1px #3b82f6;
+        }
+
+        /* Thanh cuộn cho Gantt */
+        .gantt-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
+        .gantt-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .gantt-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .gantt-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Grid cho Gantt Chart */
+        .gantt-grid {
+            display: grid;
+            position: relative;
+            border-left: 1px solid #e2e8f0;
+            border-top: 1px solid #e2e8f0;
+        }
+        .gantt-cell {
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            height: 40px;
+            box-sizing: border-box;
+        }
+        .gantt-header-cell {
+            background-color: #f8fafc;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-align: center;
+            line-height: 40px;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .gantt-bar-wrapper {
+            position: absolute;
+            height: 28px;
+            margin-top: 6px;
+            z-index: 10;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .gantt-bar-bg {
+            background-color: #bfdbfe; /* Blue-200 */
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+        .gantt-bar-progress {
+            background-color: #3b82f6; /* Blue-500 */
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .gantt-bar-label {
+            position: absolute;
+            left: 8px;
+            top: 0;
+            line-height: 28px;
+            font-size: 0.75rem;
+            color: #0f172a;
+            font-weight: 500;
+            white-space: nowrap;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Toast Messages */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            min-width: 250px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-left: 4px solid #10b981; }
+        .toast.error { border-left: 4px solid #ef4444; }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col">
+
+    <!-- MÀN HÌNH AUTH -->
+    <div id="auth-screen" class="fixed inset-0 bg-gray-100 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 mb-4">
+                    <i class="fa-solid fa-layer-group text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800" id="auth-title">Đăng nhập Workspace</h2>
+                <p class="text-sm text-gray-500 mt-1">Nền tảng cộng tác trực tuyến</p>
+            </div>
+
+            <form id="auth-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="auth-email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
+                    <input type="password" id="auth-password" required minlength="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors">
+                </div>
+                
+                <button type="submit" id="auth-submit-btn" class="w-full bg-primary hover:bg-primaryHover text-white font-medium py-2.5 rounded-lg transition-colors flex justify-center items-center gap-2">
+                    <span>Đăng nhập</span>
+                    <i id="auth-spinner" class="fa-solid fa-circle-notch fa-spin hidden"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-gray-600">
+                <span id="auth-toggle-text">Chưa có tài khoản?</span>
+                <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-primary hover:underline font-medium ml-1">Đăng ký ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH WORKSPACE CHÍNH -->
+    <div id="workspace-screen" class="hidden-screen h-full flex flex-col">
+        
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shrink-0 shadow-sm">
+            <div class="flex items-center gap-8">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-primary text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <h1 class="text-lg font-bold text-gray-900 hidden sm:block">Không Gian Làm Việc</h1>
+                </div>
+
+                <!-- Tabs -->
+                <nav class="flex gap-2">
+                    <button onclick="switchTab('plan')" id="tab-btn-plan" class="px-4 py-2 rounded-md font-medium transition-colors bg-blue-50 text-blue-700">
+                        <i class="fa-solid fa-list-check mr-2"></i> Kế hoạch công việc
+                    </button>
+                    <button onclick="switchTab('data')" id="tab-btn-data" class="px-4 py-2 rounded-md font-medium text-gray-600 hover:bg-gray-100 transition-colors">
+                        <i class="fa-solid fa-database mr-2"></i> Kho dữ liệu
+                    </button>
+                </nav>
+            </div>
+
+            <!-- User Info & Logout -->
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
+                    <i class="fa-regular fa-circle-user text-gray-400 text-lg"></i>
+                    <span id="user-email-display">user@example.com</span>
+                </div>
+                <button onclick="handleLogout()" class="text-gray-500 hover:text-red-600 hover:bg-red-50 p-2 rounded-md transition-colors" title="Đăng xuất">
+                    <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-6">
+            
+            <!-- TAB 1: KẾ HOẠCH CÔNG VIỆC -->
+            <div id="tab-plan" class="space-y-6 block max-w-7xl mx-auto">
+                
+                <!-- Bảng công việc -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex flex-wrap gap-4 justify-between items-center">
+                        <div>
+                            <h2 class="font-semibold text-gray-800 text-lg">Danh sách công việc</h2>
+                            <p class="text-xs text-gray-500 mt-1"><i class="fa-solid fa-pen-to-square"></i> Nhấp trực tiếp vào ô để chỉnh sửa dữ liệu</p>
+                        </div>
+                        <button onclick="addNewTask()" class="bg-dark hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                            <i class="fa-solid fa-plus mr-1"></i> Thêm công việc
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-200 text-gray-600 text-xs uppercase tracking-wider">
+                                    <th class="p-3 font-semibold w-1/3">Tên công việc</th>
+                                    <th class="p-3 font-semibold w-48">Phụ trách</th>
+                                    <th class="p-3 font-semibold w-36">Bắt đầu</th>
+                                    <th class="p-3 font-semibold w-36">Kết thúc</th>
+                                    <th class="p-3 font-semibold w-24">Tiến độ</th>
+                                    <th class="p-3 font-semibold w-16 text-center">Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="task-table-body" class="divide-y divide-gray-100">
+                                <!-- JS Render -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="empty-tasks-state" class="hidden p-8 flex flex-col items-center justify-center text-gray-400">
+                        <i class="fa-solid fa-clipboard-list text-4xl mb-3"></i>
+                        <p>Chưa có công việc nào. Hãy thêm công việc mới!</p>
+                    </div>
+                </div>
+
+                <!-- Sơ đồ Gantt (Custom) -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-end mb-4">
+                        <h2 class="font-semibold text-gray-800 text-lg">Sơ đồ tiến độ (Gantt)</h2>
+                        <div class="text-xs text-gray-500 flex gap-4">
+                            <span class="flex items-center gap-1"><div class="w-3 h-3 bg-blue-200 rounded-sm"></div> Kế hoạch</span>
+                            <span class="flex items-center gap-1"><div class="w-3 h-3 bg-blue-500 rounded-sm"></div> Đã hoàn thành</span>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full overflow-x-auto gantt-scroll border border-gray-200 rounded-lg">
+                        <div id="gantt-container" class="min-w-full bg-white relative pb-2">
+                            <!-- JS Render Chart Here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: KHO DỮ LIỆU -->
+            <div id="tab-data" class="hidden space-y-6 max-w-7xl mx-auto">
+                
+                <!-- Form nhập liệu -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="font-semibold text-gray-800 text-lg mb-4">Thêm tài liệu mới</h2>
+                    <form id="file-form" class="flex flex-col md:flex-row items-end gap-4">
+                        <div class="flex-1 w-full">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Đường dẫn liên kết (Link Drive, Dropbox...)</label>
+                            <input type="url" id="file-link" required placeholder="https://..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                        </div>
+                        <div class="flex-1 w-full relative">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tên file (Tự động nhận diện)</label>
+                            <input type="text" id="file-name" required placeholder="Hệ thống sẽ tự trích xuất hoặc nhập tay..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-blue-50">
+                            <i class="fa-solid fa-wand-magic-sparkles absolute right-3 top-[34px] text-blue-400"></i>
+                        </div>
+                        <div class="flex-1 w-full">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Mô tả tóm tắt</label>
+                            <input type="text" id="file-desc" required placeholder="Nhập mô tả..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                        </div>
+                        <button type="submit" class="w-full md:w-auto bg-primary hover:bg-primaryHover text-white px-6 py-2 rounded-md font-medium transition-colors h-[42px] shrink-0">
+                            Lưu dữ liệu
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Bảng danh sách tài liệu -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                        <h2 class="font-semibold text-gray-800 text-lg">Danh sách tài liệu</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-200 text-gray-600 uppercase tracking-wider text-xs">
+                                    <th class="p-4 font-semibold">Tên File</th>
+                                    <th class="p-4 font-semibold">Mô tả</th>
+                                    <th class="p-4 font-semibold w-32">Cập nhật</th>
+                                    <th class="p-4 font-semibold w-32 text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="file-table-body" class="divide-y divide-gray-100">
+                                <!-- JS Render -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="empty-files-state" class="hidden p-8 text-center text-gray-400">
+                        Chưa có tài liệu nào trong kho.
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Container cho thông báo -->
+    <div id="toast-container"></div>
+
+    <script>
+        // ----------------------------------------------------
+        // 1. CẤU HÌNH SUPABASE & TOAST
+        // ----------------------------------------------------
+        const SUPABASE_URL = 'https://didthuazwmuxddlxhkob.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_qDGjgGQ06a5w8_DM903-UQ_cMEuI-lw';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentUser = null;
+        let isLoginMode = true;
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' 
+                ? '<i class="fa-solid fa-check-circle text-emerald-500 text-xl"></i>' 
+                : '<i class="fa-solid fa-circle-exclamation text-red-500 text-xl"></i>';
+            
+            toast.innerHTML = `${icon} <span class="font-medium text-gray-800">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            // Animation in
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ----------------------------------------------------
+        // 2. XỬ LÝ AUTH (ĐĂNG NHẬP / ĐĂNG KÝ)
+        // ----------------------------------------------------
+        
+        // Kiểm tra session hiện tại khi load trang
+        async function checkSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                showWorkspace();
+            } else {
+                showAuthScreen();
+            }
+        }
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').innerText = isLoginMode ? 'Đăng nhập Workspace' : 'Đăng ký Tài khoản';
+            document.getElementById('auth-submit-btn').querySelector('span').innerText = isLoginMode ? 'Đăng nhập' : 'Tạo tài khoản';
+            document.getElementById('auth-toggle-text').innerText = isLoginMode ? 'Chưa có tài khoản?' : 'Đã có tài khoản?';
+            document.getElementById('auth-toggle-btn').innerText = isLoginMode ? 'Đăng ký ngay' : 'Đăng nhập';
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const spinner = document.getElementById('auth-spinner');
+            
+            spinner.classList.remove('hidden');
+            let result, error;
+
+            if (isLoginMode) {
+                const res = await supabase.auth.signInWithPassword({ email, password });
+                result = res.data; error = res.error;
+            } else {
+                const res = await supabase.auth.signUp({ email, password });
+                result = res.data; error = res.error;
+                if(!error && result.user) {
+                    showToast('Đăng ký thành công! Đang đăng nhập...', 'success');
+                }
+            }
+
+            spinner.classList.add('hidden');
+
+            if (error) {
+                showToast(error.message.includes('Invalid login') ? 'Sai email hoặc mật khẩu' : error.message, 'error');
+            } else if (result.user) {
+                currentUser = result.user;
+                showToast('Đăng nhập thành công!', 'success');
+                showWorkspace();
+            }
+        });
+
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            currentUser = null;
+            showAuthScreen();
+        }
+
+        function showAuthScreen() {
+            document.getElementById('auth-screen').classList.remove('hidden-screen');
+            document.getElementById('workspace-screen').classList.add('hidden-screen');
+        }
+
+        function showWorkspace() {
+            document.getElementById('auth-screen').classList.add('hidden-screen');
+            document.getElementById('workspace-screen').classList.remove('hidden-screen');
+            document.getElementById('user-email-display').innerText = currentUser.email;
+            
+            // Load data sau khi đăng nhập thành công
+            loadLocalData();
+            renderTasks();
+            renderFiles();
+        }
+
+        // ----------------------------------------------------
+        // 3. XỬ LÝ CHUYỂN TAB VÀ QUẢN LÝ LOCAL STORAGE
+        // ----------------------------------------------------
+        let tasks = [];
+        let files = [];
+
+        function switchTab(tabId) {
+            const btnPlan = document.getElementById('tab-btn-plan');
+            const btnData = document.getElementById('tab-btn-data');
+            const secPlan = document.getElementById('tab-plan');
+            const secData = document.getElementById('tab-data');
+
+            if (tabId === 'plan') {
+                btnPlan.className = 'px-4 py-2 rounded-md font-medium transition-colors bg-blue-50 text-blue-700';
+                btnData.className = 'px-4 py-2 rounded-md font-medium text-gray-600 hover:bg-gray-100 transition-colors';
+                secPlan.classList.remove('hidden');
+                secData.classList.add('hidden');
+                setTimeout(renderGantt, 50); // Đảm bảo width container đã render
+            } else {
+                btnData.className = 'px-4 py-2 rounded-md font-medium transition-colors bg-blue-50 text-blue-700';
+                btnPlan.className = 'px-4 py-2 rounded-md font-medium text-gray-600 hover:bg-gray-100 transition-colors';
+                secData.classList.remove('hidden');
+                secPlan.classList.add('hidden');
+            }
+        }
+
+        function loadLocalData() {
+            // Lấy dữ liệu chung của workspace
+            const localTasks = localStorage.getItem('ws_tasks');
+            const localFiles = localStorage.getItem('ws_files');
+            
+            if(localTasks) tasks = JSON.parse(localTasks);
+            else {
+                // Default data nếu trống
+                const today = new Date();
+                const d1 = new Date(today);
+                const d2 = new Date(today); d2.setDate(d2.getDate() + 3);
+                
+                tasks = [{
+                    id: Date.now().toString(),
+                    name: 'Lên ý tưởng thiết kế',
+                    assignee: currentUser.email,
+                    start: d1.toISOString().split('T')[0],
+                    end: d2.toISOString().split('T')[0],
+                    progress: 30
+                }];
+                saveData('tasks');
+            }
+
+            if(localFiles) files = JSON.parse(localFiles);
+        }
+
+        function saveData(type) {
+            if (type === 'tasks') localStorage.setItem('ws_tasks', JSON.stringify(tasks));
+            if (type === 'files') localStorage.setItem('ws_files', JSON.stringify(files));
+        }
+
+        // ----------------------------------------------------
+        // 4. TAB 1: BẢNG CÔNG VIỆC VÀ INLINE EDIT
+        // ----------------------------------------------------
+        function renderTasks() {
+            const tbody = document.getElementById('task-table-body');
+            const emptyState = document.getElementById('empty-tasks-state');
+            const table = tbody.parentElement;
+            
+            tbody.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                table.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            } else {
+                table.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                
+                tasks.forEach(task => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition-colors';
+                    tr.innerHTML = `
+                        <td class="px-2 py-1 border-b border-gray-100">
+                            <input type="text" class="inline-input font-medium text-gray-800" value="${task.name}" onchange="updateTask('${task.id}', 'name', this.value)">
+                        </td>
+                        <td class="px-2 py-1 border-b border-gray-100">
+                            <input type="text" class="inline-input text-gray-600" value="${task.assignee}" onchange="updateTask('${task.id}', 'assignee', this.value)" placeholder="Người phụ trách">
+                        </td>
+                        <td class="px-2 py-1 border-b border-gray-100">
+                            <input type="date" class="inline-input text-gray-600" value="${task.start}" onchange="updateTask('${task.id}', 'start', this.value)">
+                        </td>
+                        <td class="px-2 py-1 border-b border-gray-100">
+                            <input type="date" class="inline-input text-gray-600" value="${task.end}" onchange="updateTask('${task.id}', 'end', this.value)">
+                        </td>
+                        <td class="px-2 py-1 border-b border-gray-100">
+                            <div class="flex items-center gap-1">
+                                <input type="number" min="0" max="100" class="inline-input text-right w-16" value="${task.progress}" onchange="updateTask('${task.id}', 'progress', this.value)">
+                                <span class="text-gray-500 text-sm">%</span>
+                            </div>
+                        </td>
+                        <td class="px-2 py-1 border-b border-gray-100 text-center">
+                            <button onclick="deleteTask('${task.id}')" class="text-gray-400 hover:text-red-500 p-2 rounded transition-colors">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            renderGantt();
+        }
+
+        function addNewTask() {
+            const today = new Date().toISOString().split('T')[0];
+            const newTask = {
+                id: Date.now().toString(),
+                name: 'Công việc mới',
+                assignee: '',
+                start: today,
+                end: today,
+                progress: 0
+            };
+            tasks.push(newTask);
+            saveData('tasks');
+            renderTasks();
+            showToast('Đã thêm công việc mới');
+        }
+
+        function updateTask(id, field, value) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                if (field === 'progress') {
+                    value = Math.max(0, Math.min(100, parseInt(value) || 0));
+                }
+                
+                // Đảm bảo end date >= start date
+                if (field === 'start' && value > task.end) task.end = value;
+                if (field === 'end' && value < task.start) task.start = value;
+                
+                task[field] = value;
+                saveData('tasks');
+                renderTasks(); // Render lại để sửa UI liền (ví dụ progress quá 100)
+            }
+        }
+
+        function deleteTask(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa công việc này?')) {
+                tasks = tasks.filter(t => t.id !== id);
+                saveData('tasks');
+                renderTasks();
+                showToast('Đã xóa công việc');
+            }
+        }
+
+        // ----------------------------------------------------
+        // 5. TỰ XÂY DỰNG GANTT CHART
+        // ----------------------------------------------------
+        function parseDate(dateStr) {
+            const [y, m, d] = dateStr.split('-');
+            return new Date(y, m - 1, d);
+        }
+
+        function renderGantt() {
+            const container = document.getElementById('gantt-container');
+            container.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                container.innerHTML = '<div class="p-6 text-center text-gray-400">Không có dữ liệu biểu đồ.</div>';
+                return;
+            }
+
+            // Tìm ngày nhỏ nhất và lớn nhất
+            let minD = parseDate(tasks[0].start);
+            let maxD = parseDate(tasks[0].end);
+
+            tasks.forEach(t => {
+                const s = parseDate(t.start);
+                const e = parseDate(t.end);
+                if (s < minD) minD = s;
+                if (e > maxD) maxD = e;
+            });
+
+            // Mở rộng Timeline ra trước 2 ngày và sau 3 ngày cho đẹp
+            minD.setDate(minD.getDate() - 2);
+            maxD.setDate(maxD.getDate() + 3);
+
+            const DAY_WIDTH = 50; // px mỗi ngày
+            const msPerDay = 24 * 60 * 60 * 1000;
+            const totalDays = Math.round((maxD - minD) / msPerDay) + 1;
+            
+            // Set kích thước Grid
+            container.style.width = `${totalDays * DAY_WIDTH}px`;
+            
+            const grid = document.createElement('div');
+            grid.className = 'gantt-grid';
+            grid.style.gridTemplateColumns = `repeat(${totalDays}, ${DAY_WIDTH}px)`;
+            
+            // Vẽ Header (Ngày tháng)
+            for (let i = 0; i < totalDays; i++) {
+                const currentDate = new Date(minD.getTime() + i * msPerDay);
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'gantt-header-cell';
+                dayDiv.innerText = `${currentDate.getDate()}/${currentDate.getMonth() + 1}`;
+                
+                // Đánh dấu ngày hiện tại
+                const today = new Date();
+                if(currentDate.toDateString() === today.toDateString()) {
+                    dayDiv.style.backgroundColor = '#fef3c7'; // yellow-50
+                    dayDiv.style.color = '#d97706'; // amber-600
+                    dayDiv.style.fontWeight = 'bold';
+                }
+                grid.appendChild(dayDiv);
+            }
+
+            // Vẽ background cho các dòng (Row)
+            const rowsCount = tasks.length;
+            for (let r = 0; r < rowsCount; r++) {
+                for (let c = 0; c < totalDays; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'gantt-cell';
+                    // Sọc ngựa vằn nhẹ
+                    if(r % 2 === 1) cell.style.backgroundColor = '#fafafa';
+                    grid.appendChild(cell);
+                }
+            }
+
+            // Vẽ các thanh Task (Bar)
+            tasks.forEach((task, index) => {
+                const startD = parseDate(task.start);
+                const endD = parseDate(task.end);
+                
+                const startOffsetDays = Math.round((startD - minD) / msPerDay);
+                const durationDays = Math.round((endD - startD) / msPerDay) + 1;
+
+                const leftPos = startOffsetDays * DAY_WIDTH;
+                const width = durationDays * DAY_WIDTH;
+                const topPos = 40 /*header*/ + (index * 40);
+
+                const barWrapper = document.createElement('div');
+                barWrapper.className = 'gantt-bar-wrapper';
+                barWrapper.style.left = `${leftPos}px`;
+                barWrapper.style.top = `${topPos}px`;
+                // Trừ viền để không lẹm sang ô bên cạnh
+                barWrapper.style.width = `${width - 2}px`; 
+
+                // Progress Bar
+                const progWidth = task.progress;
+                
+                barWrapper.innerHTML = `
+                    <div class="gantt-bar-bg"></div>
+                    <div class="gantt-bar-progress" style="width: ${progWidth}%;"></div>
+                    <div class="gantt-bar-label truncate w-full pr-2">${task.name}</div>
+                `;
+                
+                // Tooltip
+                barWrapper.title = `${task.name}\nBắt đầu: ${task.start}\nKết thúc: ${task.end}\nTiến độ: ${task.progress}%`;
+
+                container.appendChild(barWrapper);
+            });
+
+            container.appendChild(grid);
+        }
+
+        // ----------------------------------------------------
+        // 6. TAB 2: KHO DỮ LIỆU & BÓC TÁCH LINK
+        // ----------------------------------------------------
+        
+        // Mô phỏng nhận diện tên file khi paste URL
+        const linkInput = document.getElementById('file-link');
+        const nameInput = document.getElementById('file-name');
+
+        linkInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            if(!url) {
+                nameInput.value = '';
+                return;
+            }
+
+            // Logic mô phỏng thông minh
+            let extractedName = "Tai_lieu_chua_xac_dinh";
+            
+            try {
+                const urlObj = new URL(url);
+                if(urlObj.hostname.includes('drive.google.com')) {
+                    extractedName = "Google_Drive_Document_" + Math.floor(Math.random()*1000);
+                } else if(urlObj.hostname.includes('dropbox.com')) {
+                    extractedName = "Dropbox_File_" + Math.floor(Math.random()*1000);
+                } else {
+                    // Cố gắng lấy tên từ path cuối cùng
+                    const paths = urlObj.pathname.split('/');
+                    const lastPath = paths[paths.length - 1];
+                    if(lastPath && lastPath.length > 3) {
+                        extractedName = decodeURIComponent(lastPath);
+                    } else {
+                        extractedName = urlObj.hostname + "_Data";
+                    }
+                }
+            } catch(e) {
+                // Nếu URL không hợp lệ, giữ nguyên
+            }
+            
+            nameInput.value = extractedName;
+        });
+
+        // Xử lý Form Lưu Tài Liệu
+        document.getElementById('file-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const link = linkInput.value;
+            const name = nameInput.value || 'Untitled';
+            const desc = document.getElementById('file-desc').value;
+            
+            const todayStr = new Date().toLocaleDateString('vi-VN');
+
+            const newFile = {
+                id: Date.now().toString(),
+                name,
+                desc,
+                link,
+                updatedAt: todayStr
+            };
+
+            files.unshift(newFile);
+            saveData('files');
+            renderFiles();
+            
+            // Reset form
+            this.reset();
+            showToast('Đã lưu tài liệu mới');
+        });
+
+        function renderFiles() {
+            const tbody = document.getElementById('file-table-body');
+            const emptyState = document.getElementById('empty-files-state');
+            const table = tbody.parentElement;
+            
+            tbody.innerHTML = '';
+            
+            if (files.length === 0) {
+                table.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            } else {
+                table.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                
+                files.forEach(f => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0';
+                    tr.innerHTML = `
+                        <td class="p-4 font-medium text-gray-800 break-all">
+                            <i class="fa-solid fa-link text-blue-400 mr-2"></i>${f.name}
+                        </td>
+                        <td class="p-4 text-gray-600">${f.desc}</td>
+                        <td class="p-4 text-gray-500 text-sm">${f.updatedAt}</td>
+                        <td class="p-4 text-center">
+                            <a href="${f.link}" target="_blank" rel="noopener noreferrer" 
+                               class="inline-flex items-center justify-center gap-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-primary px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow-sm w-full">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Mở link
+                            </a>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        // ----------------------------------------------------
+        // 7. KHỞI CHẠY TRANG
+        // ----------------------------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+        });
+
+    </script>
+</body>
+</html>
