@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Làm Việc Chung</title>
+    <title>Work Space</title>
     
     <!-- PWA Manifest & Cập nhật thẻ Meta -->
     <link id="manifest-link" rel="manifest" href="">
@@ -20,6 +20,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
@@ -30,7 +31,26 @@
     </script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; transition: background-color 0.3s; }
+        
+        /* Dark Mode Overrides (Macro) */
+        .dark body { background-color: #0f172a; color: #f1f5f9; }
+        .dark .bg-white { background-color: #1e293b !important; border-color: #334155; color: #f1f5f9;}
+        .dark .bg-slate-50 { background-color: #0f172a !important; border-color: #334155; color: #e2e8f0;}
+        .dark .bg-slate-100 { background-color: #334155 !important; }
+        .dark .border-gray-200, .dark .border-gray-100, .dark .border-b, .dark .border-t { border-color: #334155 !important; }
+        .dark .text-gray-900, .dark .text-gray-800 { color: #f1f5f9 !important; }
+        .dark .text-gray-700, .dark .text-gray-600 { color: #cbd5e1 !important; }
+        .dark .text-gray-500 { color: #94a3b8 !important; }
+        .dark input, .dark select, .dark textarea { background-color: #0f172a; border-color: #475569; color: #f1f5f9; }
+        .dark .inline-input { color: #f1f5f9; }
+        .dark .inline-input:not([readonly]):not([disabled]):hover { background-color: #334155; }
+        .dark .inline-input:not([readonly]):not([disabled]):focus { background-color: #1e293b; box-shadow: 0 0 0 1px #3b82f6; }
+        .dark .divide-gray-50 > :not([hidden]) ~ :not([hidden]), .dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color: #334155 !important; }
+        .dark .gantt-header-cell { background-color: #1e293b; color: #cbd5e1; border-color: #334155; }
+        .dark .gantt-cell, .dark .gantt-grid { border-color: #334155; }
+        .dark th { background-color: #0f172a !important; color: #cbd5e1 !important; border-color: #334155 !important; }
+        .dark tr:hover { background-color: #334155 !important; }
         
         .inline-input {
             width: 100%; background-color: transparent; border: 1px solid transparent;
@@ -65,12 +85,19 @@
         .chat-mine { background-color: #3b82f6; color: white; border-bottom-right-radius: 2px; margin-left: auto;}
         .chat-other { background-color: #f1f5f9; color: #1e293b; border-bottom-left-radius: 2px;}
         
-        /* Modal Overlay */
+        /* Toggle Switch CSS */
+        .toggle-checkbox:checked { right: 0; border-color: #3b82f6; background-color: #3b82f6; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
+        .toggle-checkbox { appearance: none; width: 40px; height: 20px; background: #cbd5e1; border-radius: 999px; position: relative; cursor: pointer; outline: none; transition: background 0.3s;}
+        .toggle-checkbox::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.3s;}
+        .toggle-checkbox:checked::after { transform: translateX(20px); }
+
         .modal-overlay { backdrop-filter: blur(4px); }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col relative text-gray-800">
+<body class="h-screen w-screen overflow-hidden flex flex-col relative text-gray-800 dark:text-gray-100 dark:bg-slate-900 transition-colors">
 
+    <!-- Auth Screen -->
     <div id="auth-screen" class="fixed inset-0 bg-slate-50 flex flex-col items-center justify-center z-[100]">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
@@ -109,8 +136,9 @@
         </div>
     </div>
 
+    <!-- Main App -->
     <div id="main-app" class="hidden h-full flex flex-col">
-        <header class="bg-white border-b border-gray-200 px-4 py-3 sm:px-6 flex items-center justify-between shrink-0 shadow-sm z-20">
+        <header class="bg-white border-b border-gray-200 px-4 py-3 sm:px-6 flex items-center justify-between shrink-0 shadow-sm z-20 transition-colors">
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2">
                     <div class="bg-dark text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm"><i class="fa-solid fa-shapes text-sm"></i></div>
@@ -128,7 +156,6 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <!-- Chọn người dùng để xem chéo -->
                 <div class="flex items-center gap-2 bg-slate-50 border border-gray-200 rounded-full px-3 py-1.5 shadow-inner" title="Xem không gian của người khác">
                     <i class="fa-solid fa-eye text-gray-400 text-xs"></i>
                     <select id="user-filter-select" onchange="window.handleUserFilterChange()" class="bg-transparent text-sm font-semibold text-gray-700 outline-none cursor-pointer max-w-[120px] md:max-w-[200px] truncate">
@@ -138,7 +165,7 @@
 
                 <div class="w-px h-5 bg-gray-200 hidden sm:block"></div>
                 
-                <button onclick="window.openSettingsModal()" class="text-gray-500 hover:text-gray-800 p-1.5 rounded-md transition-colors" title="Cài đặt tài khoản">
+                <button onclick="window.openSettingsModal()" class="text-gray-500 hover:text-gray-800 p-1.5 rounded-md transition-colors" title="Cài đặt hệ thống">
                     <i class="fa-solid fa-gear text-lg"></i>
                 </button>
                 <button onclick="window.openConfirm('Bạn có chắc chắn muốn đăng xuất khỏi thiết bị này?', window.processLogout)" class="text-gray-500 hover:text-red-600 p-1.5 rounded-md transition-colors" title="Đăng xuất">
@@ -148,17 +175,18 @@
         </header>
 
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 pb-24 relative">
-            <div id="readonly-banner" class="hidden max-w-7xl mx-auto mb-4 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-lg flex items-center justify-between shadow-sm">
-                <span class="text-sm font-medium"><i class="fa-solid fa-lock mr-2"></i>Bạn đang ở chế độ Chỉ Xem dữ liệu của thành viên khác. Không thể chỉnh sửa.</span>
-                <button onclick="window.resetUserFilter()" class="text-xs bg-amber-100 hover:bg-amber-200 px-3 py-1 rounded font-semibold transition-colors">Về của tôi</button>
+            <div id="readonly-banner" class="hidden max-w-7xl mx-auto mb-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-700 dark:text-amber-500 px-4 py-2 rounded-lg flex items-center justify-between shadow-sm">
+                <span class="text-sm font-medium"><i class="fa-solid fa-lock mr-2"></i>Chế độ Chỉ Xem dữ liệu thành viên khác.</span>
+                <button onclick="window.resetUserFilter()" class="text-xs bg-amber-100 dark:bg-amber-800/50 hover:bg-amber-200 px-3 py-1 rounded font-semibold transition-colors">Về của tôi</button>
             </div>
 
+            <!-- TAB 1: KẾ HOẠCH -->
             <div id="tab-plan" class="space-y-4 max-w-7xl mx-auto block">
                 <div class="mb-2 flex items-center justify-between">
                     <h2 class="text-xl font-bold text-gray-800">Kế hoạch & Tiến độ</h2>
                 </div>
 
-                <!-- Accordion: Ngày -->
+                <!-- Ngày -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <button onclick="window.toggleAccordion('day')" class="w-full flex items-center justify-between px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
                         <div class="flex items-center gap-3">
@@ -193,7 +221,7 @@
                     </div>
                 </div>
 
-                <!-- Accordion: Tuần -->
+                <!-- Tuần -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <button onclick="window.toggleAccordion('week')" class="w-full flex items-center justify-between px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
                         <div class="flex items-center gap-3">
@@ -228,7 +256,7 @@
                     </div>
                 </div>
 
-                <!-- Accordion: Tháng -->
+                <!-- Tháng -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <button onclick="window.toggleAccordion('month')" class="w-full flex items-center justify-between px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
                         <div class="flex items-center gap-3">
@@ -264,8 +292,8 @@
                 </div>
             </div>
 
+            <!-- TAB 2: DATA -->
             <div id="tab-data" class="hidden space-y-6 max-w-7xl mx-auto pb-10">
-                <!-- Form Upload -->
                 <div id="form-upload-container" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
                     <h3 class="font-semibold text-gray-800 mb-4 text-sm uppercase tracking-wide border-b pb-2"><i class="fa-solid fa-cloud-arrow-up mr-2 text-primary"></i>Thêm dữ liệu mới</h3>
                     <form id="doc-form" onsubmit="window.submitDoc(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -282,10 +310,10 @@
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-gray-600 mb-1">Tên hiển thị</label>
-                            <input type="text" id="doc-name" required placeholder="Tự động hoặc nhập tay..." class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:border-primary text-sm bg-blue-50/50">
+                            <input type="text" id="doc-name" required placeholder="Tự động hoặc nhập tay..." class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:border-primary text-sm">
                         </div>
                         <div class="md:col-span-3">
-                            <label class="block text-xs font-medium text-gray-600 mb-1">Mô tả / Ghi chú nhanh</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Mô tả / Ghi chú</label>
                             <input type="text" id="doc-desc" placeholder="Tóm tắt..." class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:border-primary text-sm">
                         </div>
                         <div class="md:col-span-12 flex justify-end mt-1">
@@ -296,35 +324,29 @@
                     </form>
                 </div>
 
-                <!-- 2 Cột hiển thị: Dự án & Tài liệu -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Cột 1: Danh sách Dự án -->
+                    <!-- Dự án -->
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[550px]">
                         <div class="px-5 py-3 border-b border-gray-200 bg-slate-50 shrink-0 flex justify-between items-center">
                             <h3 class="font-semibold text-gray-800"><i class="fa-solid fa-folder-open text-amber-500 mr-2"></i>Danh sách Dự án</h3>
-                            <span class="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full" id="count-projects">0</span>
+                            <span class="text-xs bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full" id="count-projects">0</span>
                         </div>
                         <div class="overflow-y-auto flex-1 p-0">
-                            <div id="list-projects" class="divide-y divide-gray-100">
-                                <!-- JS Render -->
-                            </div>
+                            <div id="list-projects" class="divide-y divide-gray-100"></div>
                             <div id="empty-projects" class="hidden p-10 flex flex-col items-center justify-center text-gray-400 h-full">
                                 <i class="fa-regular fa-folder-closed text-3xl mb-2 opacity-40"></i>
                                 <span class="text-sm">Chưa có dự án nào</span>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Cột 2: Danh sách Tài liệu -->
+                    <!-- Tài liệu -->
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[550px]">
                         <div class="px-5 py-3 border-b border-gray-200 bg-slate-50 shrink-0 flex justify-between items-center">
                             <h3 class="font-semibold text-gray-800"><i class="fa-solid fa-file-lines text-blue-500 mr-2"></i>Danh sách Tài liệu</h3>
-                            <span class="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full" id="count-documents">0</span>
+                            <span class="text-xs bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full" id="count-documents">0</span>
                         </div>
                         <div class="overflow-y-auto flex-1 p-0">
-                            <div id="list-documents" class="divide-y divide-gray-100">
-                                <!-- JS Render -->
-                            </div>
+                            <div id="list-documents" class="divide-y divide-gray-100"></div>
                             <div id="empty-documents" class="hidden p-10 flex flex-col items-center justify-center text-gray-400 h-full">
                                 <i class="fa-regular fa-file text-3xl mb-2 opacity-40"></i>
                                 <span class="text-sm">Chưa có tài liệu nào</span>
@@ -336,6 +358,7 @@
         </main>
     </div>
 
+    <!-- Chat Widget -->
     <div id="chat-widget" class="fixed bottom-6 right-6 z-40 flex flex-col items-end transition-transform transform translate-y-0 hidden">
         <button id="chat-toggle-btn" onclick="window.toggleChat()" class="bg-dark text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center hover:bg-darkHover hover:scale-105 transition-all relative">
             <i class="fa-solid fa-comment-dots text-2xl"></i>
@@ -353,20 +376,29 @@
             
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 flex flex-col">
                 <div class="text-center text-xs text-gray-400 my-2">Bắt đầu trò chuyện với team</div>
-                <!-- JS Render Messages -->
             </div>
 
             <form onsubmit="window.sendChat(event)" class="p-3 bg-white border-t border-gray-200 flex gap-2 shrink-0">
-                <input type="text" id="chat-input" required autocomplete="off" placeholder="Nhập tin nhắn..." class="flex-1 px-3 py-2 bg-gray-100 border-transparent rounded-full text-sm outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all">
+                <input type="text" id="chat-input" required autocomplete="off" placeholder="Nhập tin nhắn..." class="flex-1 px-3 py-2 bg-gray-100 border-transparent rounded-full text-sm outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all text-gray-800">
                 <button type="submit" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primaryHover shrink-0 transition-colors">
                     <i class="fa-solid fa-paper-plane text-xs"></i>
                 </button>
             </form>
         </div>
     </div>
+    
+    <!-- Zalo-style Popup Notification -->
+    <div id="noti-popup" class="fixed top-5 right-5 z-[10000] bg-white dark:bg-slate-800 shadow-2xl rounded-xl border border-gray-100 dark:border-slate-700 p-3 transform transition-all duration-300 translate-x-[120%] opacity-0 flex items-center gap-3 w-72 pointer-events-none">
+        <div id="noti-avatar" class="w-10 h-10 rounded-full bg-primary text-white flex justify-center items-center font-bold shadow-sm shrink-0 uppercase"></div>
+        <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm text-gray-800 dark:text-gray-100 truncate" id="noti-name"></div>
+            <div class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5" id="noti-msg"></div>
+        </div>
+    </div>
 
     <div id="toast-container"></div>
     
+    <!-- Confirm Modal -->
     <div id="confirm-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center z-[9999] modal-overlay transition-opacity">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-[90%] max-w-sm transform scale-95 transition-transform" id="confirm-modal-box">
             <div class="flex items-center gap-3 text-red-500 mb-3">
@@ -381,69 +413,84 @@
         </div>
     </div>
 
+    <!-- Settings Modal (New Accordion Style) -->
     <div id="settings-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center z-[500] modal-overlay">
-        <div class="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md overflow-hidden flex flex-col">
-            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-gray-800">Cài đặt Tài khoản</h3>
-                <button onclick="window.closeSettingsModal()" class="text-gray-400 hover:text-gray-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-[90%] max-w-md overflow-hidden flex flex-col transition-colors border border-gray-100 dark:border-slate-700">
+            <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 transition-colors">
+                <h3 class="font-bold text-gray-800 dark:text-gray-100">Cài đặt Hệ thống</h3>
+                <button onclick="window.closeSettingsModal()" class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="p-6 space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Đổi Tên hiển thị</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="setting-name" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-primary text-sm">
-                        <button onclick="window.updateProfileName()" class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Lưu</button>
+            
+            <div class="p-5 space-y-4 overflow-y-auto max-h-[70vh]">
+                <!-- Accordion: Tài Khoản -->
+                <details class="group bg-gray-50 dark:bg-slate-700 border border-gray-100 dark:border-slate-600 rounded-lg open:shadow-sm" open>
+                    <summary class="font-semibold p-3 cursor-pointer flex justify-between items-center outline-none">
+                        <span class="text-gray-800 dark:text-gray-100"><i class="fa-solid fa-user-circle mr-2 text-primary"></i>Thông tin Tài khoản</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="p-4 border-t border-gray-200 dark:border-slate-600 space-y-4 bg-white dark:bg-slate-800 rounded-b-lg">
+                        <!-- Đổi Tên -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <span class="text-[11px] text-gray-500 font-semibold uppercase tracking-wider block mb-1">Tên hiển thị</span>
+                                <div id="display-name-text" class="font-medium text-gray-800 dark:text-gray-100 text-sm">Đang tải...</div>
+                                <input type="text" id="setting-name" autocomplete="off" class="hidden w-[90%] px-2 py-1.5 border border-gray-300 dark:border-slate-500 rounded text-sm bg-transparent outline-none focus:border-primary">
+                            </div>
+                            <div class="shrink-0 ml-2">
+                                <button onclick="window.toggleEditName()" id="btn-edit-name" class="text-gray-400 hover:text-primary p-2 transition-colors"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="window.saveName()" id="btn-save-name" class="hidden text-emerald-500 hover:text-emerald-600 p-2 transition-colors"><i class="fa-solid fa-check text-lg"></i></button>
+                            </div>
+                        </div>
+                        
+                        <!-- Mật khẩu -->
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-700">
+                            <div class="flex-1">
+                                <span class="text-[11px] text-gray-500 font-semibold uppercase tracking-wider block mb-1">Tài khoản & Mật khẩu</span>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-1" id="display-email-text">email@...</div>
+                                <div class="flex items-center gap-2">
+                                    <span id="fake-password" class="font-bold tracking-[0.2em] text-gray-800 dark:text-gray-100 mt-0.5">********</span>
+                                    <input type="password" id="setting-pass" placeholder="Nhập mật khẩu mới..." class="hidden w-[90%] px-2 py-1.5 border border-gray-300 dark:border-slate-500 rounded text-sm bg-transparent outline-none focus:border-primary">
+                                    <button onclick="window.togglePassVisibility()" id="btn-eye-pass" class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1"><i class="fa-solid fa-eye text-xs" id="icon-eye-pass"></i></button>
+                                </div>
+                            </div>
+                            <div class="shrink-0 ml-2 self-end mb-0.5">
+                                <button onclick="window.toggleEditPass()" id="btn-edit-pass" class="text-gray-400 hover:text-primary p-2 transition-colors"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="window.savePass()" id="btn-save-pass" class="hidden text-emerald-500 hover:text-emerald-600 p-2 transition-colors"><i class="fa-solid fa-check text-lg"></i></button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <hr class="border-gray-100">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Đổi Mật khẩu</label>
-                    <input type="password" id="setting-pass" autocomplete="new-password" placeholder="Mật khẩu mới (Tối thiểu 6 ký tự)" class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-primary text-sm mb-2">
-                    <button onclick="window.updatePasswordRequest()" class="w-full bg-dark hover:bg-darkHover text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cập nhật Mật khẩu</button>
-                </div>
+                </details>
+                
+                <!-- Accordion: Hệ thống -->
+                <details class="group bg-gray-50 dark:bg-slate-700 border border-gray-100 dark:border-slate-600 rounded-lg open:shadow-sm" open>
+                    <summary class="font-semibold p-3 cursor-pointer flex justify-between items-center outline-none">
+                        <span class="text-gray-800 dark:text-gray-100"><i class="fa-solid fa-sliders mr-2 text-primary"></i>Giao diện & Thông báo</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="p-4 border-t border-gray-200 dark:border-slate-600 space-y-4 bg-white dark:bg-slate-800 rounded-b-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Chế độ Tối (Dark Mode)</span>
+                            <input type="checkbox" id="dark-mode-toggle" onchange="window.toggleDarkModeSetting(this.checked)" class="toggle-checkbox">
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-700">
+                            <div>
+                                <span class="text-sm font-medium text-gray-700 dark:text-gray-200 block">Thông báo Chat (Popup)</span>
+                                <span class="text-[10px] text-gray-400">Hiển thị popup khi có tin nhắn tới</span>
+                            </div>
+                            <input type="checkbox" id="noti-toggle" onchange="window.toggleNotiSetting(this.checked)" class="toggle-checkbox" checked>
+                        </div>
+                    </div>
+                </details>
             </div>
         </div>
     </div>
 
     <script type="module">
-        const appName = "Workspace";
-        const themeColor = "#1e293b";
-        const iconUrl = "https://placehold.co/512x512/3b82f6/ffffff?text=WS";
-        
-        const manifest = {
-            name: "Không Gian Làm Việc Chung",
-            short_name: appName,
-            display: "standalone",
-            start_url: ".",
-            background_color: "#f8fafc",
-            theme_color: themeColor,
-            icons: [{ src: iconUrl, sizes: "512x512", type: "image/png" }]
-        };
-        const manifestUrl = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
-        document.getElementById('manifest-link').setAttribute('href', manifestUrl);
-
-        try {
-            const swCode = `
-                self.addEventListener('install', (e) => self.skipWaiting());
-                self.addEventListener('activate', (e) => self.clients.claim());
-                self.addEventListener('fetch', (e) => {});
-            `;
-            const swBlob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(swBlob);
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration issue:', err));
-            }
-        } catch (e) {
-            console.log("PWA blob SW blocked by environment, skipping SW registration.");
-        }
-
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, updatePassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'collab-workspace-v2';
-        
-        // Đã sử dụng chính xác cấu hình Firebase từ notebook.html của bạn
+        const APP_ID = 'collab-workspace-v2';
         const firebaseConfig = {
             apiKey: "AIzaSyBGmLt1ka6mEVFcAlKU0-q6or66jTsuep4",
             authDomain: "uyen-fdf7d.firebaseapp.com",
@@ -471,6 +518,14 @@
         let allTasks = [];
         let allDocs = [];
         let systemUsers = {};
+
+        // Notification & Theme states
+        let isNotiEnabled = localStorage.getItem('workspace_noti') !== 'false';
+        let isDarkMode = localStorage.getItem('workspace_dark_mode') === 'true';
+        let isFirstChatLoad = true;
+
+        // Apply theme immediately
+        if (isDarkMode) document.documentElement.classList.add('dark');
 
         window.showToast = function(msg, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -503,20 +558,115 @@
         };
 
         window.executeConfirm = function() {
-            if (typeof confirmAction === 'function') {
-                confirmAction();
-            }
+            if (typeof confirmAction === 'function') confirmAction();
             window.closeConfirm();
         };
 
         window.openSettingsModal = () => { 
             document.getElementById('settings-modal').classList.remove('hidden'); 
             document.getElementById('settings-modal').classList.add('flex'); 
+            
+            // Render user profile info
+            document.getElementById('display-name-text').innerText = currentUser?.displayName || 'Chưa thiết lập';
             document.getElementById('setting-name').value = currentUser?.displayName || '';
+            document.getElementById('display-email-text').innerText = currentUser?.email || '';
+            
+            // Render configs
+            document.getElementById('dark-mode-toggle').checked = isDarkMode;
+            document.getElementById('noti-toggle').checked = isNotiEnabled;
         };
         window.closeSettingsModal = () => { 
             document.getElementById('settings-modal').classList.add('hidden'); 
             document.getElementById('settings-modal').classList.remove('flex'); 
+            // Reset edit states
+            if(window.isEditingName) window.toggleEditName();
+            if(window.isEditingPass) window.toggleEditPass();
+        };
+
+        // Edit Settings Logic
+        window.isEditingName = false;
+        window.toggleEditName = function() {
+            window.isEditingName = !window.isEditingName;
+            document.getElementById('display-name-text').classList.toggle('hidden', window.isEditingName);
+            document.getElementById('setting-name').classList.toggle('hidden', !window.isEditingName);
+            document.getElementById('btn-edit-name').classList.toggle('hidden', window.isEditingName);
+            document.getElementById('btn-save-name').classList.toggle('hidden', !window.isEditingName);
+            if(window.isEditingName) document.getElementById('setting-name').focus();
+        };
+        window.saveName = async function() {
+            const newName = document.getElementById('setting-name').value.trim();
+            if(!newName) return window.showToast("Tên không hợp lệ", "error");
+            try {
+                await updateProfile(currentUser, { displayName: newName });
+                await setDoc(doc(COL_USERS, currentUser.uid), { name: newName, email: currentUser.email, uid: currentUser.uid }, { merge: true });
+                window.showToast("Đã cập nhật tên");
+                document.getElementById('display-name-text').innerText = newName;
+                window.toggleEditName();
+            } catch(e) { window.showToast("Lỗi cập nhật tên", "error"); }
+        };
+
+        window.isEditingPass = false;
+        window.toggleEditPass = function() {
+            window.isEditingPass = !window.isEditingPass;
+            document.getElementById('fake-password').classList.toggle('hidden', window.isEditingPass);
+            document.getElementById('setting-pass').classList.toggle('hidden', !window.isEditingPass);
+            document.getElementById('btn-eye-pass').classList.toggle('hidden', window.isEditingPass);
+            document.getElementById('btn-edit-pass').classList.toggle('hidden', window.isEditingPass);
+            document.getElementById('btn-save-pass').classList.toggle('hidden', !window.isEditingPass);
+            
+            if(window.isEditingPass) {
+                document.getElementById('setting-pass').value = '';
+                document.getElementById('setting-pass').focus();
+            }
+        };
+        window.togglePassVisibility = function() {
+            const input = document.getElementById('setting-pass');
+            const icon = document.getElementById('icon-eye-pass');
+            const fake = document.getElementById('fake-password');
+            if(!window.isEditingPass) {
+                fake.innerText = fake.innerText === "********" ? "••••••••" : "********";
+                return;
+            }
+            if(input.type === 'password') { input.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); }
+            else { input.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); }
+        };
+        window.savePass = async function() {
+            const newPass = document.getElementById('setting-pass').value.trim();
+            if(newPass.length < 6) return window.showToast("Mật khẩu phải từ 6 ký tự", "error");
+            try {
+                await updatePassword(currentUser, newPass);
+                window.showToast("Đã cập nhật mật khẩu");
+                window.toggleEditPass();
+            } catch(e) { window.showToast("Vui lòng đăng nhập lại để đổi mật khẩu", "error"); }
+        };
+
+        window.toggleDarkModeSetting = function(isChecked) {
+            isDarkMode = isChecked;
+            if(isDarkMode) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+            localStorage.setItem('workspace_dark_mode', isDarkMode);
+        };
+        window.toggleNotiSetting = function(isChecked) {
+            isNotiEnabled = isChecked;
+            localStorage.setItem('workspace_noti', isNotiEnabled);
+        };
+
+        window.showNotiPopup = function(name, text) {
+            const popup = document.getElementById('noti-popup');
+            document.getElementById('noti-name').innerText = name;
+            document.getElementById('noti-msg').innerText = text;
+            document.getElementById('noti-avatar').innerText = name.charAt(0);
+            
+            popup.classList.remove('translate-x-[120%]', 'opacity-0');
+            
+            // Âm thanh tinh tế nhẹ nhàng
+            try {
+                const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+                audio.volume = 0.5;
+                audio.play().catch(()=>{});
+            } catch(e) {}
+            
+            setTimeout(() => { popup.classList.add('translate-x-[120%]', 'opacity-0'); }, 4500);
         };
 
         window.switchTab = function(tabId) {
@@ -524,10 +674,10 @@
                 const btn = document.getElementById(`tab-btn-${id}`);
                 const content = document.getElementById(`tab-${id}`);
                 if (id === tabId) {
-                    btn.className = 'px-3 sm:px-4 py-1.5 rounded-md font-medium text-sm transition-all bg-white shadow-sm text-primary';
+                    btn.className = 'px-3 sm:px-4 py-1.5 rounded-md font-medium text-sm transition-all bg-white dark:bg-slate-700 shadow-sm text-primary dark:text-blue-400';
                     content.classList.remove('hidden'); content.classList.add('block');
                 } else {
-                    btn.className = 'px-3 sm:px-4 py-1.5 rounded-md font-medium text-sm text-gray-600 hover:text-gray-900 transition-all';
+                    btn.className = 'px-3 sm:px-4 py-1.5 rounded-md font-medium text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all';
                     content.classList.add('hidden'); content.classList.remove('block');
                 }
             });
@@ -599,7 +749,7 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
-                selectedUserId = user.uid;
+                if(!selectedUserId) selectedUserId = user.uid; // Thiết lập mặc định
                 
                 const authScreen = document.getElementById('auth-screen');
                 if (authScreen) authScreen.remove();
@@ -615,7 +765,6 @@
             onSnapshot(query(COL_USERS), snap => {
                 systemUsers = {};
                 const select = document.getElementById('user-filter-select');
-                const currVal = select.value;
                 select.innerHTML = '';
                 
                 snap.forEach(d => {
@@ -626,8 +775,15 @@
                     opt.textContent = u.uid === currentUser.uid ? `(Tôi) ${u.name}` : u.name || u.email;
                     select.appendChild(opt);
                 });
-                if(systemUsers[currVal]) select.value = currVal;
-                else select.value = currentUser.uid;
+                
+                // GIỮ VỮNG NGƯỜI ĐANG XEM SAU KHI RE-RENDER
+                if (systemUsers[selectedUserId]) {
+                    select.value = selectedUserId;
+                } else {
+                    select.value = currentUser.uid;
+                    selectedUserId = currentUser.uid;
+                }
+                window.handleUserFilterChange(); // Cập nhật lại UI sau khi load xong Users
             }, err => console.error(err));
 
             onSnapshot(query(COL_TASKS), snap => {
@@ -647,8 +803,23 @@
                 const container = document.getElementById('chat-messages');
                 const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
                 
+                if(!isFirstChatLoad) {
+                    snap.docChanges().forEach(change => {
+                        if (change.type === "added") {
+                            const msg = change.doc.data();
+                            if(msg.uid !== currentUser.uid && isNotiEnabled) {
+                                const panel = document.getElementById('chat-panel');
+                                if (panel.classList.contains('hidden')) {
+                                    window.showNotiPopup(msg.userName, msg.text);
+                                    document.getElementById('chat-badge').classList.remove('hidden');
+                                }
+                            }
+                        }
+                    });
+                }
+                
                 container.innerHTML = '<div class="text-center text-xs text-gray-400 my-2">Bắt đầu trò chuyện với team</div>';
-                snap.forEach(d => {
+                snap.docs.forEach(d => {
                     const msg = d.data();
                     const isMe = msg.uid === currentUser.uid;
                     const timeStr = new Date(msg.timestamp).toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
@@ -656,7 +827,7 @@
                     container.innerHTML += `
                         <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
                             ${!isMe ? `<span class="text-[10px] text-gray-500 ml-1 mb-0.5">${msg.userName}</span>` : ''}
-                            <div class="chat-bubble ${isMe ? 'chat-mine' : 'chat-other shadow-sm border border-gray-100'}">
+                            <div class="chat-bubble ${isMe ? 'chat-mine' : 'chat-other shadow-sm border border-gray-100 dark:border-slate-700 dark:bg-slate-700 dark:text-gray-100'}">
                                 ${msg.text}
                             </div>
                             <span class="text-[9px] text-gray-400 mt-0.5 ${isMe ? 'mr-1' : 'ml-1'}">${timeStr}</span>
@@ -664,10 +835,8 @@
                     `;
                 });
                 
-                const panel = document.getElementById('chat-panel');
-                const badge = document.getElementById('chat-badge');
-                if(panel.classList.contains('hidden') && snap.size > 0) badge.classList.remove('hidden');
                 if (isAtBottom) container.scrollTop = container.scrollHeight;
+                isFirstChatLoad = false;
             }, err => console.error(err));
         }
 
@@ -704,7 +873,7 @@
         };
 
         function renderTasksAndDocs() {
-            if(!currentUser) return;
+            if(!currentUser || !selectedUserId) return;
             const filteredTasks = allTasks.filter(t => t.uid === selectedUserId);
             const filteredDocs = allDocs.filter(d => d.uid === selectedUserId);
 
@@ -845,7 +1014,8 @@
                 cell.className = 'gantt-header-cell';
                 cell.innerText = `${cD.getDate()}/${cD.getMonth()+1}`;
                 if (cD.toDateString() === todayStr) {
-                    cell.style.backgroundColor = '#fef3c7'; cell.style.color = '#d97706';
+                    cell.style.backgroundColor = isDarkMode ? '#334155' : '#fef3c7'; 
+                    cell.style.color = isDarkMode ? '#60a5fa' : '#d97706';
                 }
                 grid.appendChild(cell);
             }
@@ -854,7 +1024,7 @@
                 for (let c = 0; c < totalDays; c++) {
                     const cell = document.createElement('div');
                     cell.className = 'gantt-cell';
-                    if (r % 2 === 1) cell.style.backgroundColor = '#f8fafc';
+                    if (r % 2 === 1) cell.style.backgroundColor = isDarkMode ? '#1e293b' : '#f8fafc';
                     grid.appendChild(cell);
                 }
             }
@@ -870,9 +1040,9 @@
                 wrapper.style.width = `${dur * DAY_WIDTH - 2}px`;
 
                 wrapper.innerHTML = `
-                    <div class="gantt-bar-bg ${type==='week'?'bg-indigo-200': type==='month'?'bg-emerald-200':''}"></div>
+                    <div class="gantt-bar-bg ${type==='week'?'bg-indigo-200 dark:bg-indigo-900/50': type==='month'?'bg-emerald-200 dark:bg-emerald-900/50':''}"></div>
                     <div class="gantt-bar-progress ${type==='week'?'bg-indigo-500': type==='month'?'bg-emerald-500':''}" style="width: ${task.progress}%;"></div>
-                    <div class="gantt-bar-label truncate w-full pr-1 ${task.progress>50?'text-white':''}">${task.name}</div>
+                    <div class="gantt-bar-label truncate w-full pr-1 ${task.progress>50?'text-white':'dark:text-gray-100'}">${task.name}</div>
                 `;
                 wrapper.title = `${task.name}\n${task.start} -> ${task.end}\nTiến độ: ${task.progress}%`;
                 container.appendChild(wrapper);
@@ -929,7 +1099,7 @@
                 list.forEach(item => {
                     const uName = systemUsers[item.uid]?.name || 'Ẩn danh';
                     const div = document.createElement('div');
-                    div.className = "p-4 hover:bg-slate-50 transition-colors group relative";
+                    div.className = "p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group relative";
                     const inputProps = isReadOnly ? 'readonly disabled' : '';
                     const enterSaveAttr = `onkeydown="if(event.key==='Enter') this.blur()"`;
                     
@@ -944,13 +1114,13 @@
                             ${!isReadOnly ? `<button onclick="window.askDeleteDoc('${item.id}')" class="text-gray-300 hover:text-red-500 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-trash-can text-sm"></i></button>` : ''}
                         </div>
                         <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
-                            <div class="bg-gray-50 border border-gray-100 rounded px-2 py-1.5">
+                            <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded px-2 py-1.5">
                                 <span class="text-gray-400 block mb-0.5">Trạng thái</span>
-                                <input type="text" class="w-full bg-transparent border-none outline-none text-gray-700 p-0" value="${item.status}" ${inputProps} placeholder="Trống..." onchange="window.updateDocField('${item.id}', 'status', this.value)" ${enterSaveAttr}>
+                                <input type="text" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${item.status}" ${inputProps} placeholder="Trống..." onchange="window.updateDocField('${item.id}', 'status', this.value)" ${enterSaveAttr}>
                             </div>
-                            <div class="bg-gray-50 border border-gray-100 rounded px-2 py-1.5">
+                            <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded px-2 py-1.5">
                                 <span class="text-gray-400 block mb-0.5">Ghi chú thêm</span>
-                                <input type="text" class="w-full bg-transparent border-none outline-none text-gray-700 p-0" value="${item.notes}" ${inputProps} placeholder="Thêm ghi chú..." onchange="window.updateDocField('${item.id}', 'notes', this.value)" ${enterSaveAttr}>
+                                <input type="text" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${item.notes}" ${inputProps} placeholder="Thêm ghi chú..." onchange="window.updateDocField('${item.id}', 'notes', this.value)" ${enterSaveAttr}>
                             </div>
                         </div>
                         <div class="mt-2 text-[10px] text-gray-400 flex items-center justify-between">
@@ -979,29 +1149,6 @@
                     window.showToast("Đã xóa tài liệu");
                 } catch(e) { window.showToast("Lỗi khi xóa", "error"); }
             });
-        };
-
-        window.updateProfileName = async function() {
-            if(!currentUser) return;
-            const newName = document.getElementById('setting-name').value.trim();
-            if(!newName) return window.showToast("Tên không hợp lệ", "error");
-            try {
-                await updateProfile(currentUser, { displayName: newName });
-                await setDoc(doc(COL_USERS, currentUser.uid), { name: newName, email: currentUser.email, uid: currentUser.uid }, { merge: true });
-                window.showToast("Đã cập nhật Tên hiển thị");
-            } catch(e) { window.showToast("Lỗi cập nhật tên", "error"); }
-        };
-
-        window.updatePasswordRequest = async function() {
-            if(!currentUser) return;
-            const newPass = document.getElementById('setting-pass').value.trim();
-            if(newPass.length < 6) return window.showToast("Mật khẩu quá ngắn", "error");
-            try {
-                await updatePassword(currentUser, newPass);
-                window.showToast("Đã cập nhật Mật khẩu");
-                document.getElementById('setting-pass').value = '';
-                window.closeSettingsModal();
-            } catch(e) { window.showToast("Vui lòng đăng nhập lại để đổi mật khẩu", "error"); }
         };
 
         window.toggleChat = function() {
