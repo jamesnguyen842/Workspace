@@ -6,12 +6,27 @@
     <title>Không Gian Làm Việc Chung</title>
     <meta name="theme-color" content="#1e293b">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Workspace">
-    
+
     <!-- Khai báo PWA -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="1.JPG">
+
+    <!-- Bắt sự kiện cài đặt PWA SỚM (script thường, không phải module) -->
+    <script>
+        window.__deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.__deferredPrompt = e;
+            document.dispatchEvent(new Event('pwa-ready'));
+        });
+        window.addEventListener('appinstalled', () => {
+            window.__deferredPrompt = null;
+            document.dispatchEvent(new Event('pwa-installed'));
+        });
+    </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -118,10 +133,10 @@
                 <button type="submit" id="btn-submit" class="w-full bg-dark hover:bg-darkHover text-white font-medium py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center gap-2 mt-4">
                     <span id="btn-submit-text">Đăng Nhập</span>
                 </button>
-                
-                <!-- Nút Tải / Cài ứng dụng PWA -->
-                <button type="button" id="btn-install-pwa" onclick="window.installPWA()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg shadow transition-all flex justify-center items-center gap-2 text-sm mt-3">
-                    <i class="fa-solid fa-mobile-screen-button"></i> <span id="pwa-btn-text">Thêm ứng dụng vào Màn hình</span>
+
+                <!-- Nút cài ứng dụng PWA -->
+                <button type="button" onclick="window.installPWA()" class="pwa-install-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg shadow transition-all flex justify-center items-center gap-2 text-sm mt-3">
+                    <i class="fa-solid fa-mobile-screen-button"></i> <span class="pwa-btn-text">Thêm ứng dụng vào Màn hình</span>
                 </button>
             </form>
 
@@ -290,6 +305,20 @@
         </div>
     </div>
 
+    <!-- Hướng dẫn cài đặt trên iOS -->
+    <div id="ios-guide" class="fixed inset-0 bg-slate-900/50 hidden items-end sm:items-center justify-center z-[10001] modal-overlay" onclick="window.closeIosGuide()">
+        <div class="bg-white p-6 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-sm shadow-2xl" onclick="event.stopPropagation()">
+            <h3 class="font-bold text-gray-800 mb-3">Thêm vào Màn hình chính</h3>
+            <ol class="text-sm text-gray-600 space-y-3">
+                <li>1. Bấm nút <b>Chia sẻ</b> <i class="fa-solid fa-arrow-up-from-bracket text-primary"></i> ở thanh dưới Safari</li>
+                <li>2. Kéo xuống, chọn <b>Thêm vào MH chính</b> <i class="fa-regular fa-square-plus text-primary"></i></li>
+                <li>3. Bấm <b>Thêm</b> ở góc trên phải</li>
+            </ol>
+            <p class="text-xs text-gray-400 mt-3">Lưu ý: phải mở bằng Safari, không phải trình duyệt trong Zalo/Facebook.</p>
+            <button onclick="window.closeIosGuide()" class="w-full mt-4 bg-dark text-white py-2.5 rounded-lg text-sm font-medium">Đã hiểu</button>
+        </div>
+    </div>
+
     <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center z-[500] modal-overlay">
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-[90%] max-w-md overflow-hidden flex flex-col transition-colors border border-gray-100 dark:border-slate-700">
@@ -352,6 +381,13 @@
                         </div>
                     </div>
                 </details>
+
+                <!-- Cài đặt ứng dụng (PWA) -->
+                <div class="pwa-install-section">
+                    <button type="button" onclick="window.installPWA()" class="pwa-install-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg shadow transition-all flex justify-center items-center gap-2 text-sm">
+                        <i class="fa-solid fa-mobile-screen-button"></i> <span class="pwa-btn-text">Thêm ứng dụng vào Màn hình</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -409,28 +445,46 @@
 
         if (isDarkMode) document.documentElement.classList.add('dark');
 
-        // ===== PWA Logic Cải Tiến =====
-        let deferredPrompt = null;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const btnText = document.getElementById('pwa-btn-text');
-            if(btnText) btnText.innerText = "Tải App về Màn Hình";
+        // ===== PWA =====
+        const isStandalone = () =>
+            window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        const pwaButtons = () => document.querySelectorAll('.pwa-install-btn');
+        const setPwaText = (txt) => document.querySelectorAll('.pwa-btn-text').forEach(el => el.innerText = txt);
+
+        // Đã cài rồi (đang chạy dạng app) thì ẩn mọi nút cài
+        if (isStandalone()) {
+            pwaButtons().forEach(b => b.classList.add('hidden'));
+        }
+
+        if (window.__deferredPrompt) setPwaText("Cài ứng dụng ngay");
+        document.addEventListener('pwa-ready', () => setPwaText("Cài ứng dụng ngay"));
+        document.addEventListener('pwa-installed', () => {
+            pwaButtons().forEach(b => b.classList.add('hidden'));
+            window.showToast("Đã thêm ứng dụng vào màn hình!");
         });
 
-        window.installPWA = async function() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    window.showToast("Đã tải ứng dụng!");
-                }
-                deferredPrompt = null;
-            } else {
-                // Hướng dẫn nếu trình duyệt không tự hiện prompt (như iOS Safari / Chrome Mobile)
-                alert("Để ghim ứng dụng ra màn hình:\n\n1. Bấm nút Chia sẻ (Safari) hoặc dấu 3 chấm (Chrome).\n2. Chọn 'Thêm vào màn hình chính' (Add to Home Screen).");
+        window.installPWA = async function () {
+            const p = window.__deferredPrompt;
+            if (p) {
+                p.prompt();
+                const { outcome } = await p.userChoice;
+                window.__deferredPrompt = null;
+                if (outcome === 'accepted') window.showToast("Đang cài đặt ứng dụng...");
+                return;
             }
+            if (isIOS) {
+                document.getElementById('ios-guide').classList.replace('hidden', 'flex');
+                return;
+            }
+            // Trình duyệt chưa sẵn sàng (in-app browser như Zalo/Facebook, hoặc đã cài rồi)
+            window.showToast("Hãy mở trang này bằng Chrome/Safari rồi thử lại", "error");
         };
+
+        window.closeIosGuide = () =>
+            document.getElementById('ios-guide').classList.replace('flex', 'hidden');
 
         // ===== Helpers =====
         const esc = s => String(s ?? '').replace(/[&<>"']/g,
@@ -586,12 +640,12 @@
             const input = document.getElementById('setting-pass');
             const icon = document.getElementById('icon-eye-pass');
             if (window.isEditingPass) {
-                if (input.type === 'password') { 
-                    input.type = 'text'; 
-                    icon.classList.replace('fa-eye', 'fa-eye-slash'); 
-                } else { 
-                    input.type = 'password'; 
-                    icon.classList.replace('fa-eye-slash', 'fa-eye'); 
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
                 }
             }
         };
