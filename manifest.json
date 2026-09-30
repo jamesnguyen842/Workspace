@@ -1,0 +1,21 @@
+{
+  "name": "Workspace Team",
+  "short_name": "Workspace",
+  "description": "Nền tảng cộng tác trực tuyến của team",
+  "start_url": "./workspace.html",
+  "display": "standalone",
+  "background_color": "#1e293b",
+  "theme_color": "#1e293b",
+  "icons": [
+    {
+      "src": "1.JPG",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "1.JPG",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
