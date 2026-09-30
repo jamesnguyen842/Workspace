@@ -8,7 +8,7 @@
     <!-- PWA Manifest & Cập nhật thẻ Meta -->
     <link id="manifest-link" rel="manifest" href="">
     <meta name="theme-color" content="#1e293b">
-    <meta name="mobile-web-app-capable" content="yes"> <!-- Thẻ mới chuẩn -->
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Workspace">
 
@@ -129,7 +129,7 @@
 
             <div class="flex items-center gap-3">
                 <!-- Chọn người dùng để xem chéo -->
-                <div class="flex items-center gap-2 bg-slate-50 border border-gray-200 rounded-full px-3 py-1.5 shadow-inner">
+                <div class="flex items-center gap-2 bg-slate-50 border border-gray-200 rounded-full px-3 py-1.5 shadow-inner" title="Xem không gian của người khác">
                     <i class="fa-solid fa-eye text-gray-400 text-xs"></i>
                     <select id="user-filter-select" onchange="window.handleUserFilterChange()" class="bg-transparent text-sm font-semibold text-gray-700 outline-none cursor-pointer max-w-[120px] md:max-w-[200px] truncate">
                         <!-- JS render -->
@@ -141,7 +141,7 @@
                 <button onclick="window.openSettingsModal()" class="text-gray-500 hover:text-gray-800 p-1.5 rounded-md transition-colors" title="Cài đặt tài khoản">
                     <i class="fa-solid fa-gear text-lg"></i>
                 </button>
-                <button onclick="window.openConfirm('Đăng xuất khỏi thiết bị này?', window.processLogout)" class="text-gray-500 hover:text-red-600 p-1.5 rounded-md transition-colors" title="Đăng xuất">
+                <button onclick="window.openConfirm('Bạn có chắc chắn muốn đăng xuất khỏi thiết bị này?', window.processLogout)" class="text-gray-500 hover:text-red-600 p-1.5 rounded-md transition-colors" title="Đăng xuất">
                     <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
                 </button>
             </div>
@@ -376,7 +376,7 @@
             <p id="confirm-text" class="mb-6 text-gray-600 text-sm pl-1">Bạn có chắc chắn thực hiện?</p>
             <div class="flex justify-end gap-3">
                 <button onclick="window.closeConfirm()" class="px-5 py-2.5 bg-gray-100 text-gray-700 hover:bg-gray-200 font-semibold rounded-xl text-sm transition-colors">Hủy bỏ</button>
-                <button id="confirm-yes-btn" class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm">Đồng ý</button>
+                <button id="confirm-yes-btn" onclick="window.executeConfirm()" class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm">Đồng ý</button>
             </div>
         </div>
     </div>
@@ -442,7 +442,9 @@
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'collab-workspace-v2';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+        
+        // Đã sử dụng chính xác cấu hình Firebase từ notebook.html của bạn
+        const firebaseConfig = {
             apiKey: "AIzaSyBGmLt1ka6mEVFcAlKU0-q6or66jTsuep4",
             authDomain: "uyen-fdf7d.firebaseapp.com",
             projectId: "uyen-fdf7d",
@@ -455,13 +457,11 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Path Collections
         const COL_TASKS = collection(db, 'artifacts', APP_ID, 'public', 'data', 'tasks');
         const COL_DOCS = collection(db, 'artifacts', APP_ID, 'public', 'data', 'docs');
         const COL_USERS = collection(db, 'artifacts', APP_ID, 'public', 'data', 'users');
         const COL_CHAT = collection(db, 'artifacts', APP_ID, 'public', 'data', 'chats');
 
-        // State
         let currentUser = null;
         let isLoginMode = true;
         let confirmAction = null;
@@ -494,11 +494,19 @@
             modal.classList.remove('hidden'); modal.classList.add('flex');
             setTimeout(() => box.classList.remove('scale-95'), 10);
         };
+        
         window.closeConfirm = function() {
             const modal = document.getElementById('confirm-modal');
             const box = document.getElementById('confirm-modal-box');
             box.classList.add('scale-95');
             setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); confirmAction = null; }, 200);
+        };
+
+        window.executeConfirm = function() {
+            if (typeof confirmAction === 'function') {
+                confirmAction();
+            }
+            window.closeConfirm();
         };
 
         window.openSettingsModal = () => { 
@@ -585,16 +593,14 @@
 
         window.processLogout = async function() {
             await signOut(auth);
-            // Xóa triệt để cache và form autofill bằng cách reload
             window.location.reload();
         };
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
-                selectedUserId = user.uid; // Default view own data
+                selectedUserId = user.uid;
                 
-                // Giải quyết triệt để lỗi Autofill của Chrome
                 const authScreen = document.getElementById('auth-screen');
                 if (authScreen) authScreen.remove();
                 
@@ -606,7 +612,6 @@
         });
 
         function startDataListeners() {
-            // Listen Users for Select Dropdown
             onSnapshot(query(COL_USERS), snap => {
                 systemUsers = {};
                 const select = document.getElementById('user-filter-select');
@@ -625,14 +630,12 @@
                 else select.value = currentUser.uid;
             }, err => console.error(err));
 
-            // Listen All Tasks
             onSnapshot(query(COL_TASKS), snap => {
                 allTasks = [];
                 snap.forEach(d => allTasks.push({ id: d.id, ...d.data() }));
                 renderTasksAndDocs();
             }, err => console.error(err));
 
-            // Listen All Docs
             onSnapshot(query(COL_DOCS), snap => {
                 allDocs = [];
                 snap.forEach(d => allDocs.push({ id: d.id, ...d.data() }));
@@ -640,7 +643,6 @@
                 renderTasksAndDocs();
             }, err => console.error(err));
 
-            // Listen Team Chat (Independent of selectedUserId)
             onSnapshot(query(COL_CHAT, orderBy("timestamp", "asc")), snap => {
                 const container = document.getElementById('chat-messages');
                 const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
@@ -677,7 +679,6 @@
             if(isReadOnly) banner.classList.remove('hidden');
             else banner.classList.add('hidden');
             
-            // Toggle form adds
             const formDoc = document.getElementById('form-upload-container');
             if(isReadOnly) formDoc.classList.add('hidden');
             else formDoc.classList.remove('hidden');
@@ -688,7 +689,6 @@
                 else btn.classList.remove('hidden');
             });
 
-            // Toggle action columns
             const colActions = document.querySelectorAll('.col-action');
             colActions.forEach(col => {
                 if(isReadOnly) col.classList.add('hidden');
@@ -708,7 +708,6 @@
             const filteredTasks = allTasks.filter(t => t.uid === selectedUserId);
             const filteredDocs = allDocs.filter(d => d.uid === selectedUserId);
 
-            // Render Tasks
             ['day', 'week', 'month'].forEach(type => {
                 const tbody = document.getElementById(`tbody-tasks-${type}`);
                 tbody.innerHTML = '';
@@ -723,22 +722,23 @@
                         tr.className = 'hover:bg-blue-50/20 transition-colors group';
                         
                         const inputProps = isReadOnly ? 'readonly disabled' : '';
+                        const enterSaveAttr = `onkeydown="if(event.key==='Enter') this.blur()"`;
                         
                         tr.innerHTML = `
                             <td class="p-1 pl-4 border-b border-gray-50">
-                                <input type="text" class="inline-input font-medium text-gray-800" value="${task.name}" ${inputProps} onchange="window.updateTask('${task.id}', 'name', this.value)">
+                                <input type="text" class="inline-input font-medium text-gray-800" value="${task.name}" ${inputProps} onchange="window.updateTask('${task.id}', 'name', this.value)" ${enterSaveAttr}>
                             </td>
                             <td class="p-1 border-b border-gray-50">
-                                <input type="date" class="inline-input text-gray-600" value="${task.start}" ${inputProps} onchange="window.updateTask('${task.id}', 'start', this.value)">
+                                <input type="date" class="inline-input text-gray-600" value="${task.start}" ${inputProps} onchange="window.updateTask('${task.id}', 'start', this.value)" ${enterSaveAttr}>
                             </td>
                             <td class="p-1 border-b border-gray-50">
-                                <input type="date" class="inline-input text-gray-600" value="${task.end}" ${inputProps} onchange="window.updateTask('${task.id}', 'end', this.value)">
+                                <input type="date" class="inline-input text-gray-600" value="${task.end}" ${inputProps} onchange="window.updateTask('${task.id}', 'end', this.value)" ${enterSaveAttr}>
                             </td>
                             <td class="p-1 border-b border-gray-50">
-                                <input type="number" min="0" max="100" class="inline-input text-center" value="${task.progress}" ${inputProps} onchange="window.updateTask('${task.id}', 'progress', this.value)">
+                                <input type="number" min="0" max="100" class="inline-input text-center" value="${task.progress}" ${inputProps} onchange="window.updateTask('${task.id}', 'progress', this.value)" ${enterSaveAttr}>
                             </td>
                             <td class="p-1 border-b border-gray-50">
-                                <input type="text" placeholder="Tên người..." class="inline-input text-gray-600" value="${task.assignee || ''}" ${inputProps} onchange="window.updateTask('${task.id}', 'assignee', this.value)">
+                                <input type="text" placeholder="Tên người..." class="inline-input text-gray-600" value="${task.assignee || ''}" ${inputProps} onchange="window.updateTask('${task.id}', 'assignee', this.value)" ${enterSaveAttr}>
                             </td>
                             <td class="p-1 pr-4 border-b border-gray-50 text-center ${isReadOnly ? 'hidden' : ''} col-action">
                                 <button onclick="window.askDeleteTask('${task.id}')" class="text-gray-300 hover:text-red-500 p-1.5 rounded transition-colors opacity-0 group-hover:opacity-100">
@@ -752,7 +752,6 @@
                 if(document.getElementById(`content-acc-${type}`).classList.contains('block')) window.renderGantt(type, typeTasks);
             });
 
-            // Render Docs
             const projs = filteredDocs.filter(d => d.type === 'project');
             const docs = filteredDocs.filter(d => d.type === 'document');
 
@@ -791,8 +790,10 @@
             if(field === 'start' && oldT && value > oldT.end) updateObj.end = value;
             if(field === 'end' && oldT && value < oldT.start) updateObj.start = value;
 
-            try { await updateDoc(doc(COL_TASKS, id), updateObj); } 
-            catch(e) { window.showToast("Lỗi cập nhật", "error"); }
+            try { 
+                await updateDoc(doc(COL_TASKS, id), updateObj);
+                window.showToast("Đã lưu dữ liệu");
+            } catch(e) { window.showToast("Lỗi cập nhật", "error"); }
         };
 
         window.askDeleteTask = function(id) {
@@ -800,7 +801,7 @@
             window.openConfirm("Xóa công việc này khỏi kế hoạch?", async () => {
                 try {
                     await deleteDoc(doc(COL_TASKS, id));
-                    window.showToast("Đã xóa");
+                    window.showToast("Đã xóa công việc");
                 } catch(e) { window.showToast("Lỗi khi xóa", "error"); }
             });
         };
@@ -911,7 +912,7 @@
                     uploadDateStr: new Date().toLocaleDateString('vi-VN'),
                     createdAt: Date.now()
                 });
-                window.showToast("Đã lưu dữ liệu");
+                window.showToast("Đã thêm tài liệu mới");
                 e.target.reset();
             } catch(err) { window.showToast("Lỗi lưu dữ liệu", "error"); }
         };
@@ -930,6 +931,7 @@
                     const div = document.createElement('div');
                     div.className = "p-4 hover:bg-slate-50 transition-colors group relative";
                     const inputProps = isReadOnly ? 'readonly disabled' : '';
+                    const enterSaveAttr = `onkeydown="if(event.key==='Enter') this.blur()"`;
                     
                     div.innerHTML = `
                         <div class="flex justify-between items-start gap-2">
@@ -944,11 +946,11 @@
                         <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
                             <div class="bg-gray-50 border border-gray-100 rounded px-2 py-1.5">
                                 <span class="text-gray-400 block mb-0.5">Trạng thái</span>
-                                <input type="text" class="w-full bg-transparent border-none outline-none text-gray-700 p-0" value="${item.status}" ${inputProps} placeholder="Trống..." onchange="window.updateDocField('${item.id}', 'status', this.value)">
+                                <input type="text" class="w-full bg-transparent border-none outline-none text-gray-700 p-0" value="${item.status}" ${inputProps} placeholder="Trống..." onchange="window.updateDocField('${item.id}', 'status', this.value)" ${enterSaveAttr}>
                             </div>
                             <div class="bg-gray-50 border border-gray-100 rounded px-2 py-1.5">
                                 <span class="text-gray-400 block mb-0.5">Ghi chú thêm</span>
-                                <input type="text" class="w-full bg-transparent border-none outline-none text-gray-700 p-0" value="${item.notes}" ${inputProps} placeholder="Thêm ghi chú..." onchange="window.updateDocField('${item.id}', 'notes', this.value)">
+                                <input type="text" class="w-full bg-transparent border-none outline-none text-gray-700 p-0" value="${item.notes}" ${inputProps} placeholder="Thêm ghi chú..." onchange="window.updateDocField('${item.id}', 'notes', this.value)" ${enterSaveAttr}>
                             </div>
                         </div>
                         <div class="mt-2 text-[10px] text-gray-400 flex items-center justify-between">
@@ -963,8 +965,10 @@
 
         window.updateDocField = async function(id, field, val) {
             if(isReadOnly || !currentUser) return;
-            try { await updateDoc(doc(COL_DOCS, id), { [field]: val }); } 
-            catch(e) { window.showToast("Lỗi cập nhật", "error"); }
+            try { 
+                await updateDoc(doc(COL_DOCS, id), { [field]: val }); 
+                window.showToast("Đã lưu ghi chú");
+            } catch(e) { window.showToast("Lỗi cập nhật", "error"); }
         };
 
         window.askDeleteDoc = function(id) {
@@ -972,7 +976,7 @@
             window.openConfirm("Xóa dữ liệu này khỏi kho chung?", async () => {
                 try {
                     await deleteDoc(doc(COL_DOCS, id));
-                    window.showToast("Đã xóa");
+                    window.showToast("Đã xóa tài liệu");
                 } catch(e) { window.showToast("Lỗi khi xóa", "error"); }
             });
         };
