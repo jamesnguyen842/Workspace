@@ -8,6 +8,9 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Workspace">
+    
+    <!-- Liên kết tới file manifest để khai báo PWA -->
+    <link rel="manifest" href="manifest.json">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -115,7 +118,7 @@
                     <span id="btn-submit-text">Đăng Nhập</span>
                 </button>
                 
-                <!-- Nút tải PWA (Mặc định ẩn) -->
+                <!-- Nút tải PWA (Mặc định ẩn, sẽ hiện khi có sự kiện from trình duyệt) -->
                 <button type="button" id="btn-install-pwa" onclick="window.installPWA()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center gap-2 mt-2">
                     <i class="fa-solid fa-download"></i> Thêm App vào màn hình
                 </button>
@@ -167,7 +170,7 @@
                 <button onclick="window.resetUserFilter()" class="text-xs bg-amber-100 dark:bg-amber-800/50 hover:bg-amber-200 px-3 py-1 rounded font-semibold transition-colors">Về của tôi</button>
             </div>
 
-            <!-- TAB 1: KẾ HOẠCH (3 accordion được sinh bằng JS) -->
+            <!-- TAB 1: KẾ HOẠCH -->
             <div id="tab-plan" class="space-y-4 max-w-7xl mx-auto block">
                 <div class="mb-2 flex items-center justify-between">
                     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Kế hoạch & Tiến độ</h2>
@@ -349,6 +352,17 @@
             </div>
         </div>
     </div>
+
+    <!-- Đăng ký Service Worker cho PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker đăng ký thành công:', reg.scope))
+                    .catch(err => console.log('Service Worker đăng ký thất bại:', err));
+            });
+        }
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -566,7 +580,6 @@
         window.togglePassVisibility = function() {
             const input = document.getElementById('setting-pass');
             const icon = document.getElementById('icon-eye-pass');
-            // Chỉ hoạt động khi đang sửa
             if (window.isEditingPass) {
                 if (input.type === 'password') { 
                     input.type = 'text'; 
