@@ -104,10 +104,20 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
-                    <input type="password" id="auth-password" required minlength="6" autocomplete="current-password" placeholder="Tối thiểu 6 ký tự" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+                    <div class="relative">
+                        <input type="password" id="auth-password" required minlength="6" autocomplete="current-password" placeholder="Tối thiểu 6 ký tự" class="w-full px-4 py-2.5 pr-10 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+                        <button type="button" onclick="window.toggleAuthPass()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fa-solid fa-eye" id="auth-eye-icon"></i>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" id="btn-submit" class="w-full bg-dark hover:bg-darkHover text-white font-medium py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center gap-2 mt-4">
                     <span id="btn-submit-text">Đăng Nhập</span>
+                </button>
+                
+                <!-- Nút tải PWA (Mặc định ẩn) -->
+                <button type="button" id="btn-install-pwa" onclick="window.installPWA()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center gap-2 mt-2">
+                    <i class="fa-solid fa-download"></i> Thêm App vào màn hình
                 </button>
             </form>
 
@@ -160,7 +170,7 @@
             <!-- TAB 1: KẾ HOẠCH (3 accordion được sinh bằng JS) -->
             <div id="tab-plan" class="space-y-4 max-w-7xl mx-auto block">
                 <div class="mb-2 flex items-center justify-between">
-                    <h2 class="text-xl font-bold text-gray-800">Kế hoạch & Tiến độ</h2>
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Kế hoạch & Tiến độ</h2>
                 </div>
                 <div id="plan-sections" class="space-y-4"></div>
             </div>
@@ -235,14 +245,14 @@
             <i class="fa-solid fa-comment-dots text-2xl"></i>
             <span id="chat-badge" class="hidden absolute top-0 right-0 bg-red-500 w-4 h-4 rounded-full border-2 border-white"></span>
         </button>
-        <div id="chat-panel" class="hidden bg-white w-80 sm:w-96 h-[450px] max-h-[80vh] rounded-2xl shadow-2xl border border-gray-200 flex flex-col mt-4 overflow-hidden origin-bottom-right transition-all">
+        <div id="chat-panel" class="hidden bg-white dark:bg-slate-800 w-80 sm:w-96 h-[450px] max-h-[80vh] rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 flex flex-col mt-4 overflow-hidden origin-bottom-right transition-all">
             <div class="bg-dark text-white px-4 py-3 flex justify-between items-center shrink-0">
                 <div class="flex items-center gap-2"><i class="fa-solid fa-users text-sm"></i><h3 class="font-semibold text-sm">Chat Team Chung</h3></div>
                 <button onclick="window.toggleChat()" class="text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 flex flex-col"></div>
-            <form onsubmit="window.sendChat(event)" class="p-3 bg-white border-t border-gray-200 flex gap-2 shrink-0">
-                <input type="text" id="chat-input" required maxlength="1000" autocomplete="off" placeholder="Nhập tin nhắn..." class="flex-1 px-3 py-2 bg-gray-100 border-transparent rounded-full text-sm outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all text-gray-800">
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-900 flex flex-col"></div>
+            <form onsubmit="window.sendChat(event)" class="p-3 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 flex gap-2 shrink-0">
+                <input type="text" id="chat-input" required maxlength="1000" autocomplete="off" placeholder="Nhập tin nhắn..." class="flex-1 px-3 py-2 bg-gray-100 dark:bg-slate-700 dark:text-gray-100 border-transparent rounded-full text-sm outline-none focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-slate-600 transition-all text-gray-800">
                 <button type="submit" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primaryHover shrink-0 transition-colors"><i class="fa-solid fa-paper-plane text-xs"></i></button>
             </form>
         </div>
@@ -306,7 +316,7 @@
                                 <div class="flex items-center gap-2">
                                     <span id="fake-password" class="font-bold tracking-[0.2em] text-gray-800 dark:text-gray-100 mt-0.5">********</span>
                                     <input type="password" id="setting-pass" autocomplete="new-password" placeholder="Nhập mật khẩu mới..." class="hidden w-[90%] px-2 py-1.5 border border-gray-300 dark:border-slate-500 rounded text-sm bg-transparent outline-none focus:border-primary">
-                                    <button onclick="window.togglePassVisibility()" id="btn-eye-pass" class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1"><i class="fa-solid fa-eye text-xs" id="icon-eye-pass"></i></button>
+                                    <button onclick="window.togglePassVisibility()" id="btn-eye-pass" class="hidden text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1"><i class="fa-solid fa-eye text-xs" id="icon-eye-pass"></i></button>
                                 </div>
                             </div>
                             <div class="shrink-0 ml-2 self-end mb-0.5">
@@ -382,6 +392,25 @@
 
         if (isDarkMode) document.documentElement.classList.add('dark');
 
+        // ===== PWA Logic =====
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('btn-install-pwa');
+            if(btn) btn.classList.remove('hidden');
+        });
+
+        window.installPWA = async function() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                document.getElementById('btn-install-pwa').classList.add('hidden');
+            }
+            deferredPrompt = null;
+        };
+
         // ===== Helpers an toàn =====
         const esc = s => String(s ?? '').replace(/[&<>"']/g,
             c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -391,7 +420,6 @@
             catch { return '#'; }
         };
 
-        // Ngày theo giờ địa phương (YYYY-MM-DD), không dùng UTC
         const toLocalDateStr = (d = new Date()) => {
             const p = n => String(n).padStart(2, '0');
             return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
@@ -406,23 +434,23 @@
             { type: 'month', letter: 'Th', title: 'Công việc theo Tháng (Dài hạn)', hint: 'Kế hoạch dài hạn trong tháng',     color: 'emerald', open: false }
         ];
         document.getElementById('plan-sections').innerHTML = SECTIONS.map(s => `
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <button onclick="window.toggleAccordion('${s.type}')" class="w-full flex items-center justify-between px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
+                <button onclick="window.toggleAccordion('${s.type}')" class="w-full flex items-center justify-between px-5 py-4 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded bg-${s.color}-100 text-${s.color}-600 flex items-center justify-center font-bold text-sm">${s.letter}</div>
-                        <h3 class="font-semibold text-gray-800 text-left">${s.title}</h3>
+                        <div class="w-8 h-8 rounded bg-${s.color}-100 dark:bg-${s.color}-900/50 text-${s.color}-600 dark:text-${s.color}-400 flex items-center justify-center font-bold text-sm">${s.letter}</div>
+                        <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-left">${s.title}</h3>
                     </div>
                     <i id="icon-acc-${s.type}" class="fa-solid fa-chevron-down text-gray-400 transition-transform ${s.open ? 'rotate-180' : ''}"></i>
                 </button>
-                <div id="content-acc-${s.type}" class="${s.open ? 'block' : 'hidden'} border-t border-gray-200">
-                    <div class="p-4 bg-white flex justify-between items-center border-b border-gray-100">
-                        <span class="text-xs text-gray-500 italic">${s.hint}</span>
-                        <button onclick="window.addNewTask('${s.type}')" class="btn-add-action bg-dark hover:bg-darkHover text-white px-3 py-1.5 rounded text-sm font-medium transition-colors"><i class="fa-solid fa-plus mr-1"></i> Thêm task</button>
+                <div id="content-acc-${s.type}" class="${s.open ? 'block' : 'hidden'} border-t border-gray-200 dark:border-slate-700">
+                    <div class="p-4 bg-white dark:bg-slate-800 flex justify-between items-center border-b border-gray-100 dark:border-slate-700">
+                        <span class="text-xs text-gray-500 dark:text-gray-400 italic">${s.hint}</span>
+                        <button onclick="window.addNewTask('${s.type}')" class="btn-add-action bg-dark dark:bg-slate-700 hover:bg-darkHover dark:hover:bg-slate-600 text-white px-3 py-1.5 rounded text-sm font-medium transition-colors"><i class="fa-solid fa-plus mr-1"></i> Thêm task</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm whitespace-nowrap">
                             <thead>
-                                <tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider border-b border-gray-100">
+                                <tr class="bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-300 text-xs uppercase tracking-wider border-b border-gray-100 dark:border-slate-700">
                                     <th class="p-3 pl-5 font-semibold w-64">Tên công việc</th>
                                     <th class="p-3 font-semibold w-40">Bắt đầu</th>
                                     <th class="p-3 font-semibold w-40">Kết thúc</th>
@@ -431,11 +459,11 @@
                                     <th class="p-3 pr-5 font-semibold w-12 text-center col-action">Xóa</th>
                                 </tr>
                             </thead>
-                            <tbody id="tbody-tasks-${s.type}" class="divide-y divide-gray-50"></tbody>
+                            <tbody id="tbody-tasks-${s.type}" class="divide-y divide-gray-50 dark:divide-slate-700"></tbody>
                         </table>
                     </div>
-                    <div class="p-5 bg-slate-50/50 border-t border-gray-100 overflow-x-auto gantt-scroll">
-                        <div id="gantt-${s.type}" class="min-w-full relative pb-2 bg-white rounded border border-gray-200"></div>
+                    <div class="p-5 bg-slate-50/50 dark:bg-slate-900/30 border-t border-gray-100 dark:border-slate-700 overflow-x-auto gantt-scroll">
+                        <div id="gantt-${s.type}" class="min-w-full relative pb-2 bg-white dark:bg-slate-800 rounded border border-gray-200 dark:border-slate-700"></div>
                     </div>
                 </div>
             </div>`).join('');
@@ -455,7 +483,6 @@
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
         };
 
-        // Debounce toast "Đã lưu" để không bị spam khi sửa liên tục
         let savedToastTimer = null;
         function toastSavedDebounced(msg) {
             clearTimeout(savedToastTimer);
@@ -525,7 +552,9 @@
             window.isEditingPass = !window.isEditingPass;
             document.getElementById('fake-password').classList.toggle('hidden', window.isEditingPass);
             document.getElementById('setting-pass').classList.toggle('hidden', !window.isEditingPass);
-            document.getElementById('btn-eye-pass').classList.toggle('hidden', window.isEditingPass);
+            // Hiện/Ẩn nút "Mắt" theo chế độ Sửa
+            document.getElementById('btn-eye-pass').classList.toggle('hidden', !window.isEditingPass);
+            
             document.getElementById('btn-edit-pass').classList.toggle('hidden', window.isEditingPass);
             document.getElementById('btn-save-pass').classList.toggle('hidden', !window.isEditingPass);
             if (window.isEditingPass) {
@@ -533,17 +562,35 @@
                 document.getElementById('setting-pass').focus();
             }
         };
+
         window.togglePassVisibility = function() {
             const input = document.getElementById('setting-pass');
             const icon = document.getElementById('icon-eye-pass');
-            const fake = document.getElementById('fake-password');
-            if (!window.isEditingPass) {
-                fake.innerText = fake.innerText === "********" ? "••••••••" : "********";
-                return;
+            // Chỉ hoạt động khi đang sửa
+            if (window.isEditingPass) {
+                if (input.type === 'password') { 
+                    input.type = 'text'; 
+                    icon.classList.replace('fa-eye', 'fa-eye-slash'); 
+                } else { 
+                    input.type = 'password'; 
+                    icon.classList.replace('fa-eye-slash', 'fa-eye'); 
+                }
             }
-            if (input.type === 'password') { input.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); }
-            else { input.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); }
         };
+
+        // Mắt xem mật khẩu ngoài Auth
+        window.toggleAuthPass = function() {
+            const input = document.getElementById('auth-password');
+            const icon = document.getElementById('auth-eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        };
+
         window.savePass = async function() {
             const newPass = document.getElementById('setting-pass').value.trim();
             if (newPass.length < 6) return window.showToast("Mật khẩu phải từ 6 ký tự", "error");
@@ -567,7 +614,6 @@
             localStorage.setItem('workspace_noti', isNotiEnabled);
         };
 
-        // Âm báo tạo bằng WebAudio (không phụ thuộc link ngoài)
         function playBeep() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -613,7 +659,6 @@
             }
         };
 
-        // Cả 3 mục cùng dùng chevron-down + rotate-180 khi mở
         window.toggleAccordion = function(type) {
             const content = document.getElementById(`content-acc-${type}`);
             const icon = document.getElementById(`icon-acc-${type}`);
@@ -672,7 +717,6 @@
             window.location.reload();
         };
 
-        // Đảm bảo user luôn có document trong collection users (kể cả tài khoản cũ)
         async function ensureUserDoc(user) {
             try {
                 const ref = doc(COL_USERS, user.uid);
@@ -747,7 +791,6 @@
                 renderTasksAndDocs();
             }, err => console.error(err));
 
-            // Chat: chỉ lấy 100 tin mới nhất
             onSnapshot(query(COL_CHAT, orderBy("timestamp", "desc"), limit(CHAT_LIMIT)), snap => {
                 const container = document.getElementById('chat-messages');
                 const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
@@ -821,26 +864,26 @@
                     .sort((a, b) => a.start.localeCompare(b.start));
 
                 if (typeTasks.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-sm text-gray-400 italic">Chưa có công việc nào.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-sm text-gray-400 dark:text-gray-500 italic">Chưa có công việc nào.</td></tr>`;
                 } else {
                     tbody.innerHTML = typeTasks.map(task => `
-                        <tr class="hover:bg-blue-50/20 transition-colors group">
-                            <td class="p-1 pl-4 border-b border-gray-50">
-                                <input type="text" maxlength="200" class="inline-input font-medium text-gray-800" value="${esc(task.name)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'name', this.value)" ${enterSave}>
+                        <tr class="hover:bg-blue-50/20 dark:hover:bg-slate-700/50 transition-colors group">
+                            <td class="p-1 pl-4 border-b border-gray-50 dark:border-slate-700/50">
+                                <input type="text" maxlength="200" class="inline-input font-medium text-gray-800 dark:text-gray-100" value="${esc(task.name)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'name', this.value)" ${enterSave}>
                             </td>
-                            <td class="p-1 border-b border-gray-50">
-                                <input type="date" class="inline-input text-gray-600" value="${esc(task.start)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'start', this.value)" ${enterSave}>
+                            <td class="p-1 border-b border-gray-50 dark:border-slate-700/50">
+                                <input type="date" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.start)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'start', this.value)" ${enterSave}>
                             </td>
-                            <td class="p-1 border-b border-gray-50">
-                                <input type="date" class="inline-input text-gray-600" value="${esc(task.end)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'end', this.value)" ${enterSave}>
+                            <td class="p-1 border-b border-gray-50 dark:border-slate-700/50">
+                                <input type="date" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.end)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'end', this.value)" ${enterSave}>
                             </td>
-                            <td class="p-1 border-b border-gray-50">
-                                <input type="number" min="0" max="100" class="inline-input text-center" value="${esc(task.progress)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'progress', this.value)" ${enterSave}>
+                            <td class="p-1 border-b border-gray-50 dark:border-slate-700/50">
+                                <input type="number" min="0" max="100" class="inline-input text-center dark:text-gray-100" value="${esc(task.progress)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'progress', this.value)" ${enterSave}>
                             </td>
-                            <td class="p-1 border-b border-gray-50">
-                                <input type="text" maxlength="100" placeholder="Tên người..." class="inline-input text-gray-600" value="${esc(task.assignee || '')}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'assignee', this.value)" ${enterSave}>
+                            <td class="p-1 border-b border-gray-50 dark:border-slate-700/50">
+                                <input type="text" maxlength="100" placeholder="Tên người..." class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.assignee || '')}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'assignee', this.value)" ${enterSave}>
                             </td>
-                            <td class="p-1 pr-4 border-b border-gray-50 text-center ${isReadOnly ? 'hidden' : ''} col-action">
+                            <td class="p-1 pr-4 border-b border-gray-50 dark:border-slate-700/50 text-center ${isReadOnly ? 'hidden' : ''} col-action">
                                 <button onclick="window.askDeleteTask('${esc(task.id)}')" class="text-gray-300 hover:text-red-500 p-1.5 rounded transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
                                     <i class="fa-regular fa-trash-can"></i>
                                 </button>
@@ -888,7 +931,7 @@
             if (field === 'progress') updateObj.progress = Math.max(0, Math.min(100, parseInt(value) || 0));
 
             if (field === 'start' || field === 'end') {
-                if (!isValidDateStr(value)) {           // chặn ngày rỗng/không hợp lệ
+                if (!isValidDateStr(value)) {
                     window.showToast("Ngày không hợp lệ", "error");
                     renderTasksAndDocs(true);
                     return;
