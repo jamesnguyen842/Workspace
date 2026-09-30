@@ -9,13 +9,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Workspace">
     
-    <!-- Liên kết tới file manifest để khai báo PWA -->
+    <!-- Khai báo PWA -->
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="1.JPG">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CDN: chỉ phù hợp thử nghiệm. Khi chạy thật nên build CSS bằng Tailwind CLI. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -89,8 +89,9 @@
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
             <div class="text-center mb-8 mt-2">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-primary mb-4 border border-blue-100 shadow-sm">
-                    <i class="fa-solid fa-shapes text-3xl"></i>
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-primary mb-4 border border-blue-100 shadow-sm overflow-hidden">
+                    <img src="1.JPG" alt="Logo" class="w-full h-full object-cover" onerror="this.remove(); document.getElementById('default-icon').classList.remove('hidden');">
+                    <i id="default-icon" class="fa-solid fa-shapes text-3xl hidden"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-gray-800" id="auth-title">Đăng Nhập Workspace</h1>
                 <p class="text-sm text-gray-500 mt-2">Nền tảng cộng tác trực tuyến của team</p>
@@ -118,9 +119,9 @@
                     <span id="btn-submit-text">Đăng Nhập</span>
                 </button>
                 
-                <!-- Nút tải PWA (Mặc định ẩn, sẽ hiện khi có sự kiện from trình duyệt) -->
-                <button type="button" id="btn-install-pwa" onclick="window.installPWA()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center gap-2 mt-2">
-                    <i class="fa-solid fa-download"></i> Thêm App vào màn hình
+                <!-- Nút Tải / Cài ứng dụng PWA -->
+                <button type="button" id="btn-install-pwa" onclick="window.installPWA()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg shadow transition-all flex justify-center items-center gap-2 text-sm mt-3">
+                    <i class="fa-solid fa-mobile-screen-button"></i> <span id="pwa-btn-text">Thêm ứng dụng vào Màn hình</span>
                 </button>
             </form>
 
@@ -136,7 +137,9 @@
         <header class="bg-white border-b border-gray-200 px-4 py-3 sm:px-6 flex items-center justify-between shrink-0 shadow-sm z-20 transition-colors">
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2">
-                    <div class="bg-dark text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm"><i class="fa-solid fa-shapes text-sm"></i></div>
+                    <div class="bg-dark text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm overflow-hidden">
+                        <img src="1.JPG" alt="Logo" class="w-full h-full object-cover" onerror="this.remove();">
+                    </div>
                     <h1 class="text-base font-bold text-gray-900 hidden md:block">Workspace</h1>
                 </div>
                 <nav class="flex gap-1 sm:gap-2 bg-slate-100 p-1 rounded-lg">
@@ -358,8 +361,8 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker đăng ký thành công:', reg.scope))
-                    .catch(err => console.log('Service Worker đăng ký thất bại:', err));
+                    .then(reg => console.log('SW Registered:', reg.scope))
+                    .catch(err => console.log('SW Fail:', err));
             });
         }
     </script>
@@ -406,26 +409,30 @@
 
         if (isDarkMode) document.documentElement.classList.add('dark');
 
-        // ===== PWA Logic =====
-        let deferredPrompt;
+        // ===== PWA Logic Cải Tiến =====
+        let deferredPrompt = null;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            const btn = document.getElementById('btn-install-pwa');
-            if(btn) btn.classList.remove('hidden');
+            const btnText = document.getElementById('pwa-btn-text');
+            if(btnText) btnText.innerText = "Tải App về Màn Hình";
         });
 
         window.installPWA = async function() {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                document.getElementById('btn-install-pwa').classList.add('hidden');
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    window.showToast("Đã tải ứng dụng!");
+                }
+                deferredPrompt = null;
+            } else {
+                // Hướng dẫn nếu trình duyệt không tự hiện prompt (như iOS Safari / Chrome Mobile)
+                alert("Để ghim ứng dụng ra màn hình:\n\n1. Bấm nút Chia sẻ (Safari) hoặc dấu 3 chấm (Chrome).\n2. Chọn 'Thêm vào màn hình chính' (Add to Home Screen).");
             }
-            deferredPrompt = null;
         };
 
-        // ===== Helpers an toàn =====
+        // ===== Helpers =====
         const esc = s => String(s ?? '').replace(/[&<>"']/g,
             c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -566,9 +573,7 @@
             window.isEditingPass = !window.isEditingPass;
             document.getElementById('fake-password').classList.toggle('hidden', window.isEditingPass);
             document.getElementById('setting-pass').classList.toggle('hidden', !window.isEditingPass);
-            // Hiện/Ẩn nút "Mắt" theo chế độ Sửa
             document.getElementById('btn-eye-pass').classList.toggle('hidden', !window.isEditingPass);
-            
             document.getElementById('btn-edit-pass').classList.toggle('hidden', window.isEditingPass);
             document.getElementById('btn-save-pass').classList.toggle('hidden', !window.isEditingPass);
             if (window.isEditingPass) {
@@ -591,7 +596,6 @@
             }
         };
 
-        // Mắt xem mật khẩu ngoài Auth
         window.toggleAuthPass = function() {
             const input = document.getElementById('auth-password');
             const icon = document.getElementById('auth-eye-icon');
