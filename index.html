@@ -1146,34 +1146,66 @@
             });
         };
 
-        window.renderGantt = function(type, passedTasks) {
+       window.renderGantt = function(type, passedTasks) {
             const container = document.getElementById(`gantt-${type}`); if (!container) return; container.innerHTML = '';
             const tList = (passedTasks || allTasks.filter(t => t.type === type && t.uid === selectedUserId && !t.isCompleted)).filter(t => isValidDateStr(t.start) && isValidDateStr(t.end)).slice().sort((a, b) => a.start.localeCompare(b.start));
 
-            if (tList.length === 0) { container.style.width = ''; container.innerHTML = '<div class="p-4 text-center text-xs text-gray-400">Không có dữ liệu vẽ sơ đồ.</div>'; return; }
+            if (tList.length === 0) { 
+                container.style.width = ''; 
+                container.style.minWidth = ''; // Reset min-width
+                container.innerHTML = '<div class="p-4 text-center text-xs text-gray-400">Không có dữ liệu vẽ sơ đồ.</div>'; 
+                return; 
+            }
 
             let minD = parseDate(tList[0].start), maxD = parseDate(tList[0].end);
             tList.forEach(t => { const s = parseDate(t.start), e = parseDate(t.end); if (s < minD) minD = s; if (e > maxD) maxD = e; });
             minD.setDate(minD.getDate() - 2); maxD.setDate(maxD.getDate() + 4);
 
-            const DAY_WIDTH = type === 'month' ? 30 : 50; const msPerDay = 24 * 60 * 60 * 1000; const totalDays = Math.round((maxD - minD) / msPerDay) + 1;
-            container.style.width = `${totalDays * DAY_WIDTH}px`;
+            const DAY_WIDTH = type === 'month' ? 30 : 50; 
+            const msPerDay = 24 * 60 * 60 * 1000; 
+            const totalDays = Math.round((maxD - minD) / msPerDay) + 1;
+            
+            // --- ĐIỂM THAY ĐỔI 1: Dùng 100% width để tự động giãn đầy khung ---
+            container.style.width = '100%';
+            container.style.minWidth = `${totalDays * DAY_WIDTH}px`;
 
-            const grid = document.createElement('div'); grid.className = 'gantt-grid'; grid.style.gridTemplateColumns = `repeat(${totalDays}, ${DAY_WIDTH}px)`;
+            const grid = document.createElement('div'); grid.className = 'gantt-grid'; 
+            
+            // --- ĐIỂM THAY ĐỔI 2: Dùng 1fr để các cột tự chia đều khoảng trống ---
+            grid.style.gridTemplateColumns = `repeat(${totalDays}, 1fr)`; 
+            
             const todayStr = new Date().toDateString();
 
             for (let i = 0; i < totalDays; i++) {
-                const cD = new Date(minD.getFullYear(), minD.getMonth(), minD.getDate() + i); const cell = document.createElement('div'); cell.className = 'gantt-header-cell'; cell.innerText = `${cD.getDate()}/${cD.getMonth() + 1}`;
+                const cD = new Date(minD.getFullYear(), minD.getMonth(), minD.getDate() + i); 
+                const cell = document.createElement('div'); cell.className = 'gantt-header-cell'; 
+                cell.innerText = `${cD.getDate()}/${cD.getMonth() + 1}`;
                 if (cD.toDateString() === todayStr) { cell.style.backgroundColor = isDarkMode ? '#334155' : '#fef3c7'; cell.style.color = isDarkMode ? '#60a5fa' : '#d97706'; }
                 grid.appendChild(cell);
             }
-            for (let r = 0; r < tList.length; r++) { for (let c = 0; c < totalDays; c++) { const cell = document.createElement('div'); cell.className = 'gantt-cell'; if (r % 2 === 1) cell.style.backgroundColor = isDarkMode ? '#1e293b' : '#f8fafc'; grid.appendChild(cell); } }
+            for (let r = 0; r < tList.length; r++) { 
+                for (let c = 0; c < totalDays; c++) { 
+                    const cell = document.createElement('div'); cell.className = 'gantt-cell'; 
+                    if (r % 2 === 1) cell.style.backgroundColor = isDarkMode ? '#1e293b' : '#f8fafc'; 
+                    grid.appendChild(cell); 
+                } 
+            }
 
             tList.forEach((task, idx) => {
-                const sOffset = Math.round((parseDate(task.start) - minD) / msPerDay); const dur = Math.round((parseDate(task.end) - parseDate(task.start)) / msPerDay) + 1; const progress = Math.max(0, Math.min(100, Number(task.progress) || 0));
-                const wrapper = document.createElement('div'); wrapper.className = 'gantt-bar-wrapper'; wrapper.style.left = `${sOffset * DAY_WIDTH}px`; wrapper.style.top = `${36 + (idx * 36)}px`; wrapper.style.width = `${dur * DAY_WIDTH - 2}px`;
+                const sOffset = Math.round((parseDate(task.start) - minD) / msPerDay); 
+                const dur = Math.round((parseDate(task.end) - parseDate(task.start)) / msPerDay) + 1; 
+                const progress = Math.max(0, Math.min(100, Number(task.progress) || 0));
+                
+                const wrapper = document.createElement('div'); wrapper.className = 'gantt-bar-wrapper'; 
+                
+                // --- ĐIỂM THAY ĐỔI 3: Dùng Tỷ lệ % thay vì Pixel cứng để thanh Bar bám dính cột ---
+                wrapper.style.left = `${(sOffset / totalDays) * 100}%`; 
+                wrapper.style.top = `${36 + (idx * 36)}px`; 
+                wrapper.style.width = `calc(${(dur / totalDays) * 100}% - 2px)`;
+                
                 wrapper.innerHTML = `<div class="gantt-bar-bg ${type === 'week' ? 'bg-indigo-200 dark:bg-indigo-900/50' : type === 'month' ? 'bg-emerald-200 dark:bg-emerald-900/50' : ''}"></div><div class="gantt-bar-progress ${type === 'week' ? 'bg-indigo-500' : type === 'month' ? 'bg-emerald-500' : ''}" style="width: ${progress}%;"></div><div class="gantt-bar-label truncate w-full pr-1 ${progress > 50 ? 'text-white' : 'dark:text-gray-100'}">${esc(task.name)}</div>`;
-                wrapper.title = `${task.name}\n${task.start} -> ${task.end}\nTiến độ: ${progress}%`; container.appendChild(wrapper);
+                wrapper.title = `${task.name}\n${task.start} -> ${task.end}\nTiến độ: ${progress}%`; 
+                container.appendChild(wrapper);
             });
             container.appendChild(grid);
         };
