@@ -14,7 +14,6 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="1.PNG">
 
-    <!-- Bắt sự kiện cài đặt PWA SỚM (script thường, không phải module) -->
     <script>
         window.__deferredPrompt = null;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -137,7 +136,6 @@
                     <span id="btn-submit-text">Đăng Nhập</span>
                 </button>
 
-                <!-- Nút cài ứng dụng PWA -->
                 <button type="button" onclick="window.installPWA()" class="pwa-install-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg shadow transition-all flex justify-center items-center gap-2 text-sm mt-3">
                     <i class="fa-solid fa-mobile-screen-button"></i> <span class="pwa-btn-text">Thêm ứng dụng vào Màn hình</span>
                 </button>
@@ -152,28 +150,31 @@
 
     <!-- Main App -->
     <div id="main-app" class="hidden h-full flex flex-col">
-        <header class="bg-white border-b border-gray-200 px-4 py-3 sm:px-6 flex items-center justify-between shrink-0 shadow-sm z-20 transition-colors">
-            <div class="flex items-center gap-4">
+        <header class="bg-white border-b border-gray-200 px-4 py-3 sm:px-6 flex items-center justify-between shrink-0 shadow-sm z-20 transition-colors overflow-x-auto">
+            <div class="flex items-center gap-4 shrink-0">
                 <div class="flex items-center gap-2">
                     <div class="bg-dark text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm overflow-hidden">
                         <img src="1.PNG" alt="Logo" class="w-full h-full object-cover" onerror="this.remove();">
                     </div>
-                    <h1 class="text-base font-bold text-gray-900 hidden md:block">Workspace</h1>
+                    <h1 class="text-base font-bold text-gray-900 hidden lg:block">Workspace</h1>
                 </div>
-                <nav class="flex gap-1 sm:gap-2 bg-slate-100 p-1 rounded-lg">
-                    <button onclick="window.switchTab('plan')" id="tab-btn-plan" class="px-3 sm:px-4 py-1.5 rounded-md font-medium text-sm transition-all bg-white shadow-sm text-primary">
+                <nav class="flex gap-1 sm:gap-2 bg-slate-100 p-1 rounded-lg shrink-0">
+                    <button onclick="window.switchTab('plan')" id="tab-btn-plan" class="px-3 py-1.5 rounded-md font-medium text-sm transition-all bg-white shadow-sm text-primary">
                         <i class="fa-solid fa-list-check mr-1.5"></i> <span class="hidden sm:inline">Kế hoạch</span>
                     </button>
-                    <button onclick="window.switchTab('data')" id="tab-btn-data" class="px-3 sm:px-4 py-1.5 rounded-md font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
+                    <button onclick="window.switchTab('data')" id="tab-btn-data" class="px-3 py-1.5 rounded-md font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
                         <i class="fa-solid fa-folder-tree mr-1.5"></i> <span class="hidden sm:inline">Dữ liệu</span>
                     </button>
-                    <button onclick="window.switchTab('permissions')" id="tab-btn-permissions" class="hidden px-3 sm:px-4 py-1.5 rounded-md font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
+                    <button onclick="window.switchTab('assign')" id="tab-btn-assign" class="hidden px-3 py-1.5 rounded-md font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
+                        <i class="fa-solid fa-paper-plane mr-1.5"></i> <span class="hidden sm:inline">Giao việc</span>
+                    </button>
+                    <button onclick="window.switchTab('permissions')" id="tab-btn-permissions" class="hidden px-3 py-1.5 rounded-md font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
                         <i class="fa-solid fa-shield-halved mr-1.5"></i> <span class="hidden sm:inline">Phân quyền</span>
                     </button>
                 </nav>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 shrink-0 ml-4">
                 <div class="flex items-center gap-2 bg-slate-50 border border-gray-200 rounded-full px-3 py-1.5 shadow-inner" title="Xem không gian của người khác">
                     <i class="fa-solid fa-eye text-gray-400 text-xs"></i>
                     <select id="user-filter-select" onchange="window.handleUserFilterChange()" class="bg-transparent text-sm font-semibold text-gray-700 outline-none cursor-pointer max-w-[120px] md:max-w-[200px] truncate"></select>
@@ -182,7 +183,7 @@
                 <button onclick="window.openSettingsModal()" class="text-gray-500 hover:text-gray-800 p-1.5 rounded-md transition-colors" title="Cài đặt hệ thống">
                     <i class="fa-solid fa-gear text-lg"></i>
                 </button>
-                <button onclick="window.openConfirm('Bạn có chắc chắn muốn đăng xuất khỏi thiết bị này?', window.processLogout)" class="text-gray-500 hover:text-red-600 p-1.5 rounded-md transition-colors" title="Đăng xuất">
+                <button onclick="window.openConfirm('Bạn có chắc chắn muốn đăng xuất khỏi thiết bị này?', window.processLogout, 'Đăng xuất', 'Hủy bỏ', null, true)" class="text-gray-500 hover:text-red-600 p-1.5 rounded-md transition-colors" title="Đăng xuất">
                     <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
                 </button>
             </div>
@@ -200,7 +201,6 @@
                     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Kế hoạch & Tiến độ</h2>
                 </div>
                 <div id="plan-sections" class="space-y-4"></div>
-                <!-- Thông báo khóa quyền -->
                 <div id="plan-locked-msg" class="hidden max-w-2xl mx-auto mt-10 p-8 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-gray-300 dark:border-slate-700 text-center">
                     <div class="w-16 h-16 bg-gray-100 dark:bg-slate-700 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-lock text-2xl"></i></div>
                     <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">Khu vực bị khóa</h3>
@@ -269,7 +269,6 @@
                     </div>
                 </div>
 
-                <!-- Thông báo khóa quyền Data -->
                 <div id="data-locked-msg" class="hidden max-w-2xl mx-auto mt-10 p-8 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-gray-300 dark:border-slate-700 text-center">
                     <div class="w-16 h-16 bg-gray-100 dark:bg-slate-700 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-shield-halved text-2xl"></i></div>
                     <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">Khu vực bị khóa</h3>
@@ -277,28 +276,67 @@
                 </div>
             </div>
 
-            <!-- TAB 3: PHÂN QUYỀN (CHỈ DÀNH CHO TEST@GMAIL.COM) -->
+            <!-- TAB 3: PHÂN QUYỀN -->
             <div id="tab-permissions" class="hidden space-y-4 max-w-3xl mx-auto block pb-10">
                 <div class="mb-4 flex items-center justify-between">
                     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Bảng Quản Trị Phân Quyền</h2>
                 </div>
                 <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
-                    <p class="text-sm text-gray-500 mb-6">Cấp quyền truy cập "Kế hoạch" và "Dữ liệu" của các thành viên khác cho một người dùng cụ thể. Mặc định là cho phép tất cả nếu chưa thiết lập.</p>
-                    
+                    <p class="text-sm text-gray-500 mb-6">Cấp quyền truy cập "Kế hoạch" và "Dữ liệu" của các thành viên khác cho một người dùng cụ thể.</p>
                     <div class="mb-6">
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">1. Chọn thành viên (Người sẽ được cấp/rút quyền):</label>
-                        <select id="perm-viewer-select" onchange="window.renderPermissionsList()" class="w-full sm:w-1/2 px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
-                            <!-- JS fill -->
-                        </select>
+                        <select id="perm-viewer-select" onchange="window.renderPermissionsList()" class="w-full sm:w-1/2 px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100"></select>
                     </div>
-
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">2. Cấu hình không gian mà người này được phép xem:</label>
-                        <div id="perm-list-container" class="border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden divide-y divide-gray-100 dark:divide-slate-700">
-                            <!-- JS fill -->
-                            <div class="p-4 text-center text-sm text-gray-500">Vui lòng chọn thành viên ở trên.</div>
-                        </div>
+                        <div id="perm-list-container" class="border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden divide-y divide-gray-100 dark:divide-slate-700"></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: GIAO VIỆC -->
+            <div id="tab-assign" class="hidden space-y-4 max-w-3xl mx-auto pb-10">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Giao Việc Cho Thành Viên</h2>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
+                    <form id="assign-form" onsubmit="window.submitAssignTask(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">1. Chọn người nhận việc <span class="text-red-500">*</span></label>
+                            <select id="assign-target" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100"></select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">2. Loại kế hoạch <span class="text-red-500">*</span></label>
+                            <select id="assign-type" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
+                                <option value="day">Kế hoạch Ngày</option>
+                                <option value="week">Kế hoạch Tuần</option>
+                                <option value="month">Kế hoạch Tháng</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">3. Tên công việc <span class="text-red-500">*</span></label>
+                            <input type="text" id="assign-name" required maxlength="200" placeholder="Ví dụ: Thiết kế giao diện trang chủ..." class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">4. Ngày bắt đầu <span class="text-red-500">*</span></label>
+                                <input type="date" id="assign-start" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">5. Ngày kết thúc <span class="text-red-500">*</span></label>
+                                <input type="date" id="assign-end" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">6. Link tài liệu đính kèm (Tùy chọn)</label>
+                            <input type="url" id="assign-link" placeholder="https://..." class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
+                        </div>
+                        <div class="pt-2">
+                            <button type="submit" class="w-full bg-primary hover:bg-primaryHover text-white font-medium py-3 rounded-lg shadow transition-colors flex justify-center items-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i> Giao việc ngay
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </main>
@@ -318,7 +356,6 @@
             
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-900 flex flex-col relative z-0"></div>
             
-            <!-- Mention Popup Gợi ý tên -->
             <div id="mention-popup" class="hidden absolute bottom-[60px] left-2 right-2 bg-white dark:bg-slate-800 shadow-lg border border-gray-200 dark:border-slate-600 rounded-lg overflow-hidden z-50">
                 <ul id="mention-list" class="max-h-40 overflow-y-auto text-sm"></ul>
             </div>
@@ -330,7 +367,7 @@
         </div>
     </div>
 
-    <!-- Popup thông báo chat -->
+    <!-- Popups, Toasts, Settings, Confirm -->
     <div id="noti-popup" class="fixed top-5 right-5 z-[10000] bg-white dark:bg-slate-800 shadow-2xl rounded-xl border border-gray-100 dark:border-slate-700 p-3 transform transition-all duration-300 translate-x-[120%] opacity-0 flex items-center gap-3 w-72 pointer-events-none">
         <div id="noti-avatar" class="w-10 h-10 rounded-full bg-primary text-white flex justify-center items-center font-bold shadow-sm shrink-0 uppercase"></div>
         <div class="flex-1 min-w-0">
@@ -341,22 +378,21 @@
 
     <div id="toast-container"></div>
 
-    <!-- Confirm Modal -->
+    <!-- Hộp thoại xác nhận dùng chung / Popup 100% -->
     <div id="confirm-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center z-[9999] modal-overlay transition-opacity">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl w-[90%] max-w-sm transform scale-95 transition-transform" id="confirm-modal-box">
-            <div class="flex items-center gap-3 text-red-500 mb-3">
-                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation text-xl"></i></div>
-                <h3 class="text-lg font-bold text-gray-800">Xác nhận</h3>
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-2xl w-[90%] max-w-sm transform scale-95 transition-transform" id="confirm-modal-box">
+            <div class="flex items-center gap-3 mb-4">
+                <div id="confirm-icon-box" class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0 text-red-500"><i id="confirm-icon" class="fa-solid fa-triangle-exclamation text-xl"></i></div>
+                <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100" id="confirm-title">Xác nhận</h3>
             </div>
-            <p id="confirm-text" class="mb-6 text-gray-600 text-sm pl-1">Bạn có chắc chắn thực hiện?</p>
+            <p id="confirm-text" class="mb-6 text-gray-600 dark:text-gray-300 text-sm pl-1 leading-relaxed">Bạn có chắc chắn thực hiện?</p>
             <div class="flex justify-end gap-3">
-                <button onclick="window.closeConfirm()" class="px-5 py-2.5 bg-gray-100 text-gray-700 hover:bg-gray-200 font-semibold rounded-xl text-sm transition-colors">Hủy bỏ</button>
+                <button id="confirm-no-btn" onclick="window.closeConfirm(true)" class="px-5 py-2.5 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600 font-semibold rounded-xl text-sm transition-colors">Hủy bỏ</button>
                 <button id="confirm-yes-btn" onclick="window.executeConfirm()" class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm">Đồng ý</button>
             </div>
         </div>
     </div>
 
-    <!-- Hướng dẫn cài đặt trên iOS -->
     <div id="ios-guide" class="fixed inset-0 bg-slate-900/50 hidden items-end sm:items-center justify-center z-[10001] modal-overlay" onclick="window.closeIosGuide()">
         <div class="bg-white p-6 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-sm shadow-2xl" onclick="event.stopPropagation()">
             <h3 class="font-bold text-gray-800 mb-3">Thêm vào Màn hình chính</h3>
@@ -365,12 +401,10 @@
                 <li>2. Kéo xuống, chọn <b>Thêm vào MH chính</b> <i class="fa-regular fa-square-plus text-primary"></i></li>
                 <li>3. Bấm <b>Thêm</b> ở góc trên phải</li>
             </ol>
-            <p class="text-xs text-gray-400 mt-3">Lưu ý: phải mở bằng Safari, không phải trình duyệt trong Zalo/Facebook.</p>
             <button onclick="window.closeIosGuide()" class="w-full mt-4 bg-dark text-white py-2.5 rounded-lg text-sm font-medium">Đã hiểu</button>
         </div>
     </div>
 
-    <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center z-[500] modal-overlay">
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-[90%] max-w-md overflow-hidden flex flex-col transition-colors border border-gray-100 dark:border-slate-700">
             <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 transition-colors">
@@ -426,14 +460,13 @@
                         <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-700">
                             <div>
                                 <span class="text-sm font-medium text-gray-700 dark:text-gray-200 block">Thông báo Chat (Popup)</span>
-                                <span class="text-[10px] text-gray-400">Hiển thị popup khi có tin nhắn tới</span>
+                                <span class="text-[10px] text-gray-400">Hiển thị popup</span>
                             </div>
                             <input type="checkbox" id="noti-toggle" onchange="window.toggleNotiSetting(this.checked)" class="toggle-checkbox" checked>
                         </div>
                     </div>
                 </details>
 
-                <!-- Cài đặt ứng dụng (PWA) -->
                 <div class="pwa-install-section">
                     <button type="button" onclick="window.installPWA()" class="pwa-install-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg shadow transition-all flex justify-center items-center gap-2 text-sm">
                         <i class="fa-solid fa-mobile-screen-button"></i> <span class="pwa-btn-text">Thêm ứng dụng vào Màn hình</span>
@@ -443,7 +476,6 @@
         </div>
     </div>
 
-    <!-- Đăng ký Service Worker cho PWA -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -477,20 +509,24 @@
         const COL_DOCS = collection(db, 'artifacts', APP_ID, 'public', 'data', 'docs');
         const COL_USERS = collection(db, 'artifacts', APP_ID, 'public', 'data', 'users');
         const COL_CHAT = collection(db, 'artifacts', APP_ID, 'public', 'data', 'chats');
-        const COL_PERMISSIONS = collection(db, 'artifacts', APP_ID, 'public', 'data', 'permissions'); // Collection phân quyền
+        const COL_PERMISSIONS = collection(db, 'artifacts', APP_ID, 'public', 'data', 'permissions');
+
         const CHAT_LIMIT = 100;
 
         let currentUser = null;
         let isLoginMode = true;
         let confirmAction = null;
+        let cancelAction = null;
         let selectedUserId = null;
         let isReadOnly = false;
         let listenersStarted = false;
+        let isConfirming = false;
 
         let allTasks = [];
         let allDocs = [];
         let systemUsers = {};
-        let systemPermissions = {}; // Lưu trữ dữ liệu phân quyền
+        let systemPermissions = {};
+        let activePlanSubTab = { day: 'ongoing', week: 'ongoing', month: 'ongoing' }; // Quản lý trạng thái tab con
 
         let isNotiEnabled = localStorage.getItem('workspace_noti') !== 'false';
         let isDarkMode = localStorage.getItem('workspace_dark_mode') === 'true';
@@ -498,69 +534,40 @@
 
         if (isDarkMode) document.documentElement.classList.add('dark');
 
-        // ===== PWA =====
-        const isStandalone = () =>
-            window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
-            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
+        const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         const pwaButtons = () => document.querySelectorAll('.pwa-install-btn');
         const setPwaText = (txt) => document.querySelectorAll('.pwa-btn-text').forEach(el => el.innerText = txt);
 
-        if (isStandalone()) {
-            pwaButtons().forEach(b => b.classList.add('hidden'));
-        }
-
+        if (isStandalone()) pwaButtons().forEach(b => b.classList.add('hidden'));
         if (window.__deferredPrompt) setPwaText("Cài ứng dụng ngay");
+        
         document.addEventListener('pwa-ready', () => setPwaText("Cài ứng dụng ngay"));
-        document.addEventListener('pwa-installed', () => {
-            pwaButtons().forEach(b => b.classList.add('hidden'));
-            window.showToast("Đã thêm ứng dụng vào màn hình!");
-        });
+        document.addEventListener('pwa-installed', () => { pwaButtons().forEach(b => b.classList.add('hidden')); window.showToast("Đã thêm ứng dụng vào màn hình!"); });
 
         window.installPWA = async function () {
             const p = window.__deferredPrompt;
-            if (p) {
-                p.prompt();
-                const { outcome } = await p.userChoice;
-                window.__deferredPrompt = null;
-                if (outcome === 'accepted') window.showToast("Đang cài đặt ứng dụng...");
-                return;
-            }
-            if (isIOS) {
-                document.getElementById('ios-guide').classList.replace('hidden', 'flex');
-                return;
-            }
+            if (p) { p.prompt(); const { outcome } = await p.userChoice; window.__deferredPrompt = null; if (outcome === 'accepted') window.showToast("Đang cài đặt ứng dụng..."); return; }
+            if (isIOS) { document.getElementById('ios-guide').classList.replace('hidden', 'flex'); return; }
             window.showToast("Hãy mở trang này bằng Chrome/Safari rồi thử lại", "error");
         };
 
-        window.closeIosGuide = () =>
-            document.getElementById('ios-guide').classList.replace('flex', 'hidden');
+        window.closeIosGuide = () => document.getElementById('ios-guide').classList.replace('flex', 'hidden');
 
-        // ===== Helpers =====
-        const esc = s => String(s ?? '').replace(/[&<>"']/g,
-            c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-        
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         const escapeRegex = string => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-        const safeUrl = u => {
-            try { const x = new URL(u); return ['http:', 'https:'].includes(x.protocol) ? x.href : '#'; }
-            catch { return '#'; }
-        };
-
-        const toLocalDateStr = (d = new Date()) => {
-            const p = n => String(n).padStart(2, '0');
-            return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
-        };
+        const safeUrl = u => { try { const x = new URL(u); return ['http:', 'https:'].includes(x.protocol) ? x.href : '#'; } catch { return '#'; } };
+        const toLocalDateStr = (d = new Date()) => { const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; };
         const isValidDateStr = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '');
         function parseDate(dateStr) { const [y, m, d] = dateStr.split('-'); return new Date(y, m - 1, d); }
 
-        // ===== Sinh giao diện 3 accordion Kế hoạch =====
         const SECTIONS = [
-            { type: 'day',   letter: 'N',  title: 'Công việc theo Ngày',            hint: 'Cập nhật tiến độ theo từng ngày', color: 'blue',    open: true },
-            { type: 'week',  letter: 'T',  title: 'Công việc theo Tuần',            hint: 'Mục tiêu và công việc tuần',       color: 'indigo',  open: false },
-            { type: 'month', letter: 'Th', title: 'Công việc theo Tháng (Dài hạn)', hint: 'Kế hoạch dài hạn trong tháng',      color: 'emerald', open: false }
+            // Thay đổi open: false để mặc định cuộn lại
+            { type: 'day',   letter: 'N',  title: 'Công việc theo Ngày',     hint: 'Cập nhật tiến độ theo từng ngày', color: 'blue',    open: false },
+            { type: 'week',  letter: 'T',  title: 'Công việc theo Tuần',     hint: 'Mục tiêu và công việc tuần',      color: 'indigo',  open: false },
+            { type: 'month', letter: 'Th', title: 'Công việc theo Tháng',    hint: 'Kế hoạch dài hạn trong tháng',    color: 'emerald', open: false }
         ];
+        
         document.getElementById('plan-sections').innerHTML = SECTIONS.map(s => `
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
                 <button onclick="window.toggleAccordion('${s.type}')" class="w-full flex items-center justify-between px-5 py-4 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
@@ -571,17 +578,20 @@
                     <i id="icon-acc-${s.type}" class="fa-solid fa-chevron-down text-gray-400 transition-transform ${s.open ? 'rotate-180' : ''}"></i>
                 </button>
                 <div id="content-acc-${s.type}" class="${s.open ? 'block' : 'hidden'} border-t border-gray-200 dark:border-slate-700">
-                    <div class="p-4 bg-white dark:bg-slate-800 flex justify-between items-center border-b border-gray-100 dark:border-slate-700">
-                        <span class="text-xs text-gray-500 dark:text-gray-400 italic">${s.hint}</span>
-                        <button onclick="window.addNewTask('${s.type}')" class="btn-add-action bg-dark dark:bg-slate-700 hover:bg-darkHover dark:hover:bg-slate-600 text-white px-3 py-1.5 rounded text-sm font-medium transition-colors"><i class="fa-solid fa-plus mr-1"></i> Thêm task</button>
+                    <div class="p-4 bg-white dark:bg-slate-800 flex justify-between items-center border-b border-gray-100 dark:border-slate-700 flex-wrap gap-3">
+                        <div class="flex gap-1 bg-slate-100 dark:bg-slate-700 p-1 rounded-md shrink-0">
+                            <button id="subtab-${s.type}-ongoing" onclick="window.switchPlanSubTab('${s.type}', 'ongoing')" class="px-3 py-1.5 rounded text-sm font-medium bg-white dark:bg-slate-600 text-primary dark:text-blue-400 shadow-sm transition-all">Đang làm</button>
+                            <button id="subtab-${s.type}-completed" onclick="window.switchPlanSubTab('${s.type}', 'completed')" class="px-3 py-1.5 rounded text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">Đã hoàn thành</button>
+                        </div>
+                        <button onclick="window.addNewTask('${s.type}')" class="btn-add-action bg-dark dark:bg-slate-700 hover:bg-darkHover dark:hover:bg-slate-600 text-white px-3 py-1.5 rounded text-sm font-medium transition-colors shrink-0"><i class="fa-solid fa-plus mr-1"></i> Thêm task</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm whitespace-nowrap">
                             <thead>
                                 <tr class="bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-300 text-xs uppercase tracking-wider border-b border-gray-100 dark:border-slate-700">
-                                    <th class="p-3 pl-5 font-semibold w-64">Tên công việc</th>
-                                    <th class="p-3 font-semibold w-40">Bắt đầu</th>
-                                    <th class="p-3 font-semibold w-40">Kết thúc</th>
+                                    <th class="p-3 pl-5 font-semibold w-72">Tên công việc</th>
+                                    <th class="p-3 font-semibold w-36">Bắt đầu</th>
+                                    <th class="p-3 font-semibold w-36">Kết thúc</th>
                                     <th class="p-3 font-semibold w-24">Tiến độ (%)</th>
                                     <th class="p-3 font-semibold w-32">Phụ trách</th>
                                     <th class="p-3 pr-5 font-semibold w-12 text-center col-action">Xóa</th>
@@ -590,57 +600,89 @@
                             <tbody id="tbody-tasks-${s.type}" class="divide-y divide-gray-50 dark:divide-slate-700"></tbody>
                         </table>
                     </div>
-                    <div class="p-5 bg-slate-50/50 dark:bg-slate-900/30 border-t border-gray-100 dark:border-slate-700 overflow-x-auto gantt-scroll">
+                    <div id="gantt-wrapper-${s.type}" class="p-5 bg-slate-50/50 dark:bg-slate-900/30 border-t border-gray-100 dark:border-slate-700 overflow-x-auto gantt-scroll">
                         <div id="gantt-${s.type}" class="min-w-full relative pb-2 bg-white dark:bg-slate-800 rounded border border-gray-200 dark:border-slate-700"></div>
                     </div>
                 </div>
             </div>`).join('');
 
-        // ===== Toast =====
+        window.switchPlanSubTab = function(type, tab) {
+            activePlanSubTab[type] = tab;
+            const btnOng = document.getElementById(`subtab-${type}-ongoing`);
+            const btnCmp = document.getElementById(`subtab-${type}-completed`);
+
+            if (tab === 'ongoing') {
+                btnOng.className = "px-3 py-1.5 rounded text-sm font-medium bg-white dark:bg-slate-600 text-primary dark:text-blue-400 shadow-sm transition-all";
+                btnCmp.className = "px-3 py-1.5 rounded text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all";
+            } else {
+                btnCmp.className = "px-3 py-1.5 rounded text-sm font-medium bg-white dark:bg-slate-600 text-primary dark:text-blue-400 shadow-sm transition-all";
+                btnOng.className = "px-3 py-1.5 rounded text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all";
+            }
+            renderTasksAndDocs(true); // render lại
+        };
+
         window.showToast = function(msg, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type === 'success' ? 'border-l-4 border-emerald-500' : 'border-l-4 border-red-500'}`;
             const icon = document.createElement('i');
             icon.className = type === 'success' ? 'fa-solid fa-check text-emerald-400' : 'fa-solid fa-triangle-exclamation text-red-400';
-            const span = document.createElement('span');
-            span.textContent = msg;
-            toast.append(icon, span);
-            container.appendChild(toast);
+            const span = document.createElement('span'); span.textContent = msg;
+            toast.append(icon, span); container.appendChild(toast);
             requestAnimationFrame(() => toast.classList.add('show'));
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
         };
 
         let savedToastTimer = null;
-        function toastSavedDebounced(msg) {
-            clearTimeout(savedToastTimer);
-            savedToastTimer = setTimeout(() => window.showToast(msg), 700);
-        }
+        function toastSavedDebounced(msg) { clearTimeout(savedToastTimer); savedToastTimer = setTimeout(() => window.showToast(msg), 700); }
 
-        // ===== Confirm / Settings =====
-        window.openConfirm = function(msg, action) {
+        window.openConfirm = function(msg, action, yesText = "Đồng ý", noText = "Hủy bỏ", cancelFn = null, isDanger = true) {
+            isConfirming = true;
+            document.getElementById('confirm-title').innerText = isDanger ? "Xác nhận" : "Thông báo";
             document.getElementById('confirm-text').innerText = msg;
+            
+            const yesBtn = document.getElementById('confirm-yes-btn');
+            const noBtn = document.getElementById('confirm-no-btn');
+            yesBtn.innerText = yesText;
+            noBtn.innerText = noText;
+
+            if (isDanger) {
+                yesBtn.className = "px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm";
+                document.getElementById('confirm-icon-box').className = "w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0 text-red-500";
+                document.getElementById('confirm-icon').className = "fa-solid fa-triangle-exclamation text-xl";
+            } else {
+                yesBtn.className = "px-5 py-2.5 bg-primary hover:bg-primaryHover text-white font-semibold rounded-xl text-sm transition-colors shadow-sm";
+                document.getElementById('confirm-icon-box').className = "w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-primary";
+                document.getElementById('confirm-icon').className = "fa-solid fa-circle-check text-xl";
+            }
+
             confirmAction = action;
-            const modal = document.getElementById('confirm-modal');
-            const box = document.getElementById('confirm-modal-box');
-            modal.classList.remove('hidden'); modal.classList.add('flex');
-            setTimeout(() => box.classList.remove('scale-95'), 10);
+            cancelAction = cancelFn;
+            const modal = document.getElementById('confirm-modal'); const box = document.getElementById('confirm-modal-box');
+            modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => box.classList.remove('scale-95'), 10);
         };
-        window.closeConfirm = function() {
-            const modal = document.getElementById('confirm-modal');
-            const box = document.getElementById('confirm-modal-box');
-            box.classList.add('scale-95');
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); confirmAction = null; }, 200);
+        
+        window.closeConfirm = function(isCancelTrigger = false) {
+            const modal = document.getElementById('confirm-modal'); const box = document.getElementById('confirm-modal-box');
+            box.classList.add('scale-95'); 
+            setTimeout(() => { 
+                modal.classList.add('hidden'); modal.classList.remove('flex'); 
+                if (isCancelTrigger && typeof cancelAction === 'function') cancelAction();
+                confirmAction = null; cancelAction = null; 
+                isConfirming = false;
+                if (pendingRender && !isEditingInData()) { pendingRender = false; renderTasksAndDocs(); }
+            }, 200);
         };
-        window.executeConfirm = function() {
-            const fn = confirmAction;
-            window.closeConfirm();
-            if (typeof fn === 'function') fn();
+        
+        window.executeConfirm = function() { 
+            const fn = confirmAction; 
+            cancelAction = null; // Chặn hành động Hủy khi đã bấm Đồng ý
+            window.closeConfirm(); 
+            if (typeof fn === 'function') fn(); 
         };
 
         window.openSettingsModal = () => {
-            const m = document.getElementById('settings-modal');
-            m.classList.remove('hidden'); m.classList.add('flex');
+            const m = document.getElementById('settings-modal'); m.classList.remove('hidden'); m.classList.add('flex');
             document.getElementById('display-name-text').textContent = currentUser?.displayName || 'Chưa thiết lập';
             document.getElementById('setting-name').value = currentUser?.displayName || '';
             document.getElementById('display-email-text').textContent = currentUser?.email || '';
@@ -648,8 +690,7 @@
             document.getElementById('noti-toggle').checked = isNotiEnabled;
         };
         window.closeSettingsModal = () => {
-            const m = document.getElementById('settings-modal');
-            m.classList.add('hidden'); m.classList.remove('flex');
+            const m = document.getElementById('settings-modal'); m.classList.add('hidden'); m.classList.remove('flex');
             if (window.isEditingName) window.toggleEditName();
             if (window.isEditingPass) window.toggleEditPass();
         };
@@ -669,9 +710,7 @@
             try {
                 await updateProfile(currentUser, { displayName: newName });
                 await setDoc(doc(COL_USERS, currentUser.uid), { name: newName, email: currentUser.email, uid: currentUser.uid }, { merge: true });
-                window.showToast("Đã cập nhật tên");
-                document.getElementById('display-name-text').textContent = newName;
-                window.toggleEditName();
+                window.showToast("Đã cập nhật tên"); document.getElementById('display-name-text').textContent = newName; window.toggleEditName();
             } catch (e) { window.showToast("Lỗi cập nhật tên", "error"); }
         };
 
@@ -683,93 +722,56 @@
             document.getElementById('btn-eye-pass').classList.toggle('hidden', !window.isEditingPass);
             document.getElementById('btn-edit-pass').classList.toggle('hidden', window.isEditingPass);
             document.getElementById('btn-save-pass').classList.toggle('hidden', !window.isEditingPass);
-            if (window.isEditingPass) {
-                document.getElementById('setting-pass').value = '';
-                document.getElementById('setting-pass').focus();
-            }
+            if (window.isEditingPass) { document.getElementById('setting-pass').value = ''; document.getElementById('setting-pass').focus(); }
         };
-
         window.togglePassVisibility = function() {
-            const input = document.getElementById('setting-pass');
-            const icon = document.getElementById('icon-eye-pass');
+            const input = document.getElementById('setting-pass'); const icon = document.getElementById('icon-eye-pass');
             if (window.isEditingPass) {
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.replace('fa-eye', 'fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.replace('fa-eye-slash', 'fa-eye');
-                }
+                if (input.type === 'password') { input.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); }
+                else { input.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); }
             }
         };
-
         window.toggleAuthPass = function() {
-            const input = document.getElementById('auth-password');
-            const icon = document.getElementById('auth-eye-icon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
+            const input = document.getElementById('auth-password'); const icon = document.getElementById('auth-eye-icon');
+            if (input.type === 'password') { input.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); }
+            else { input.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); }
         };
-
         window.savePass = async function() {
             const newPass = document.getElementById('setting-pass').value.trim();
             if (newPass.length < 6) return window.showToast("Mật khẩu phải từ 6 ký tự", "error");
-            try {
-                await updatePassword(currentUser, newPass);
-                window.showToast("Đã cập nhật mật khẩu");
-                window.toggleEditPass();
-            } catch (e) { window.showToast("Vui lòng đăng nhập lại để đổi mật khẩu", "error"); }
+            try { await updatePassword(currentUser, newPass); window.showToast("Đã cập nhật mật khẩu"); window.toggleEditPass(); }
+            catch (e) { window.showToast("Vui lòng đăng nhập lại để đổi mật khẩu", "error"); }
         };
 
         window.toggleDarkModeSetting = function(isChecked) {
-            isDarkMode = isChecked;
-            document.documentElement.classList.toggle('dark', isDarkMode);
+            isDarkMode = isChecked; document.documentElement.classList.toggle('dark', isDarkMode);
             localStorage.setItem('workspace_dark_mode', isDarkMode);
-            ['day', 'week', 'month'].forEach(t => {
-                if (document.getElementById(`content-acc-${t}`).classList.contains('block')) window.renderGantt(t);
-            });
+            ['day', 'week', 'month'].forEach(t => { if (document.getElementById(`content-acc-${t}`).classList.contains('block')) window.renderGantt(t); });
         };
-        window.toggleNotiSetting = function(isChecked) {
-            isNotiEnabled = isChecked;
-            localStorage.setItem('workspace_noti', isNotiEnabled);
-        };
+        window.toggleNotiSetting = function(isChecked) { isNotiEnabled = isChecked; localStorage.setItem('workspace_noti', isNotiEnabled); };
 
         function playBeep() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator(), gain = ctx.createGain();
                 osc.type = 'sine'; osc.frequency.value = 880;
-                gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(); osc.stop(ctx.currentTime + 0.25);
-                osc.onended = () => ctx.close();
+                gain.gain.setValueAtTime(0.15, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+                osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.25); osc.onended = () => ctx.close();
             } catch (e) {}
         }
 
         let notiTimer = null;
         window.showNotiPopup = function(name, text) {
             const popup = document.getElementById('noti-popup');
-            document.getElementById('noti-name').textContent = name;
-            document.getElementById('noti-msg').textContent = text;
-            document.getElementById('noti-avatar').textContent = (name || '?').charAt(0);
-            popup.classList.remove('translate-x-[120%]', 'opacity-0');
-            playBeep();
-            clearTimeout(notiTimer);
-            notiTimer = setTimeout(() => popup.classList.add('translate-x-[120%]', 'opacity-0'), 4500);
+            document.getElementById('noti-name').textContent = name; document.getElementById('noti-msg').textContent = text; document.getElementById('noti-avatar').textContent = (name || '?').charAt(0);
+            popup.classList.remove('translate-x-[120%]', 'opacity-0'); playBeep();
+            clearTimeout(notiTimer); notiTimer = setTimeout(() => popup.classList.add('translate-x-[120%]', 'opacity-0'), 4500);
         };
 
-        // ===== Tabs / Accordion =====
         window.switchTab = function(tabId) {
-            ['plan', 'data', 'permissions'].forEach(id => {
-                const btn = document.getElementById(`tab-btn-${id}`);
-                const content = document.getElementById(`tab-${id}`);
+            ['plan', 'data', 'permissions', 'assign'].forEach(id => {
+                const btn = document.getElementById(`tab-btn-${id}`); const content = document.getElementById(`tab-${id}`);
                 if (!btn || !content) return;
-                
                 if (id === tabId) {
                     btn.classList.add('bg-white', 'dark:bg-slate-700', 'shadow-sm', 'text-primary', 'dark:text-blue-400');
                     btn.classList.remove('text-gray-600', 'dark:text-gray-300', 'hover:text-gray-900', 'dark:hover:text-white');
@@ -780,27 +782,18 @@
                     content.classList.add('hidden'); content.classList.remove('block');
                 }
             });
-            if (tabId === 'plan') {
-                ['day', 'week', 'month'].forEach(type => {
-                    if (document.getElementById(`content-acc-${type}`).classList.contains('block')) window.renderGantt(type);
-                });
-            }
-            if (tabId === 'permissions') {
-                window.renderPermissionsList();
-            }
+            if (tabId === 'plan') { ['day', 'week', 'month'].forEach(type => { if (document.getElementById(`content-acc-${type}`).classList.contains('block')) window.renderGantt(type); }); }
+            if (tabId === 'permissions') { window.renderPermissionsList(); }
         };
 
         window.toggleAccordion = function(type) {
-            const content = document.getElementById(`content-acc-${type}`);
-            const icon = document.getElementById(`icon-acc-${type}`);
+            const content = document.getElementById(`content-acc-${type}`); const icon = document.getElementById(`icon-acc-${type}`);
             const opening = content.classList.contains('hidden');
-            content.classList.toggle('hidden', !opening);
-            content.classList.toggle('block', opening);
+            content.classList.toggle('hidden', !opening); content.classList.toggle('block', opening);
             icon.classList.toggle('rotate-180', opening);
             if (opening) window.renderGantt(type);
         };
 
-        // ===== Auth =====
         window.toggleAuthMode = function() {
             isLoginMode = !isLoginMode;
             document.getElementById('auth-title').innerText = isLoginMode ? "Đăng Nhập Workspace" : "Đăng Ký Tài Khoản";
@@ -813,22 +806,15 @@
 
         window.handleAuth = async function(e) {
             e.preventDefault();
-            const email = document.getElementById('auth-email').value.trim();
-            const pass = document.getElementById('auth-password').value.trim();
-            const name = document.getElementById('auth-name').value.trim();
+            const email = document.getElementById('auth-email').value.trim(); const pass = document.getElementById('auth-password').value.trim(); const name = document.getElementById('auth-name').value.trim();
             const btn = document.getElementById('btn-submit');
             if (!isLoginMode && !name) return window.showToast("Vui lòng nhập Tên hiển thị!", "error");
-
             btn.disabled = true; document.getElementById('btn-submit-text').innerText = "Đang xử lý...";
             try {
-                if (isLoginMode) {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                    window.showToast("Đăng nhập thành công!");
-                } else {
-                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                    await updateProfile(cred.user, { displayName: name });
-                    await setDoc(doc(COL_USERS, cred.user.uid), { name, email, uid: cred.user.uid }, { merge: true });
-                    window.showToast("Tạo tài khoản thành công!");
+                if (isLoginMode) { await signInWithEmailAndPassword(auth, email, pass); window.showToast("Đăng nhập thành công!"); }
+                else {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass); await updateProfile(cred.user, { displayName: name });
+                    await setDoc(doc(COL_USERS, cred.user.uid), { name, email, uid: cred.user.uid }, { merge: true }); window.showToast("Tạo tài khoản thành công!");
                 }
             } catch (err) {
                 let msg = "Lỗi xác thực!";
@@ -837,72 +823,49 @@
                 if (err.code === 'auth/weak-password') msg = "Mật khẩu quá yếu!";
                 if (err.code === 'auth/too-many-requests') msg = "Thử quá nhiều lần, vui lòng đợi!";
                 window.showToast(msg, "error");
-            } finally {
-                btn.disabled = false;
-                document.getElementById('btn-submit-text').innerText = isLoginMode ? "Đăng Nhập" : "Tạo Tài Khoản";
-            }
+            } finally { btn.disabled = false; document.getElementById('btn-submit-text').innerText = isLoginMode ? "Đăng Nhập" : "Tạo Tài Khoản"; }
         };
 
-        window.processLogout = async function() {
-            await signOut(auth);
-            window.location.reload();
-        };
+        window.processLogout = async function() { await signOut(auth); window.location.reload(); };
 
         async function ensureUserDoc(user) {
             try {
-                const ref = doc(COL_USERS, user.uid);
-                const snap = await getDoc(ref);
-                if (!snap.exists()) {
-                    await setDoc(ref, {
-                        name: user.displayName || (user.email || 'user').split('@')[0],
-                        email: user.email || '',
-                        uid: user.uid
-                    });
-                }
+                const ref = doc(COL_USERS, user.uid); const snap = await getDoc(ref);
+                if (!snap.exists()) { await setDoc(ref, { name: user.displayName || (user.email || 'user').split('@')[0], email: user.email || '', uid: user.uid }); }
             } catch (e) { console.error('ensureUserDoc', e); }
         }
 
         onAuthStateChanged(auth, async (user) => {
             if (!user) return;
-            currentUser = user;
-            if (!selectedUserId) selectedUserId = user.uid;
+            currentUser = user; if (!selectedUserId) selectedUserId = user.uid;
 
-            // Kiểm tra tab phân quyền
             if (currentUser.email === 'test@gmail.com') {
                 document.getElementById('tab-btn-permissions').classList.remove('hidden');
+                document.getElementById('tab-btn-assign').classList.remove('hidden');
             }
 
-            const authScreen = document.getElementById('auth-screen');
-            if (authScreen) authScreen.remove();
-            document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('chat-widget').classList.remove('hidden');
-
-            await ensureUserDoc(user);
-            if (!listenersStarted) { listenersStarted = true; startDataListeners(); }
+            const authScreen = document.getElementById('auth-screen'); if (authScreen) authScreen.remove();
+            document.getElementById('main-app').classList.remove('hidden'); document.getElementById('chat-widget').classList.remove('hidden');
+            await ensureUserDoc(user); if (!listenersStarted) { listenersStarted = true; startDataListeners(); }
         });
 
-        // ===== Không render lại khi đang gõ =====
         let pendingRender = false;
         function isEditingInData() {
             const a = document.activeElement;
-            return !!(a && a.matches && a.matches('input, textarea') &&
-                a.closest('#tab-plan tbody, #list-projects, #list-documents') && !a.readOnly);
+            return !!(a && a.matches && a.matches('input, textarea') && a.closest('#tab-plan tbody, #list-projects, #list-documents') && !a.readOnly);
         }
-        document.addEventListener('focusout', () => {
-            setTimeout(() => {
-                if (pendingRender && !isEditingInData()) { pendingRender = false; renderTasksAndDocs(); }
-            }, 120);
+        document.addEventListener('focusout', () => { 
+            setTimeout(() => { 
+                if (pendingRender && !isEditingInData() && !isConfirming) { 
+                    pendingRender = false; renderTasksAndDocs(); 
+                } 
+            }, 120); 
         });
 
-        // ===== Listeners =====
         function startDataListeners() {
-            // Lắng nghe Phân Quyền
             onSnapshot(COL_PERMISSIONS, snap => {
-                systemPermissions = {};
-                snap.forEach(d => systemPermissions[d.id] = d.data());
-                if (document.getElementById('tab-permissions').classList.contains('block')) {
-                    window.renderPermissionsList();
-                }
+                systemPermissions = {}; snap.forEach(d => systemPermissions[d.id] = d.data());
+                if (document.getElementById('tab-permissions').classList.contains('block')) { window.renderPermissionsList(); }
                 renderTasksAndDocs(true);
             }, err => console.error(err));
 
@@ -910,48 +873,33 @@
                 systemUsers = {};
                 const select = document.getElementById('user-filter-select');
                 const permViewerSelect = document.getElementById('perm-viewer-select');
+                const assignTargetSelect = document.getElementById('assign-target');
                 
                 select.innerHTML = '';
                 permViewerSelect.innerHTML = '<option value="">-- Chọn thành viên --</option>';
+                assignTargetSelect.innerHTML = '<option value="">-- Chọn thành viên nhận việc --</option>';
 
                 snap.forEach(d => {
-                    const u = d.data();
-                    if (!u.uid) return;
+                    const u = d.data(); if (!u.uid) return;
                     systemUsers[u.uid] = u;
                     
-                    // Điền dropdown xem Kế hoạch (bình thường)
-                    const opt = document.createElement('option');
-                    opt.value = u.uid;
-                    opt.textContent = u.uid === currentUser.uid ? `(Tôi) ${u.name || u.email}` : (u.name || u.email);
-                    select.appendChild(opt);
-
-                    // Điền dropdown Phân Quyền (cho test@gmail.com)
-                    const optPerm = document.createElement('option');
-                    optPerm.value = u.uid;
-                    optPerm.textContent = u.name || u.email;
-                    permViewerSelect.appendChild(optPerm);
+                    const opt = document.createElement('option'); opt.value = u.uid; opt.textContent = u.uid === currentUser.uid ? `(Tôi) ${u.name || u.email}` : (u.name || u.email); select.appendChild(opt);
+                    const optPerm = document.createElement('option'); optPerm.value = u.uid; optPerm.textContent = u.name || u.email; permViewerSelect.appendChild(optPerm);
+                    const optAssign = document.createElement('option'); optAssign.value = u.uid; optAssign.textContent = u.name || u.email; assignTargetSelect.appendChild(optAssign);
                 });
 
-                if (systemUsers[selectedUserId]) select.value = selectedUserId;
-                else { select.value = currentUser.uid; selectedUserId = currentUser.uid; }
+                if (systemUsers[selectedUserId]) select.value = selectedUserId; else { select.value = currentUser.uid; selectedUserId = currentUser.uid; }
                 
                 window.handleUserFilterChange();
-                if (document.getElementById('tab-permissions').classList.contains('block')) {
-                    window.renderPermissionsList();
-                }
+                if (document.getElementById('tab-permissions').classList.contains('block')) { window.renderPermissionsList(); }
             }, err => console.error(err));
 
             onSnapshot(query(COL_TASKS), snap => {
-                allTasks = [];
-                snap.forEach(d => allTasks.push({ id: d.id, ...d.data() }));
-                renderTasksAndDocs();
+                allTasks = []; snap.forEach(d => allTasks.push({ id: d.id, ...d.data() })); renderTasksAndDocs();
             }, err => console.error(err));
 
             onSnapshot(query(COL_DOCS), snap => {
-                allDocs = [];
-                snap.forEach(d => allDocs.push({ id: d.id, ...d.data() }));
-                allDocs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                renderTasksAndDocs();
+                allDocs = []; snap.forEach(d => allDocs.push({ id: d.id, ...d.data() })); allDocs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); renderTasksAndDocs();
             }, err => console.error(err));
 
             onSnapshot(query(COL_CHAT, orderBy("timestamp", "desc"), limit(CHAT_LIMIT)), snap => {
@@ -964,36 +912,23 @@
                             const msg = change.doc.data();
                             if (msg.uid !== currentUser.uid && isNotiEnabled) {
                                 const panel = document.getElementById('chat-panel');
-                                if (panel.classList.contains('hidden')) {
-                                    window.showNotiPopup(msg.userName || 'Ẩn danh', msg.text || '');
-                                    document.getElementById('chat-badge').classList.remove('hidden');
-                                }
+                                if (panel.classList.contains('hidden')) { window.showNotiPopup(msg.userName || 'Ẩn danh', msg.text || ''); document.getElementById('chat-badge').classList.remove('hidden'); }
                             }
                         }
                     });
                 }
 
-                // Sắp xếp các tên theo độ dài giảm dần để highlight Regex chính xác hơn
-                const namesForRegex = Object.values(systemUsers)
-                                        .map(u => u.name)
-                                        .filter(Boolean)
-                                        .sort((a, b) => b.length - a.length);
-
+                const namesForRegex = Object.values(systemUsers).map(u => u.name).filter(Boolean).sort((a, b) => b.length - a.length);
                 const docs = snap.docs.slice().reverse();
                 let html = '<div class="text-center text-xs text-gray-400 my-2">Bắt đầu trò chuyện với team</div>';
                 
                 docs.forEach(d => {
-                    const msg = d.data();
-                    const isMe = msg.uid === currentUser.uid;
-                    const timeStr = new Date(msg.timestamp || 0).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-                    
+                    const msg = d.data(); const isMe = msg.uid === currentUser.uid; const timeStr = new Date(msg.timestamp || 0).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                     let safeText = esc(msg.text);
-                    // Lọc Tag tên trong tin nhắn
                     namesForRegex.forEach(n => {
                         const regex = new RegExp(`@${escapeRegex(n)}(?=\\s|$)`, 'g');
                         safeText = safeText.replace(regex, `<strong class="text-primary font-semibold">@${esc(n)}</strong>`);
                     });
-
                     html += `
                         <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
                             ${!isMe ? `<span class="text-[10px] text-gray-500 ml-1 mb-0.5">${esc(msg.userName)}</span>` : ''}
@@ -1002,7 +937,6 @@
                         </div>`;
                 });
                 container.innerHTML = html;
-
                 if (isAtBottom || isFirstChatLoad) container.scrollTop = container.scrollHeight;
                 isFirstChatLoad = false;
             }, err => console.error(err));
@@ -1011,93 +945,80 @@
         window.handleUserFilterChange = function() {
             selectedUserId = document.getElementById('user-filter-select').value || currentUser.uid;
             isReadOnly = selectedUserId !== currentUser.uid;
-
             document.getElementById('readonly-banner').classList.toggle('hidden', !isReadOnly);
             document.querySelectorAll('.btn-add-action, .col-action').forEach(el => el.classList.toggle('hidden', isReadOnly));
-
-            pendingRender = false;
-            renderTasksAndDocs(true);
+            pendingRender = false; renderTasksAndDocs(true);
         };
 
         window.resetUserFilter = function() {
-            document.getElementById('user-filter-select').value = currentUser.uid;
-            window.handleUserFilterChange();
+            document.getElementById('user-filter-select').value = currentUser.uid; window.handleUserFilterChange();
         };
 
-        // ===== TAB PHÂN QUYỀN (Admin UI) =====
         window.renderPermissionsList = function() {
-            const viewerId = document.getElementById('perm-viewer-select').value;
-            const container = document.getElementById('perm-list-container');
-            if (!viewerId) { 
-                container.innerHTML = '<div class="p-4 text-center text-sm text-gray-500">Vui lòng chọn thành viên ở trên.</div>'; 
-                return; 
-            }
+            const viewerId = document.getElementById('perm-viewer-select').value; const container = document.getElementById('perm-list-container');
+            if (!viewerId) { container.innerHTML = '<div class="p-4 text-center text-sm text-gray-500">Vui lòng chọn thành viên ở trên.</div>'; return; }
 
             const rules = systemPermissions[viewerId]?.targets || {};
-            let html = '';
-            let count = 0;
+            let html = ''; let count = 0;
 
             Object.values(systemUsers).forEach(target => {
-                if (target.uid === viewerId) return; // Không hiển thị chính họ
-                count++;
-                
-                // Mặc định là ALLOW (true) nếu chưa từng được set trong DB
+                if (target.uid === viewerId) return; count++;
                 const targetRules = rules[target.uid] || {};
-                const planChecked = targetRules.plan !== false; 
-                const dataChecked = targetRules.data !== false;
+                const planChecked = targetRules.plan !== false; const dataChecked = targetRules.data !== false;
 
                 html += `
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                     <span class="font-medium text-gray-800 dark:text-gray-200 mb-2 sm:mb-0"><i class="fa-solid fa-user text-gray-400 mr-2 text-xs"></i>${esc(target.name || target.email)}</span>
                     <div class="flex items-center gap-6 bg-gray-50 dark:bg-slate-900/50 px-4 py-2 rounded-lg border border-gray-100 dark:border-slate-700">
                         <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
-                            <input type="checkbox" ${planChecked ? 'checked' : ''} onchange="window.updatePerm('${viewerId}', '${target.uid}', 'plan', this.checked)" class="w-4 h-4 rounded text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-500">
-                            Xem Kế hoạch
+                            <input type="checkbox" ${planChecked ? 'checked' : ''} onchange="window.updatePerm('${viewerId}', '${target.uid}', 'plan', this.checked)" class="w-4 h-4 rounded text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-500"> Xem Kế hoạch
                         </label>
                         <div class="w-px h-4 bg-gray-300 dark:bg-slate-600"></div>
                         <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
-                            <input type="checkbox" ${dataChecked ? 'checked' : ''} onchange="window.updatePerm('${viewerId}', '${target.uid}', 'data', this.checked)" class="w-4 h-4 rounded text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-500">
-                            Xem Dữ liệu
+                            <input type="checkbox" ${dataChecked ? 'checked' : ''} onchange="window.updatePerm('${viewerId}', '${target.uid}', 'data', this.checked)" class="w-4 h-4 rounded text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-500"> Xem Dữ liệu
                         </label>
                     </div>
                 </div>`;
             });
-            
             if (count === 0) html = '<div class="p-4 text-center text-sm text-gray-500">Không có thành viên nào khác trong hệ thống.</div>';
             container.innerHTML = html;
         };
 
         window.updatePerm = async function(viewerUid, targetUid, field, isChecked) {
-            if (currentUser.email !== 'test@gmail.com') return; // Rào bảo vệ thứ 2
-            const ref = doc(COL_PERMISSIONS, viewerUid);
-            try {
-                await setDoc(ref, {
-                    targets: { [targetUid]: { [field]: isChecked } }
-                }, { merge: true });
-                // Note: onSnapshot sẽ tự cập nhật lại systemPermissions
-                toastSavedDebounced("Đã lưu phân quyền");
-            } catch(e) {
-                window.showToast("Lỗi khi lưu", "error");
-            }
+            if (currentUser.email !== 'test@gmail.com') return;
+            try { await setDoc(doc(COL_PERMISSIONS, viewerUid), { targets: { [targetUid]: { [field]: isChecked } } }, { merge: true }); toastSavedDebounced("Đã lưu phân quyền"); } 
+            catch(e) { window.showToast("Lỗi khi lưu", "error"); }
         };
 
-        // ===== Render Tasks & Docs =====
+        window.submitAssignTask = async function(e) {
+            e.preventDefault();
+            if (currentUser.email !== 'test@gmail.com') return;
+            const targetUid = document.getElementById('assign-target').value;
+            if (!targetUid) return window.showToast("Vui lòng chọn người nhận việc", "error");
+
+            const type = document.getElementById('assign-type').value; const name = document.getElementById('assign-name').value.trim();
+            const start = document.getElementById('assign-start').value; const end = document.getElementById('assign-end').value;
+            const linkRaw = document.getElementById('assign-link').value.trim(); const link = linkRaw ? safeUrl(linkRaw) : '';
+
+            if (start > end) return window.showToast("Ngày bắt đầu không thể sau ngày kết thúc", "error");
+
+            try {
+                await addDoc(COL_TASKS, { uid: targetUid, type, name, start, end, progress: 0, isCompleted: false, assignee: '(Giao bởi Admin)', link: link !== '#' ? link : '', createdAt: Date.now() });
+                window.showToast("Đã giao việc thành công!"); e.target.reset();
+            } catch (err) { console.error(err); window.showToast("Lỗi giao việc", "error"); }
+        };
+
         function renderTasksAndDocs(force = false) {
             if (!currentUser || !selectedUserId) return;
             if (!force && isEditingInData()) { pendingRender = true; return; }
 
-            // Lớp Kính Bảo Vệ (Kiểm tra Quyền)
-            let hasPlanAccess = true;
-            let hasDataAccess = true;
-
-            if (isReadOnly && currentUser.email !== 'test@gmail.com') { // Admin luôn thấy tất cả
+            let hasPlanAccess = true; let hasDataAccess = true;
+            if (isReadOnly && currentUser.email !== 'test@gmail.com') {
                 const myRules = systemPermissions[currentUser.uid]?.targets?.[selectedUserId] || {};
-                // Mặc định là cho phép (true) trừ khi admin đã cấm (false)
                 if (myRules.plan === false) hasPlanAccess = false;
                 if (myRules.data === false) hasDataAccess = false;
             }
 
-            // --- XỬ LÝ GIAO DIỆN KẾ HOẠCH ---
             document.getElementById('plan-sections').classList.toggle('hidden', !hasPlanAccess);
             document.getElementById('plan-locked-msg').classList.toggle('hidden', hasPlanAccess);
 
@@ -1109,8 +1030,11 @@
                 ['day', 'week', 'month'].forEach(type => {
                     const tbody = document.getElementById(`tbody-tasks-${type}`);
                     if (!tbody) return;
+                    
+                    const isOngoingTab = activePlanSubTab[type] === 'ongoing';
                     const typeTasks = filteredTasks
                         .filter(t => t.type === type && isValidDateStr(t.start) && isValidDateStr(t.end))
+                        .filter(t => isOngoingTab ? !t.isCompleted : t.isCompleted) // Lọc trạng thái
                         .sort((a, b) => a.start.localeCompare(b.start));
 
                     if (typeTasks.length === 0) {
@@ -1119,230 +1043,167 @@
                         tbody.innerHTML = typeTasks.map(task => `
                             <tr class="hover:bg-blue-50/20 dark:hover:bg-slate-700/50 transition-colors group">
                                 <td class="p-1 pl-4 border-b border-gray-50 dark:border-slate-700/50">
-                                    <input type="text" maxlength="200" class="inline-input font-medium text-gray-800 dark:text-gray-100" value="${esc(task.name)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'name', this.value)" ${enterSave}>
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" maxlength="200" class="inline-input font-medium text-gray-800 dark:text-gray-100 flex-1" value="${esc(task.name)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'name', this.value)" ${enterSave}>
+                                        ${task.link ? `<a href="${esc(safeUrl(task.link))}" target="_blank" class="text-blue-500 hover:text-blue-700 bg-blue-50 dark:bg-blue-900/30 p-1.5 rounded-md shrink-0 transition-colors" title="Xem tài liệu đính kèm"><i class="fa-solid fa-link"></i></a>` : ''}
+                                    </div>
                                 </td>
-                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50">
-                                    <input type="date" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.start)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'start', this.value)" ${enterSave}>
-                                </td>
-                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50">
-                                    <input type="date" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.end)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'end', this.value)" ${enterSave}>
-                                </td>
-                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50">
-                                    <input type="number" min="0" max="100" class="inline-input text-center dark:text-gray-100" value="${esc(task.progress)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'progress', this.value)" ${enterSave}>
-                                </td>
-                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50">
-                                    <input type="text" maxlength="100" placeholder="Tên người..." class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.assignee || '')}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'assignee', this.value)" ${enterSave}>
-                                </td>
+                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50"><input type="date" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.start)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'start', this.value)" ${enterSave}></td>
+                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50"><input type="date" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.end)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'end', this.value)" ${enterSave}></td>
+                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50"><input type="number" min="0" max="100" class="inline-input text-center dark:text-gray-100" value="${esc(task.progress)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'progress', this.value)" ${enterSave}></td>
+                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50"><input type="text" maxlength="100" placeholder="Tên người..." class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.assignee || '')}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'assignee', this.value)" ${enterSave}></td>
                                 <td class="p-1 pr-4 border-b border-gray-50 dark:border-slate-700/50 text-center ${isReadOnly ? 'hidden' : ''} col-action">
-                                    <button onclick="window.askDeleteTask('${esc(task.id)}')" class="text-gray-300 hover:text-red-500 p-1.5 rounded transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-                                        <i class="fa-regular fa-trash-can"></i>
-                                    </button>
+                                    <button onclick="window.askDeleteTask('${esc(task.id)}')" class="text-gray-300 hover:text-red-500 p-1.5 rounded transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"><i class="fa-regular fa-trash-can"></i></button>
                                 </td>
                             </tr>`).join('');
                     }
-                    if (document.getElementById(`content-acc-${type}`).classList.contains('block')) window.renderGantt(type, typeTasks);
+
+                    // Ẩn / Hiện biểu đồ Gantt theo tab phụ
+                    const ganttWrapper = document.getElementById(`gantt-wrapper-${type}`);
+                    if (ganttWrapper) {
+                        if (isOngoingTab) {
+                            ganttWrapper.classList.remove('hidden');
+                            if (document.getElementById(`content-acc-${type}`).classList.contains('block')) window.renderGantt(type, typeTasks);
+                        } else {
+                            ganttWrapper.classList.add('hidden');
+                        }
+                    }
                 });
             }
 
-            // --- XỬ LÝ GIAO DIỆN DATA ---
             document.getElementById('form-upload-container').classList.toggle('hidden', isReadOnly);
             document.getElementById('data-grid-container').classList.toggle('hidden', !hasDataAccess);
             document.getElementById('data-locked-msg').classList.toggle('hidden', hasDataAccess);
 
             if (hasDataAccess) {
                 const filteredDocs = allDocs.filter(d => d.uid === selectedUserId);
-                const projs = filteredDocs.filter(d => d.type === 'project');
-                const docs = filteredDocs.filter(d => d.type === 'document');
-                document.getElementById('count-projects').innerText = projs.length;
-                document.getElementById('count-documents').innerText = docs.length;
-                renderDocList('list-projects', 'empty-projects', projs);
-                renderDocList('list-documents', 'empty-documents', docs);
+                const projs = filteredDocs.filter(d => d.type === 'project'); const docs = filteredDocs.filter(d => d.type === 'document');
+                document.getElementById('count-projects').innerText = projs.length; document.getElementById('count-documents').innerText = docs.length;
+                renderDocList('list-projects', 'empty-projects', projs); renderDocList('list-documents', 'empty-documents', docs);
             }
         }
 
         window.addNewTask = async function(type) {
             if (isReadOnly || !currentUser) return;
-            const now = new Date();
-            const todayStr = toLocalDateStr(now);
-            let endStr = todayStr;
+            const now = new Date(); const todayStr = toLocalDateStr(now); let endStr = todayStr;
             if (type === 'week') { const d = new Date(now); d.setDate(d.getDate() + 7); endStr = toLocalDateStr(d); }
             if (type === 'month') { const d = new Date(now); d.setMonth(d.getMonth() + 1); endStr = toLocalDateStr(d); }
 
-            try {
-                await addDoc(COL_TASKS, {
-                    type, uid: currentUser.uid,
-                    name: 'Công việc mới...',
-                    start: todayStr, end: endStr,
-                    progress: 0, assignee: currentUser.displayName || '',
-                    createdAt: Date.now()
-                });
-                window.showToast("Đã thêm công việc");
-            } catch (e) { window.showToast("Lỗi thêm task", "error"); }
+            try { await addDoc(COL_TASKS, { type, uid: currentUser.uid, name: 'Công việc mới...', start: todayStr, end: endStr, progress: 0, isCompleted: false, assignee: currentUser.displayName || '', createdAt: Date.now() }); window.showToast("Đã thêm công việc"); }
+            catch (e) { window.showToast("Lỗi thêm task", "error"); }
         };
 
         window.updateTask = async function(id, field, value) {
             if (isReadOnly || !currentUser) return;
-            const oldT = allTasks.find(t => t.id === id);
-            if (!oldT) return;
-
+            const oldT = allTasks.find(t => t.id === id); if (!oldT) return;
             let updateObj = { [field]: value };
+            
             if (field === 'name') updateObj.name = String(value).trim().slice(0, 200) || 'Công việc mới...';
-            if (field === 'progress') updateObj.progress = Math.max(0, Math.min(100, parseInt(value) || 0));
 
-            if (field === 'start' || field === 'end') {
-                if (!isValidDateStr(value)) {
-                    window.showToast("Ngày không hợp lệ", "error");
-                    renderTasksAndDocs(true);
-                    return;
+            if (field === 'progress') {
+                const numVal = Math.max(0, Math.min(100, parseInt(value) || 0));
+                
+                // --- Xử lý 100% Pop-up Confirm ---
+                if (numVal === 100 && !oldT.isCompleted) {
+                    window.openConfirm(
+                        "Bạn chắc chắn đã hoàn thành? Bạn có muốn dời task vào thư mục đã hoàn thành không?",
+                        async () => {
+                            // User chọn "Đồng ý"
+                            try { await updateDoc(doc(COL_TASKS, id), { progress: 100, isCompleted: true }); toastSavedDebounced("Đã dời vào thư mục hoàn thành"); }
+                            catch (e) { window.showToast("Lỗi cập nhật", "error"); }
+                        },
+                        "Đồng ý", "Khoan đã",
+                        async () => {
+                            // User chọn "Khoan đã" -> Chỉ lên 100% không chuyển tab
+                            try { await updateDoc(doc(COL_TASKS, id), { progress: 100, isCompleted: false }); toastSavedDebounced("Đã lưu tiến độ 100%"); }
+                            catch (e) { window.showToast("Lỗi cập nhật", "error"); }
+                        },
+                        false // false = nút Xanh (tin tốt), thay vì Đỏ cảnh báo
+                    );
+                    return; // Chặn luồng chạy thông thường
+                } else {
+                    updateObj.progress = numVal;
+                    // Tự động bỏ trạng thái hoàn thành nếu giảm tiến độ xuống < 100
+                    if (numVal < 100 && oldT.isCompleted) {
+                        updateObj.isCompleted = false;
+                    }
                 }
-                if (field === 'start' && value > oldT.end) updateObj.end = value;
-                if (field === 'end' && value < oldT.start) updateObj.start = value;
             }
 
-            try {
-                await updateDoc(doc(COL_TASKS, id), updateObj);
-                toastSavedDebounced("Đã lưu dữ liệu");
-            } catch (e) { window.showToast("Lỗi cập nhật", "error"); }
+            if (field === 'start' || field === 'end') {
+                if (!isValidDateStr(value)) { window.showToast("Ngày không hợp lệ", "error"); renderTasksAndDocs(true); return; }
+                if (field === 'start' && value > oldT.end) updateObj.end = value; if (field === 'end' && value < oldT.start) updateObj.start = value;
+            }
+
+            try { await updateDoc(doc(COL_TASKS, id), updateObj); toastSavedDebounced("Đã lưu dữ liệu"); }
+            catch (e) { window.showToast("Lỗi cập nhật", "error"); }
         };
 
         window.askDeleteTask = function(id) {
             if (isReadOnly) return;
             window.openConfirm("Xóa công việc này khỏi kế hoạch?", async () => {
-                try { await deleteDoc(doc(COL_TASKS, id)); window.showToast("Đã xóa công việc"); }
-                catch (e) { window.showToast("Lỗi khi xóa", "error"); }
+                try { await deleteDoc(doc(COL_TASKS, id)); window.showToast("Đã xóa công việc"); } catch (e) { window.showToast("Lỗi khi xóa", "error"); }
             });
         };
 
-        // ===== Gantt =====
         window.renderGantt = function(type, passedTasks) {
-            const container = document.getElementById(`gantt-${type}`);
-            if (!container) return;
-            container.innerHTML = '';
+            const container = document.getElementById(`gantt-${type}`); if (!container) return; container.innerHTML = '';
+            const tList = (passedTasks || allTasks.filter(t => t.type === type && t.uid === selectedUserId && !t.isCompleted)).filter(t => isValidDateStr(t.start) && isValidDateStr(t.end)).slice().sort((a, b) => a.start.localeCompare(b.start));
 
-            const tList = (passedTasks || allTasks.filter(t => t.type === type && t.uid === selectedUserId))
-                .filter(t => isValidDateStr(t.start) && isValidDateStr(t.end))
-                .slice().sort((a, b) => a.start.localeCompare(b.start));
-
-            if (tList.length === 0) {
-                container.style.width = '';
-                container.innerHTML = '<div class="p-4 text-center text-xs text-gray-400">Không có dữ liệu vẽ sơ đồ.</div>';
-                return;
-            }
+            if (tList.length === 0) { container.style.width = ''; container.innerHTML = '<div class="p-4 text-center text-xs text-gray-400">Không có dữ liệu vẽ sơ đồ.</div>'; return; }
 
             let minD = parseDate(tList[0].start), maxD = parseDate(tList[0].end);
-            tList.forEach(t => {
-                const s = parseDate(t.start), e = parseDate(t.end);
-                if (s < minD) minD = s;
-                if (e > maxD) maxD = e;
-            });
+            tList.forEach(t => { const s = parseDate(t.start), e = parseDate(t.end); if (s < minD) minD = s; if (e > maxD) maxD = e; });
             minD.setDate(minD.getDate() - 2); maxD.setDate(maxD.getDate() + 4);
 
-            const DAY_WIDTH = type === 'month' ? 30 : 50;
-            const msPerDay = 24 * 60 * 60 * 1000;
-            const totalDays = Math.round((maxD - minD) / msPerDay) + 1;
-
+            const DAY_WIDTH = type === 'month' ? 30 : 50; const msPerDay = 24 * 60 * 60 * 1000; const totalDays = Math.round((maxD - minD) / msPerDay) + 1;
             container.style.width = `${totalDays * DAY_WIDTH}px`;
 
-            const grid = document.createElement('div');
-            grid.className = 'gantt-grid';
-            grid.style.gridTemplateColumns = `repeat(${totalDays}, ${DAY_WIDTH}px)`;
-
+            const grid = document.createElement('div'); grid.className = 'gantt-grid'; grid.style.gridTemplateColumns = `repeat(${totalDays}, ${DAY_WIDTH}px)`;
             const todayStr = new Date().toDateString();
+
             for (let i = 0; i < totalDays; i++) {
-                const cD = new Date(minD.getFullYear(), minD.getMonth(), minD.getDate() + i);
-                const cell = document.createElement('div');
-                cell.className = 'gantt-header-cell';
-                cell.innerText = `${cD.getDate()}/${cD.getMonth() + 1}`;
-                if (cD.toDateString() === todayStr) {
-                    cell.style.backgroundColor = isDarkMode ? '#334155' : '#fef3c7';
-                    cell.style.color = isDarkMode ? '#60a5fa' : '#d97706';
-                }
+                const cD = new Date(minD.getFullYear(), minD.getMonth(), minD.getDate() + i); const cell = document.createElement('div'); cell.className = 'gantt-header-cell'; cell.innerText = `${cD.getDate()}/${cD.getMonth() + 1}`;
+                if (cD.toDateString() === todayStr) { cell.style.backgroundColor = isDarkMode ? '#334155' : '#fef3c7'; cell.style.color = isDarkMode ? '#60a5fa' : '#d97706'; }
                 grid.appendChild(cell);
             }
-
-            for (let r = 0; r < tList.length; r++) {
-                for (let c = 0; c < totalDays; c++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'gantt-cell';
-                    if (r % 2 === 1) cell.style.backgroundColor = isDarkMode ? '#1e293b' : '#f8fafc';
-                    grid.appendChild(cell);
-                }
-            }
+            for (let r = 0; r < tList.length; r++) { for (let c = 0; c < totalDays; c++) { const cell = document.createElement('div'); cell.className = 'gantt-cell'; if (r % 2 === 1) cell.style.backgroundColor = isDarkMode ? '#1e293b' : '#f8fafc'; grid.appendChild(cell); } }
 
             tList.forEach((task, idx) => {
-                const sOffset = Math.round((parseDate(task.start) - minD) / msPerDay);
-                const dur = Math.round((parseDate(task.end) - parseDate(task.start)) / msPerDay) + 1;
-                const progress = Math.max(0, Math.min(100, Number(task.progress) || 0));
-
-                const wrapper = document.createElement('div');
-                wrapper.className = 'gantt-bar-wrapper';
-                wrapper.style.left = `${sOffset * DAY_WIDTH}px`;
-                wrapper.style.top = `${36 + (idx * 36)}px`;
-                wrapper.style.width = `${dur * DAY_WIDTH - 2}px`;
-
-                wrapper.innerHTML = `
-                    <div class="gantt-bar-bg ${type === 'week' ? 'bg-indigo-200 dark:bg-indigo-900/50' : type === 'month' ? 'bg-emerald-200 dark:bg-emerald-900/50' : ''}"></div>
-                    <div class="gantt-bar-progress ${type === 'week' ? 'bg-indigo-500' : type === 'month' ? 'bg-emerald-500' : ''}" style="width: ${progress}%;"></div>
-                    <div class="gantt-bar-label truncate w-full pr-1 ${progress > 50 ? 'text-white' : 'dark:text-gray-100'}">${esc(task.name)}</div>`;
-                wrapper.title = `${task.name}\n${task.start} -> ${task.end}\nTiến độ: ${progress}%`;
-                container.appendChild(wrapper);
+                const sOffset = Math.round((parseDate(task.start) - minD) / msPerDay); const dur = Math.round((parseDate(task.end) - parseDate(task.start)) / msPerDay) + 1; const progress = Math.max(0, Math.min(100, Number(task.progress) || 0));
+                const wrapper = document.createElement('div'); wrapper.className = 'gantt-bar-wrapper'; wrapper.style.left = `${sOffset * DAY_WIDTH}px`; wrapper.style.top = `${36 + (idx * 36)}px`; wrapper.style.width = `${dur * DAY_WIDTH - 2}px`;
+                wrapper.innerHTML = `<div class="gantt-bar-bg ${type === 'week' ? 'bg-indigo-200 dark:bg-indigo-900/50' : type === 'month' ? 'bg-emerald-200 dark:bg-emerald-900/50' : ''}"></div><div class="gantt-bar-progress ${type === 'week' ? 'bg-indigo-500' : type === 'month' ? 'bg-emerald-500' : ''}" style="width: ${progress}%;"></div><div class="gantt-bar-label truncate w-full pr-1 ${progress > 50 ? 'text-white' : 'dark:text-gray-100'}">${esc(task.name)}</div>`;
+                wrapper.title = `${task.name}\n${task.start} -> ${task.end}\nTiến độ: ${progress}%`; container.appendChild(wrapper);
             });
             container.appendChild(grid);
         };
 
-        // ===== Tài liệu =====
         window.autoExtractName = function(urlStr) {
-            const input = document.getElementById('doc-name');
-            if (input.value.trim() !== '') return;
+            const input = document.getElementById('doc-name'); if (input.value.trim() !== '') return;
             try {
-                const u = new URL(urlStr);
-                let nm = "Link Web";
+                const u = new URL(urlStr); let nm = "Link Web";
                 if (u.hostname.includes('docs.google.com') && u.pathname.startsWith('/spreadsheets')) nm = "Google Sheet Đính kèm";
                 else if (u.hostname.includes('docs.google.com') && u.pathname.startsWith('/document')) nm = "Google Doc Đính kèm";
                 else if (u.hostname.includes('drive.google')) nm = "Tài liệu Google Drive";
-                else {
-                    const pts = u.pathname.split('/').filter(Boolean);
-                    if (pts.length > 0) nm = decodeURIComponent(pts[pts.length - 1]).replace(/[-_]/g, ' ');
-                }
+                else { const pts = u.pathname.split('/').filter(Boolean); if (pts.length > 0) nm = decodeURIComponent(pts[pts.length - 1]).replace(/[-_]/g, ' '); }
                 input.value = nm.charAt(0).toUpperCase() + nm.slice(1);
             } catch (e) {}
         };
 
         window.submitDoc = async function(e) {
-            e.preventDefault();
-            if (isReadOnly || !currentUser) return;
-            const link = safeUrl(document.getElementById('doc-link').value.trim());
-            if (link === '#') return window.showToast("Link phải bắt đầu bằng http:// hoặc https://", "error");
+            e.preventDefault(); if (isReadOnly || !currentUser) return;
+            const link = safeUrl(document.getElementById('doc-link').value.trim()); if (link === '#') return window.showToast("Link phải bắt đầu bằng http:// hoặc https://", "error");
             try {
-                await addDoc(COL_DOCS, {
-                    type: document.getElementById('doc-type').value,
-                    link,
-                    name: document.getElementById('doc-name').value.trim().slice(0, 200),
-                    desc: document.getElementById('doc-desc').value.trim().slice(0, 500),
-                    status: 'Đã tải lên',
-                    notes: '',
-                    uid: currentUser.uid,
-                    uploadDateStr: new Date().toLocaleDateString('vi-VN'),
-                    createdAt: Date.now()
-                });
-                window.showToast("Đã thêm tài liệu mới");
-                e.target.reset();
+                await addDoc(COL_DOCS, { type: document.getElementById('doc-type').value, link, name: document.getElementById('doc-name').value.trim().slice(0, 200), desc: document.getElementById('doc-desc').value.trim().slice(0, 500), status: 'Đã tải lên', notes: '', uid: currentUser.uid, uploadDateStr: new Date().toLocaleDateString('vi-VN'), createdAt: Date.now() });
+                window.showToast("Đã thêm tài liệu mới"); e.target.reset();
             } catch (err) { window.showToast("Lỗi lưu dữ liệu", "error"); }
         };
 
         function renderDocList(containerId, emptyId, list) {
-            const container = document.getElementById(containerId);
-            const empty = document.getElementById(emptyId);
-
-            if (list.length === 0) {
-                container.innerHTML = '';
-                container.classList.add('hidden'); empty.classList.remove('hidden');
-                return;
-            }
+            const container = document.getElementById(containerId); const empty = document.getElementById(emptyId);
+            if (list.length === 0) { container.innerHTML = ''; container.classList.add('hidden'); empty.classList.remove('hidden'); return; }
             container.classList.remove('hidden'); empty.classList.add('hidden');
-
-            const inputProps = isReadOnly ? 'readonly disabled' : '';
-            const enterSave = `onkeydown="if(event.key==='Enter') this.blur()"`;
+            const inputProps = isReadOnly ? 'readonly disabled' : ''; const enterSave = `onkeydown="if(event.key==='Enter') this.blur()"`;
 
             container.innerHTML = list.map(item => {
                 const uName = systemUsers[item.uid]?.name || 'Ẩn danh';
@@ -1350,187 +1211,76 @@
                 <div class="p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group relative">
                     <div class="flex justify-between items-start gap-2">
                         <div class="flex-1">
-                            <a href="${esc(safeUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="font-semibold text-primary hover:underline flex items-center gap-1.5 text-sm">
-                                ${esc(item.name)} <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                            </a>
+                            <a href="${esc(safeUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="font-semibold text-primary hover:underline flex items-center gap-1.5 text-sm">${esc(item.name)} <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
                             <p class="text-xs text-gray-500 mt-1">${esc(item.desc) || 'Không có mô tả'}</p>
                         </div>
                         ${!isReadOnly ? `<button onclick="window.askDeleteDoc('${esc(item.id)}')" class="text-gray-300 hover:text-red-500 shrink-0 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"><i class="fa-solid fa-trash-can text-sm"></i></button>` : ''}
                     </div>
                     <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
-                        <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded px-2 py-1.5">
-                            <span class="text-gray-400 block mb-0.5">Trạng thái</span>
-                            <input type="text" maxlength="100" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${esc(item.status)}" ${inputProps} placeholder="Trống..." onchange="window.updateDocField('${esc(item.id)}', 'status', this.value)" ${enterSave}>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded px-2 py-1.5">
-                            <span class="text-gray-400 block mb-0.5">Ghi chú thêm</span>
-                            <input type="text" maxlength="500" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${esc(item.notes)}" ${inputProps} placeholder="Thêm ghi chú..." onchange="window.updateDocField('${esc(item.id)}', 'notes', this.value)" ${enterSave}>
-                        </div>
+                        <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded px-2 py-1.5"><span class="text-gray-400 block mb-0.5">Trạng thái</span><input type="text" maxlength="100" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${esc(item.status)}" ${inputProps} placeholder="Trống..." onchange="window.updateDocField('${esc(item.id)}', 'status', this.value)" ${enterSave}></div>
+                        <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded px-2 py-1.5"><span class="text-gray-400 block mb-0.5">Ghi chú thêm</span><input type="text" maxlength="500" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${esc(item.notes)}" ${inputProps} placeholder="Thêm ghi chú..." onchange="window.updateDocField('${esc(item.id)}', 'notes', this.value)" ${enterSave}></div>
                     </div>
-                    <div class="mt-2 text-[10px] text-gray-400 flex items-center justify-between">
-                        <span>Bởi: <strong class="text-gray-500">${esc(uName)}</strong></span>
-                        <span>Ngày tải: ${esc(item.uploadDateStr)}</span>
-                    </div>
+                    <div class="mt-2 text-[10px] text-gray-400 flex items-center justify-between"><span>Bởi: <strong class="text-gray-500">${esc(uName)}</strong></span><span>Ngày tải: ${esc(item.uploadDateStr)}</span></div>
                 </div>`;
             }).join('');
         }
 
         window.updateDocField = async function(id, field, val) {
-            if (isReadOnly || !currentUser) return;
-            if (!['status', 'notes'].includes(field)) return;
-            try {
-                await updateDoc(doc(COL_DOCS, id), { [field]: String(val).slice(0, 500) });
-                toastSavedDebounced("Đã lưu ghi chú");
-            } catch (e) { window.showToast("Lỗi cập nhật", "error"); }
+            if (isReadOnly || !currentUser) return; if (!['status', 'notes'].includes(field)) return;
+            try { await updateDoc(doc(COL_DOCS, id), { [field]: String(val).slice(0, 500) }); toastSavedDebounced("Đã lưu ghi chú"); } catch (e) { window.showToast("Lỗi cập nhật", "error"); }
         };
-
         window.askDeleteDoc = function(id) {
             if (isReadOnly) return;
-            window.openConfirm("Xóa dữ liệu này khỏi kho chung?", async () => {
-                try { await deleteDoc(doc(COL_DOCS, id)); window.showToast("Đã xóa tài liệu"); }
-                catch (e) { window.showToast("Lỗi khi xóa", "error"); }
-            });
+            window.openConfirm("Xóa dữ liệu này khỏi kho chung?", async () => { try { await deleteDoc(doc(COL_DOCS, id)); window.showToast("Đã xóa tài liệu"); } catch (e) { window.showToast("Lỗi khi xóa", "error"); } });
         };
 
-        // ===== Chat & Mentions =====
         window.toggleChat = function() {
-            const panel = document.getElementById('chat-panel');
-            const badge = document.getElementById('chat-badge');
-            if (panel.classList.contains('hidden')) {
-                panel.classList.remove('hidden');
-                badge.classList.add('hidden');
-                const c = document.getElementById('chat-messages');
-                c.scrollTop = c.scrollHeight;
-                setTimeout(() => document.getElementById('chat-input').focus(), 100);
-            } else {
-                panel.classList.add('hidden');
-                hideMention();
-            }
+            const panel = document.getElementById('chat-panel'); const badge = document.getElementById('chat-badge');
+            if (panel.classList.contains('hidden')) { panel.classList.remove('hidden'); badge.classList.add('hidden'); const c = document.getElementById('chat-messages'); c.scrollTop = c.scrollHeight; setTimeout(() => document.getElementById('chat-input').focus(), 100); }
+            else { panel.classList.add('hidden'); hideMention(); }
         };
 
         window.sendChat = async function(e) {
-            e.preventDefault();
-            if (!currentUser) return;
-            const input = document.getElementById('chat-input');
-            const txt = input.value.trim().slice(0, 1000);
-            if (!txt) return;
-            input.value = '';
-            hideMention();
-            try {
-                await addDoc(COL_CHAT, {
-                    text: txt,
-                    uid: currentUser.uid,
-                    userName: currentUser.displayName || currentUser.email.split('@')[0],
-                    timestamp: Date.now()
-                });
-            } catch (err) { window.showToast("Lỗi gửi tin nhắn", "error"); }
+            e.preventDefault(); if (!currentUser) return; const input = document.getElementById('chat-input'); const txt = input.value.trim().slice(0, 1000); if (!txt) return; input.value = ''; hideMention();
+            try { await addDoc(COL_CHAT, { text: txt, uid: currentUser.uid, userName: currentUser.displayName || currentUser.email.split('@')[0], timestamp: Date.now() }); } catch (err) { window.showToast("Lỗi gửi tin nhắn", "error"); }
         };
 
-        // --- Logic Tag tên (@Mentions) ---
-        const chatInput = document.getElementById('chat-input');
-        const mentionPopup = document.getElementById('mention-popup');
-        const mentionList = document.getElementById('mention-list');
-        
-        let isMentioning = false;
-        let mentionStartIndex = -1;
-        let mentionSelectedIndex = 0;
-        let mentionMatches = [];
+        const chatInput = document.getElementById('chat-input'); const mentionPopup = document.getElementById('mention-popup'); const mentionList = document.getElementById('mention-list');
+        let isMentioning = false; let mentionStartIndex = -1; let mentionSelectedIndex = 0; let mentionMatches = [];
 
-        function hideMention() {
-            isMentioning = false;
-            mentionPopup.classList.add('hidden');
-            mentionMatches = [];
-            mentionSelectedIndex = 0;
-        }
-
+        function hideMention() { isMentioning = false; mentionPopup.classList.add('hidden'); mentionMatches = []; mentionSelectedIndex = 0; }
         function showMention(searchStr, atIndex) {
-            mentionMatches = Object.values(systemUsers).filter(u => 
-                u.name && u.name.toLowerCase().includes(searchStr.toLowerCase())
-            );
-
-            if (mentionMatches.length === 0) {
-                hideMention();
-                return;
-            }
-
-            isMentioning = true;
-            mentionStartIndex = atIndex;
-            mentionSelectedIndex = 0;
-            renderMentionList();
-            mentionPopup.classList.remove('hidden');
+            mentionMatches = Object.values(systemUsers).filter(u => u.name && u.name.toLowerCase().includes(searchStr.toLowerCase()));
+            if (mentionMatches.length === 0) { hideMention(); return; }
+            isMentioning = true; mentionStartIndex = atIndex; mentionSelectedIndex = 0; renderMentionList(); mentionPopup.classList.remove('hidden');
         }
-
         function renderMentionList() {
-            mentionList.innerHTML = mentionMatches.map((u, idx) => `
-                <li onclick="window.insertMention(${idx})" class="mention-item px-3 py-2 cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors ${idx === mentionSelectedIndex ? 'active' : ''}">
-                    <div class="font-medium">${esc(u.name)}</div>
-                </li>
-            `).join('');
-            
-            // Tự scroll theo item active
-            const activeEl = mentionList.querySelector('.active');
-            if (activeEl) {
-                activeEl.scrollIntoView({ block: 'nearest' });
-            }
+            mentionList.innerHTML = mentionMatches.map((u, idx) => `<li onclick="window.insertMention(${idx})" class="mention-item px-3 py-2 cursor-pointer text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors ${idx === mentionSelectedIndex ? 'active' : ''}"><div class="font-medium">${esc(u.name)}</div></li>`).join('');
+            const activeEl = mentionList.querySelector('.active'); if (activeEl) { activeEl.scrollIntoView({ block: 'nearest' }); }
         }
 
         window.insertMention = function(idx = mentionSelectedIndex) {
             if (!isMentioning || !mentionMatches[idx]) return;
-            const user = mentionMatches[idx];
-            const currentVal = chatInput.value;
-            
-            // Thay thế đoạn text từ dấu @ bằng tên người được chọn
-            const before = currentVal.substring(0, mentionStartIndex);
-            const after = currentVal.substring(chatInput.selectionStart);
-            
-            const insertText = `@${user.name} `;
-            chatInput.value = before + insertText + after;
-            
-            hideMention();
-            chatInput.focus();
-            
-            // Đặt lại con trỏ ra sau chữ vừa chèn
-            const newPos = mentionStartIndex + insertText.length;
-            chatInput.setSelectionRange(newPos, newPos);
+            const user = mentionMatches[idx]; const currentVal = chatInput.value;
+            const before = currentVal.substring(0, mentionStartIndex); const after = currentVal.substring(chatInput.selectionStart);
+            const insertText = `@${user.name} `; chatInput.value = before + insertText + after; hideMention(); chatInput.focus();
+            const newPos = mentionStartIndex + insertText.length; chatInput.setSelectionRange(newPos, newPos);
         };
 
         chatInput.addEventListener('input', (e) => {
-            const val = chatInput.value;
-            const cursor = chatInput.selectionStart;
-            const lastAt = val.lastIndexOf('@', cursor - 1);
-            
-            if (lastAt !== -1) {
-                // Đảm bảo dấu @ đứng đầu hoặc sau một khoảng trắng
-                if (lastAt === 0 || val[lastAt - 1] === ' ' || val[lastAt - 1] === '\n') {
-                    const searchStr = val.substring(lastAt + 1, cursor);
-                    if (!searchStr.includes(' ')) {
-                        showMention(searchStr, lastAt);
-                        return;
-                    }
-                }
-            }
+            const val = chatInput.value; const cursor = chatInput.selectionStart; const lastAt = val.lastIndexOf('@', cursor - 1);
+            if (lastAt !== -1) { if (lastAt === 0 || val[lastAt - 1] === ' ' || val[lastAt - 1] === '\n') { const searchStr = val.substring(lastAt + 1, cursor); if (!searchStr.includes(' ')) { showMention(searchStr, lastAt); return; } } }
             hideMention();
         });
 
         chatInput.addEventListener('keydown', (e) => {
             if (isMentioning) {
-                if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    mentionSelectedIndex = (mentionSelectedIndex + 1) % mentionMatches.length;
-                    renderMentionList();
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    mentionSelectedIndex = (mentionSelectedIndex - 1 + mentionMatches.length) % mentionMatches.length;
-                    renderMentionList();
-                } else if (e.key === 'Enter' || e.key === 'Tab') {
-                    e.preventDefault();
-                    window.insertMention();
-                } else if (e.key === 'Escape') {
-                    hideMention();
-                }
+                if (e.key === 'ArrowDown') { e.preventDefault(); mentionSelectedIndex = (mentionSelectedIndex + 1) % mentionMatches.length; renderMentionList(); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); mentionSelectedIndex = (mentionSelectedIndex - 1 + mentionMatches.length) % mentionMatches.length; renderMentionList(); }
+                else if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); window.insertMention(); }
+                else if (e.key === 'Escape') { hideMention(); }
             }
         });
-
     </script>
 </body>
 </html>
