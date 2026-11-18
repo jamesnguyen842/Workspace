@@ -101,12 +101,11 @@
         .dark .mention-item.active { background-color: #334155; }
 
         /* ========= SUPER ELLIPSE (SQUIRCLE) CSS OVERRIDES ========= */
-        /* Áp dụng bo góc mềm mại cho toàn bộ giao diện */
         .rounded-md { border-radius: 12px !important; }
         .rounded-lg { border-radius: 16px !important; }
         .rounded-xl, .toast { border-radius: 24px !important; }
         .rounded-2xl { border-radius: 28px !important; }
-        .rounded-full, .toggle-checkbox { border-radius: 9999px !important; } /* Giữ nguyên hình viên nhộng (pill) cho icon/avatar */
+        .rounded-full, .toggle-checkbox { border-radius: 9999px !important; } 
         
         button, select, input, .inline-input { border-radius: 16px !important; }
         .btn-arsha { background: #47b2e4; border: 0; padding: 12px 28px; color: #fff; transition: 0.4s; border-radius: 24px !important; font-weight: 500; font-size: 15px; }
@@ -116,9 +115,6 @@
         #chat-panel { border-radius: 28px !important; }
         /* ========================================================== */
         
-        .animated-up-down { animation: up-down 2.5s ease-in-out infinite alternate-reverse both; }
-        @keyframes up-down { 0% { transform: translateY(12px); } 100% { transform: translateY(-12px); } }
-
         /* Loader Animation */
         @keyframes square-animation {
             0% { left: 0; top: 0; }
@@ -164,12 +160,12 @@
         </div>
     </div>
 
-    <!-- WELCOME SCREEN -->
+    <!-- WELCOME SCREEN: Không có ảnh minh họa, căn giữa chữ -->
     <div id="welcome-screen" class="fixed inset-0 z-[200] hidden flex-col bg-cover bg-center" style="background-image: url('assets/img/bg/bg-8.webp');">
         <!-- Lớp phủ đen trong suốt -->
         <div class="absolute inset-0 bg-black/70 z-0"></div>
         
-        <!-- Nội dung Text (Đã được căn giữa toàn màn hình) -->
+        <!-- Nội dung Text (Căn giữa) -->
         <div class="w-full h-full flex flex-col justify-center items-center p-10 z-10 relative text-center">
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight" data-aos="fade-up">Chào mừng bạn đến với Work Space</h1>
             
@@ -179,13 +175,6 @@
                 <button onclick="window.setLanguage('vi')" class="btn-arsha border border-transparent shadow-[0_4px_15px_rgba(71,178,228,0.5)]">Tiếng Việt</button>
                 <button onclick="window.setLanguage('en')" class="btn-arsha bg-white/10 backdrop-blur-md text-white border border-white/30 hover:bg-white hover:text-[#37517e] shadow-lg">English</button>
             </div>
-        </div>
-    </div>
-        
-        <!-- Bên phải: 40% Image -->
-        <div class="w-full md:w-[40%] h-full flex justify-center items-center z-10 relative">
-            <!-- Hình lơ lửng to hơn và đổ bóng đậm -->
-            <img src="assets/img/illustration/illustration-10.webp" class="animated-up-down w-5/6 max-w-[550px] drop-shadow-[0_25px_25px_rgba(0,0,0,0.8)]" alt="Illustration" onerror="this.style.display='none'">
         </div>
     </div>
 
@@ -271,7 +260,6 @@
                 <button onclick="window.openSettingsModal()" class="text-gray-500 hover:text-gray-800 w-8 h-8 flex justify-center items-center transition-colors">
                     <i class="fa-solid fa-gear text-lg"></i>
                 </button>
-                <!-- Sửa lỗi getT is not defined bằng cách gọi qua hàm trung gian window.handleLogoutClick -->
                 <button onclick="window.handleLogoutClick()" class="text-gray-500 hover:text-red-600 w-8 h-8 flex justify-center items-center transition-colors">
                     <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
                 </button>
