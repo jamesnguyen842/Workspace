@@ -65,7 +65,7 @@
         .dark th { background-color: #0f172a !important; color: #cbd5e1 !important; border-color: #334155 !important; }
         .dark tr:hover { background-color: #334155 !important; }
 
-        .inline-input { width: 100%; background-color: transparent; border: 1px solid transparent; border-radius: 0.25rem; padding: 0.35rem 0.5rem; transition: all 0.2s; font-size: 0.875rem; }
+        .inline-input { width: 100%; background-color: transparent; border: 1px solid transparent; padding: 0.35rem 0.5rem; transition: all 0.2s; font-size: 0.875rem; }
         .inline-input:not([readonly]):not([disabled]):hover { border-color: #e2e8f0; background-color: #f1f5f9; }
         .inline-input:not([readonly]):not([disabled]):focus { outline: none; border-color: #47b2e4; background-color: #ffffff; box-shadow: 0 0 0 1px #47b2e4; }
         .inline-input[readonly], .inline-input[disabled] { cursor: not-allowed; opacity: 0.8; }
@@ -78,20 +78,20 @@
         .gantt-grid { display: grid; position: relative; border-left: 1px solid #e2e8f0; border-top: 1px solid #e2e8f0; }
         .gantt-cell { border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; height: 36px; box-sizing: border-box; }
         .gantt-header-cell { background-color: #f1f5f9; font-size: 0.75rem; font-weight: 600; color: #475569; text-align: center; line-height: 36px; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
-        .gantt-bar-wrapper { position: absolute; height: 24px; margin-top: 6px; z-index: 10; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); display: flex; align-items: center; padding: 0 8px;}
+        .gantt-bar-wrapper { position: absolute; height: 24px; margin-top: 6px; z-index: 10; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); display: flex; align-items: center; padding: 0 8px;}
         .gantt-bar-bg { background-color: #bfdbfe; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: -2;}
         .gantt-bar-progress { background-color: #47b2e4; height: 100%; position: absolute; left: 0; top: 0; z-index: -1; transition: width 0.3s ease;}
         .gantt-bar-label { font-size: 0.7rem; color: #0f172a; font-weight: 600; white-space: nowrap; z-index: 10; pointer-events: none; }
 
         #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 99999; display: flex; flex-direction: column; gap: 10px; align-items: center;}
-        .toast { min-width: 250px; padding: 12px 20px; border-radius: 8px; background: #1e293b; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.875rem;}
+        .toast { min-width: 250px; padding: 12px 20px; background: #1e293b; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.875rem;}
         .toast.show { opacity: 1; transform: translateY(0); }
 
-        .chat-bubble { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.875rem; position: relative; word-wrap: break-word; white-space: pre-wrap;}
-        .chat-mine { background-color: #47b2e4; color: white; border-bottom-right-radius: 2px; margin-left: auto;}
-        .chat-other { background-color: #f1f5f9; color: #1e293b; border-bottom-left-radius: 2px;}
+        .chat-bubble { max-width: 80%; padding: 8px 12px; font-size: 0.875rem; position: relative; word-wrap: break-word; white-space: pre-wrap;}
+        .chat-mine { background-color: #47b2e4; color: white; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-left-radius: 18px; border-bottom-right-radius: 4px; margin-left: auto;}
+        .chat-other { background-color: #f1f5f9; color: #1e293b; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 4px;}
 
-        .toggle-checkbox { appearance: none; width: 40px; height: 20px; background: #cbd5e1; border-radius: 999px; position: relative; cursor: pointer; outline: none; transition: background 0.3s;}
+        .toggle-checkbox { appearance: none; width: 40px; height: 20px; background: #cbd5e1; position: relative; cursor: pointer; outline: none; transition: background 0.3s;}
         .toggle-checkbox:checked { background-color: #47b2e4; }
         .toggle-checkbox::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.3s;}
         .toggle-checkbox:checked::after { transform: translateX(20px); }
@@ -100,11 +100,23 @@
         .mention-item.active { background-color: #eff6ff; }
         .dark .mention-item.active { background-color: #334155; }
 
-        /* Arsha Styles & Animations */
-        .btn-arsha { background: #47b2e4; border: 0; padding: 10px 28px; color: #fff; transition: 0.4s; border-radius: 50px; font-weight: 500; font-size: 15px; }
-        .btn-arsha:hover { background: #209dd8; transform: translateY(-2px); }
+        /* ========= SUPER ELLIPSE (SQUIRCLE) CSS OVERRIDES ========= */
+        /* Áp dụng bo góc mềm mại cho toàn bộ giao diện */
+        .rounded-md { border-radius: 12px !important; }
+        .rounded-lg { border-radius: 16px !important; }
+        .rounded-xl, .toast { border-radius: 24px !important; }
+        .rounded-2xl { border-radius: 28px !important; }
+        .rounded-full, .toggle-checkbox { border-radius: 9999px !important; } /* Giữ nguyên hình viên nhộng (pill) cho icon/avatar */
         
-        .animated-up-down { animation: up-down 2s ease-in-out infinite alternate-reverse both; }
+        button, select, input, .inline-input { border-radius: 16px !important; }
+        .btn-arsha { background: #47b2e4; border: 0; padding: 12px 28px; color: #fff; transition: 0.4s; border-radius: 24px !important; font-weight: 500; font-size: 15px; }
+        .btn-arsha:hover { background: #209dd8; transform: translateY(-2px); }
+        .btn-add-action { border-radius: 12px !important; }
+        
+        #chat-panel { border-radius: 28px !important; }
+        /* ========================================================== */
+        
+        .animated-up-down { animation: up-down 2.5s ease-in-out infinite alternate-reverse both; }
         @keyframes up-down { 0% { transform: translateY(12px); } 100% { transform: translateY(-12px); } }
 
         /* Loader Animation */
@@ -129,7 +141,7 @@
         }
 
         .loader { position: relative; width: 96px; height: 96px; transform: rotate(45deg); }
-        .loader-square { position: absolute; top: 0; left: 0; width: 28px; height: 28px; margin: 2px; border-radius: 0px; background: #47b2e4; animation: square-animation 10s ease-in-out infinite both; }
+        .loader-square { position: absolute; top: 0; left: 0; width: 28px; height: 28px; margin: 2px; border-radius: 8px !important; background: #47b2e4; animation: square-animation 10s ease-in-out infinite both; }
         .loader-square:nth-of-type(0) { animation-delay: 0s; }
         .loader-square:nth-of-type(1) { animation-delay: -1.4285714286s; }
         .loader-square:nth-of-type(2) { animation-delay: -2.8571428571s; }
@@ -153,22 +165,22 @@
     </div>
 
     <!-- WELCOME SCREEN -->
-    <div id="welcome-screen" class="fixed inset-0 z-[200] hidden flex-col md:flex-row bg-cover bg-center" style="background-image: url('assets/img/bg/bg-8.webp');">
+    <div id="welcome-screen" class="fixed inset-0 z-[200] hidden flex-col bg-cover bg-center" style="background-image: url('assets/img/bg/bg-8.webp');">
         <!-- Lớp phủ đen trong suốt -->
         <div class="absolute inset-0 bg-black/70 z-0"></div>
         
-        <!-- Bên trái: 60% Text -->
-        <div class="w-full md:w-[60%] h-full flex flex-col justify-center items-start p-10 md:pl-20 z-10 relative">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight" data-aos="fade-up">WELL COME TO WORK SPACE</h1>
+        <!-- Nội dung Text (Đã được căn giữa toàn màn hình) -->
+        <div class="w-full h-full flex flex-col justify-center items-center p-10 z-10 relative text-center">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight" data-aos="fade-up">Chào mừng bạn đến với Work Space</h1>
             
-            <!-- Chữ ngôn ngữ nhỏ và mỏng hơn -->
-            <p class="text-base md:text-lg mb-8 text-gray-300 font-light" data-aos="fade-up" data-aos-delay="100">Select your language</p>
+            <p class="text-base md:text-lg mb-8 text-gray-300 font-light" data-aos="fade-up" data-aos-delay="100">Lựa chọn ngôn ngữ của bạn / Choose your language</p>
             
-            <div class="flex gap-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="flex gap-4 justify-center" data-aos="fade-up" data-aos-delay="200">
                 <button onclick="window.setLanguage('vi')" class="btn-arsha border border-transparent shadow-[0_4px_15px_rgba(71,178,228,0.5)]">Tiếng Việt</button>
                 <button onclick="window.setLanguage('en')" class="btn-arsha bg-white/10 backdrop-blur-md text-white border border-white/30 hover:bg-white hover:text-[#37517e] shadow-lg">English</button>
             </div>
         </div>
+    </div>
         
         <!-- Bên phải: 40% Image -->
         <div class="w-full md:w-[40%] h-full flex justify-center items-center z-10 relative">
@@ -193,17 +205,17 @@
             <form id="auth-form" onsubmit="window.handleAuth(event)" class="space-y-4">
                 <div id="name-field-group" class="hidden">
                     <label class="block text-sm font-medium text-gray-700 mb-1 t-display-name">Tên hiển thị (Bắt buộc)</label>
-                    <input type="text" id="auth-name" autocomplete="name" maxlength="50" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all">
+                    <input type="text" id="auth-name" autocomplete="name" maxlength="50" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1 t-work-email">Email làm việc</label>
-                    <input type="email" id="auth-email" required autocomplete="email" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all">
+                    <input type="email" id="auth-email" required autocomplete="email" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1 t-password">Mật khẩu</label>
                     <div class="relative">
-                        <input type="password" id="auth-password" required minlength="6" autocomplete="current-password" class="w-full px-4 py-2.5 pr-10 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all">
-                        <button type="button" onclick="window.toggleAuthPass()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                        <input type="password" id="auth-password" required minlength="6" autocomplete="current-password" class="w-full px-4 py-2.5 pr-10 bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-primary outline-none transition-all">
+                        <button type="button" onclick="window.toggleAuthPass()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 rounded-full w-8 h-8 flex justify-center items-center">
                             <i class="fa-solid fa-eye" id="auth-eye-icon"></i>
                         </button>
                     </div>
@@ -212,14 +224,14 @@
                     <span id="btn-submit-text" class="t-login-btn">Đăng Nhập</span>
                 </button>
 
-                <button type="button" onclick="window.installPWA()" class="pwa-install-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg shadow transition-all flex justify-center items-center gap-2 text-sm mt-3">
+                <button type="button" onclick="window.installPWA()" class="pwa-install-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 shadow transition-all flex justify-center items-center gap-2 text-sm mt-3">
                     <i class="fa-solid fa-mobile-screen-button"></i> <span class="t-pwa-btn pwa-btn-text">Thêm ứng dụng vào Màn hình</span>
                 </button>
             </form>
 
             <div class="mt-6 text-center text-sm text-gray-600 border-t border-gray-100 pt-5">
                 <span id="auth-toggle-text" class="t-no-account">Chưa có tài khoản tham gia?</span>
-                <button onclick="window.toggleAuthMode()" id="auth-toggle-btn" class="text-primary hover:text-primaryHover hover:underline font-semibold ml-1 t-register-now">Đăng ký ngay</button>
+                <button onclick="window.toggleAuthMode()" id="auth-toggle-btn" class="text-primary hover:text-primaryHover hover:underline font-semibold ml-1 t-register-now rounded-md px-2 py-1">Đăng ký ngay</button>
             </div>
         </div>
     </div>
@@ -234,17 +246,17 @@
                     </div>
                     <h1 class="text-base font-bold text-gray-900 hidden lg:block">Workspace</h1>
                 </div>
-                <nav class="flex gap-1 sm:gap-2 bg-slate-100 p-1 rounded-lg shrink-0">
-                    <button onclick="window.switchTab('plan')" id="tab-btn-plan" class="px-3 py-1.5 rounded-md font-medium text-sm transition-all bg-white shadow-sm text-primary">
+                <nav class="flex gap-1 sm:gap-2 bg-slate-100 p-1 rounded-2xl shrink-0">
+                    <button onclick="window.switchTab('plan')" id="tab-btn-plan" class="px-4 py-1.5 font-medium text-sm transition-all bg-white shadow-sm text-primary">
                         <i class="fa-solid fa-list-check mr-1.5"></i> <span class="hidden sm:inline t-nav-plan">Kế hoạch</span>
                     </button>
-                    <button onclick="window.switchTab('data')" id="tab-btn-data" class="px-3 py-1.5 rounded-md font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
+                    <button onclick="window.switchTab('data')" id="tab-btn-data" class="px-4 py-1.5 font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
                         <i class="fa-solid fa-folder-tree mr-1.5"></i> <span class="hidden sm:inline t-nav-data">Dữ liệu</span>
                     </button>
-                    <button onclick="window.switchTab('assign')" id="tab-btn-assign" class="hidden px-3 py-1.5 rounded-md font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
+                    <button onclick="window.switchTab('assign')" id="tab-btn-assign" class="hidden px-4 py-1.5 font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
                         <i class="fa-solid fa-paper-plane mr-1.5"></i> <span class="hidden sm:inline t-nav-assign">Giao việc</span>
                     </button>
-                    <button onclick="window.switchTab('permissions')" id="tab-btn-permissions" class="hidden px-3 py-1.5 rounded-md font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
+                    <button onclick="window.switchTab('permissions')" id="tab-btn-permissions" class="hidden px-4 py-1.5 font-medium text-sm text-gray-600 hover:text-gray-900 transition-all">
                         <i class="fa-solid fa-shield-halved mr-1.5"></i> <span class="hidden sm:inline t-nav-perm">Phân quyền</span>
                     </button>
                 </nav>
@@ -256,19 +268,20 @@
                     <select id="user-filter-select" onchange="window.handleUserFilterChange()" class="bg-transparent text-sm font-semibold text-gray-700 outline-none cursor-pointer max-w-[120px] md:max-w-[200px] truncate"></select>
                 </div>
                 <div class="w-px h-5 bg-gray-200 hidden sm:block"></div>
-                <button onclick="window.openSettingsModal()" class="text-gray-500 hover:text-gray-800 p-1.5 rounded-md transition-colors">
+                <button onclick="window.openSettingsModal()" class="text-gray-500 hover:text-gray-800 w-8 h-8 flex justify-center items-center transition-colors">
                     <i class="fa-solid fa-gear text-lg"></i>
                 </button>
-                <button onclick="window.openConfirm(getT('t-logout-ask'), window.processLogout, getT('t-logout-yes'), getT('t-btn-cancel'), null, true)" class="text-gray-500 hover:text-red-600 p-1.5 rounded-md transition-colors">
+                <!-- Sửa lỗi getT is not defined bằng cách gọi qua hàm trung gian window.handleLogoutClick -->
+                <button onclick="window.handleLogoutClick()" class="text-gray-500 hover:text-red-600 w-8 h-8 flex justify-center items-center transition-colors">
                     <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
                 </button>
             </div>
         </header>
 
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 pb-24 relative">
-            <div id="readonly-banner" class="hidden max-w-7xl mx-auto mb-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-700 dark:text-amber-500 px-4 py-2 rounded-lg flex items-center justify-between shadow-sm">
+            <div id="readonly-banner" class="hidden max-w-7xl mx-auto mb-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-700 dark:text-amber-500 px-4 py-2 rounded-xl flex items-center justify-between shadow-sm">
                 <span class="text-sm font-medium"><i class="fa-solid fa-lock mr-2"></i><span class="t-readonly-mode">Chế độ Chỉ Xem dữ liệu thành viên khác.</span></span>
-                <button onclick="window.resetUserFilter()" class="text-xs bg-amber-100 dark:bg-amber-800/50 hover:bg-amber-200 px-3 py-1 rounded font-semibold transition-colors t-back-to-mine">Về của tôi</button>
+                <button onclick="window.resetUserFilter()" class="text-xs bg-amber-100 dark:bg-amber-800/50 hover:bg-amber-200 px-3 py-1 font-semibold transition-colors t-back-to-mine">Về của tôi</button>
             </div>
 
             <!-- TAB 1: KẾ HOẠCH -->
@@ -286,30 +299,30 @@
 
             <!-- TAB 2: DATA -->
             <div id="tab-data" class="hidden space-y-6 max-w-7xl mx-auto pb-10">
-                <div id="form-upload-container" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                <div id="form-upload-container" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 class="font-semibold text-gray-800 mb-4 text-sm uppercase tracking-wide border-b pb-2"><i class="fa-solid fa-cloud-arrow-up mr-2 text-primary"></i><span class="t-add-new-data">Thêm dữ liệu mới</span></h3>
                     <form id="doc-form" onsubmit="window.submitDoc(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4">
                         <div class="md:col-span-2">
                             <label class="block text-xs font-medium text-gray-600 mb-1 t-type">Loại</label>
-                            <select id="doc-type" class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:border-primary text-sm bg-gray-50">
+                            <select id="doc-type" class="w-full px-3 py-2 border border-gray-300 outline-none focus:border-primary text-sm bg-gray-50">
                                 <option value="project" class="t-opt-proj">📁 Folder Dự án</option>
                                 <option value="document" class="t-opt-doc">📄 File Tài liệu</option>
                             </select>
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-xs font-medium text-gray-600 mb-1 t-link-url">Link URL (Drive, Web...)</label>
-                            <input type="url" id="doc-link" required oninput="window.autoExtractName(this.value)" placeholder="https://" class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:border-primary text-sm">
+                            <input type="url" id="doc-link" required oninput="window.autoExtractName(this.value)" placeholder="https://" class="w-full px-3 py-2 border border-gray-300 outline-none focus:border-primary text-sm">
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-gray-600 mb-1 t-display-name-doc">Tên hiển thị</label>
-                            <input type="text" id="doc-name" required maxlength="200" class="t-ph-doc-name w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:border-primary text-sm">
+                            <input type="text" id="doc-name" required maxlength="200" class="t-ph-doc-name w-full px-3 py-2 border border-gray-300 outline-none focus:border-primary text-sm">
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-medium text-gray-600 mb-1 t-desc-note">Mô tả / Ghi chú</label>
-                            <input type="text" id="doc-desc" maxlength="500" class="t-ph-doc-desc w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:border-primary text-sm">
+                            <input type="text" id="doc-desc" maxlength="500" class="t-ph-doc-desc w-full px-3 py-2 border border-gray-300 outline-none focus:border-primary text-sm">
                         </div>
-                        <div class="md:col-span-12 flex justify-end mt-1">
-                            <button type="submit" class="bg-primary hover:bg-primaryHover text-white px-6 py-2 rounded-md text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+                        <div class="md:col-span-12 flex justify-end mt-2">
+                            <button type="submit" class="bg-primary hover:bg-primaryHover text-white px-6 py-2 text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
                                 <i class="fa-solid fa-upload"></i> <span class="t-save-system">Lưu lên hệ thống</span>
                             </button>
                         </div>
@@ -318,7 +331,7 @@
 
                 <div id="data-grid-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[550px]">
-                        <div class="px-5 py-3 border-b border-gray-200 bg-slate-50 shrink-0 flex justify-between items-center">
+                        <div class="px-5 py-4 border-b border-gray-200 bg-slate-50 shrink-0 flex justify-between items-center">
                             <h3 class="font-semibold text-gray-800"><i class="fa-solid fa-folder-open text-amber-500 mr-2"></i><span class="t-project-list">Danh sách Dự án</span></h3>
                             <span class="text-xs bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full" id="count-projects">0</span>
                         </div>
@@ -331,7 +344,7 @@
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[550px]">
-                        <div class="px-5 py-3 border-b border-gray-200 bg-slate-50 shrink-0 flex justify-between items-center">
+                        <div class="px-5 py-4 border-b border-gray-200 bg-slate-50 shrink-0 flex justify-between items-center">
                             <h3 class="font-semibold text-gray-800"><i class="fa-solid fa-file-lines text-blue-500 mr-2"></i><span class="t-doc-list">Danh sách Tài liệu</span></h3>
                             <span class="text-xs bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full" id="count-documents">0</span>
                         </div>
@@ -361,11 +374,11 @@
                     <p class="text-sm text-gray-500 mb-6 t-perm-desc">Cấp quyền truy cập "Kế hoạch" và "Dữ liệu" của các thành viên khác cho một người dùng cụ thể.</p>
                     <div class="mb-6">
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 t-perm-step1">1. Chọn thành viên (Người sẽ được cấp/rút quyền):</label>
-                        <select id="perm-viewer-select" onchange="window.renderPermissionsList()" class="w-full sm:w-1/2 px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100"></select>
+                        <select id="perm-viewer-select" onchange="window.renderPermissionsList()" class="w-full sm:w-1/2 px-4 py-2 border border-gray-300 dark:border-slate-600 outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100"></select>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 t-perm-step2">2. Cấu hình không gian mà người này được phép xem:</label>
-                        <div id="perm-list-container" class="border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden divide-y divide-gray-100 dark:divide-slate-700"></div>
+                        <div id="perm-list-container" class="border border-gray-200 dark:border-slate-700 rounded-xl overflow-hidden divide-y divide-gray-100 dark:divide-slate-700"></div>
                     </div>
                 </div>
             </div>
@@ -379,11 +392,11 @@
                     <form id="assign-form" onsubmit="window.submitAssignTask(event)" class="space-y-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1"><span class="t-assign-step1">1. Chọn người nhận việc *</span></label>
-                            <select id="assign-target" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100"></select>
+                            <select id="assign-target" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100"></select>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1"><span class="t-assign-step2">2. Loại kế hoạch *</span></label>
-                            <select id="assign-type" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
+                            <select id="assign-type" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
                                 <option value="day" class="t-opt-day">Kế hoạch Ngày</option>
                                 <option value="week" class="t-opt-week">Kế hoạch Tuần</option>
                                 <option value="month" class="t-opt-month">Kế hoạch Tháng</option>
@@ -391,24 +404,24 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1"><span class="t-assign-step3">3. Tên công việc *</span></label>
-                            <input type="text" id="assign-name" required maxlength="200" class="t-ph-assign-name w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
+                            <input type="text" id="assign-name" required maxlength="200" class="t-ph-assign-name w-full px-4 py-2 border border-gray-300 dark:border-slate-600 outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1"><span class="t-assign-step4">4. Ngày bắt đầu *</span></label>
-                                <input type="date" id="assign-start" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300">
+                                <input type="date" id="assign-start" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1"><span class="t-assign-step5">5. Ngày kết thúc *</span></label>
-                                <input type="date" id="assign-end" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300">
+                                <input type="date" id="assign-end" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300">
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 t-assign-step6">6. Link tài liệu đính kèm (Tùy chọn)</label>
-                            <input type="url" id="assign-link" placeholder="https://..." class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
+                            <input type="url" id="assign-link" placeholder="https://..." class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 outline-none focus:border-primary bg-gray-50 dark:bg-slate-700 text-gray-800 dark:text-gray-100">
                         </div>
                         <div class="pt-2">
-                            <button type="submit" class="w-full bg-primary hover:bg-primaryHover text-white font-medium py-3 rounded-lg shadow transition-colors flex justify-center items-center gap-2">
+                            <button type="submit" class="w-full bg-primary hover:bg-primaryHover text-white font-medium py-3 shadow transition-colors flex justify-center items-center gap-2">
                                 <i class="fa-solid fa-paper-plane"></i> <span class="t-assign-btn">Giao việc ngay</span>
                             </button>
                         </div>
@@ -424,20 +437,20 @@
             <i class="fa-solid fa-comment-dots text-2xl"></i>
             <span id="chat-badge" class="hidden absolute top-0 right-0 bg-red-500 w-4 h-4 rounded-full border-2 border-white"></span>
         </button>
-        <div id="chat-panel" class="hidden bg-white dark:bg-slate-800 w-80 sm:w-96 h-[450px] max-h-[80vh] rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 flex flex-col mt-4 overflow-hidden origin-bottom-right transition-all relative">
-            <div class="bg-dark text-white px-4 py-3 flex justify-between items-center shrink-0">
+        <div id="chat-panel" class="hidden bg-white dark:bg-slate-800 w-80 sm:w-96 h-[450px] max-h-[80vh] shadow-2xl border border-gray-200 dark:border-slate-700 flex flex-col mt-4 overflow-hidden origin-bottom-right transition-all relative">
+            <div class="bg-dark text-white px-5 py-4 flex justify-between items-center shrink-0">
                 <div class="flex items-center gap-2"><i class="fa-solid fa-users text-sm"></i><h3 class="font-semibold text-sm t-chat-title">Chat Team Chung</h3></div>
-                <button onclick="window.toggleChat()" class="text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="window.toggleChat()" class="text-gray-300 hover:text-white transition-colors w-6 h-6"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-900 flex flex-col relative z-0"></div>
             
-            <div id="mention-popup" class="hidden absolute bottom-[60px] left-2 right-2 bg-white dark:bg-slate-800 shadow-lg border border-gray-200 dark:border-slate-600 rounded-lg overflow-hidden z-50">
+            <div id="mention-popup" class="hidden absolute bottom-[70px] left-3 right-3 bg-white dark:bg-slate-800 shadow-lg border border-gray-200 dark:border-slate-600 rounded-xl overflow-hidden z-50">
                 <ul id="mention-list" class="max-h-40 overflow-y-auto text-sm"></ul>
             </div>
 
-            <form onsubmit="window.sendChat(event)" class="p-3 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 flex gap-2 shrink-0 z-10 relative">
-                <input type="text" id="chat-input" required maxlength="1000" autocomplete="off" class="t-ph-chat flex-1 px-3 py-2 bg-gray-100 dark:bg-slate-700 dark:text-gray-100 border-transparent rounded-full text-sm outline-none focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-slate-600 transition-all text-gray-800">
+            <form onsubmit="window.sendChat(event)" class="p-4 bg-white dark:bg-slate-800 border-t border-gray-100 dark:border-slate-700 flex gap-2 shrink-0 z-10 relative">
+                <input type="text" id="chat-input" required maxlength="1000" autocomplete="off" class="t-ph-chat flex-1 px-4 py-2.5 bg-gray-100 dark:bg-slate-700 dark:text-gray-100 border-transparent text-sm outline-none focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-slate-600 transition-all text-gray-800 !rounded-full">
                 <button type="submit" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primaryHover shrink-0 transition-colors"><i class="fa-solid fa-paper-plane text-xs"></i></button>
             </form>
         </div>
@@ -457,13 +470,13 @@
     <div id="confirm-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center z-[9999] modal-overlay transition-opacity">
         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-2xl w-[90%] max-w-sm transform scale-95 transition-transform" id="confirm-modal-box">
             <div class="flex items-center gap-3 mb-4">
-                <div id="confirm-icon-box" class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0 text-red-500"><i id="confirm-icon" class="fa-solid fa-triangle-exclamation text-xl"></i></div>
+                <div id="confirm-icon-box" class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0 text-red-500"><i id="confirm-icon" class="fa-solid fa-triangle-exclamation text-xl"></i></div>
                 <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100" id="confirm-title">Xác nhận</h3>
             </div>
             <p id="confirm-text" class="mb-6 text-gray-600 dark:text-gray-300 text-sm pl-1 leading-relaxed">Bạn có chắc chắn thực hiện?</p>
             <div class="flex justify-end gap-3">
-                <button id="confirm-no-btn" onclick="window.closeConfirm(true)" class="px-5 py-2.5 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600 font-semibold rounded-xl text-sm transition-colors t-btn-cancel">Hủy bỏ</button>
-                <button id="confirm-yes-btn" onclick="window.executeConfirm()" class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm t-btn-agree">Đồng ý</button>
+                <button id="confirm-no-btn" onclick="window.closeConfirm(true)" class="px-5 py-2.5 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600 font-semibold text-sm transition-colors t-btn-cancel !rounded-xl">Hủy bỏ</button>
+                <button id="confirm-yes-btn" onclick="window.executeConfirm()" class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm transition-colors shadow-sm t-btn-agree !rounded-xl">Đồng ý</button>
             </div>
         </div>
     </div>
@@ -476,32 +489,32 @@
                 <li><span class="t-ios-step2">2. Kéo xuống, chọn </span><b><span class="t-ios-add">Thêm vào MH chính</span></b> <i class="fa-regular fa-square-plus text-primary"></i></li>
                 <li><span class="t-ios-step3">3. Bấm </span><b><span class="t-ios-add-btn">Thêm</span></b> <span class="t-ios-step3b">ở góc trên phải</span></li>
             </ol>
-            <button onclick="window.closeIosGuide()" class="w-full mt-4 bg-dark text-white py-2.5 rounded-lg text-sm font-medium t-ios-got-it">Đã hiểu</button>
+            <button onclick="window.closeIosGuide()" class="w-full mt-4 bg-dark text-white py-3 font-medium t-ios-got-it">Đã hiểu</button>
         </div>
     </div>
 
     <div id="settings-modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center z-[500] modal-overlay">
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-[90%] max-w-md overflow-hidden flex flex-col transition-colors border border-gray-100 dark:border-slate-700">
-            <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 transition-colors">
+            <div class="px-6 py-5 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 transition-colors">
                 <h3 class="font-bold text-gray-800 dark:text-gray-100 t-setting-title">Cài đặt Hệ thống</h3>
-                <button onclick="window.closeSettingsModal()" class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="window.closeSettingsModal()" class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 w-6 h-6"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="p-5 space-y-4 overflow-y-auto max-h-[70vh]">
-                <details class="group bg-gray-50 dark:bg-slate-700 border border-gray-100 dark:border-slate-600 rounded-lg open:shadow-sm" open>
-                    <summary class="font-semibold p-3 cursor-pointer flex justify-between items-center outline-none">
+                <details class="group bg-gray-50 dark:bg-slate-700 border border-gray-100 dark:border-slate-600 rounded-xl open:shadow-sm" open>
+                    <summary class="font-semibold p-4 cursor-pointer flex justify-between items-center outline-none">
                         <span class="text-gray-800 dark:text-gray-100"><i class="fa-solid fa-user-circle mr-2 text-primary"></i><span class="t-acc-info">Thông tin Tài khoản</span></span>
                         <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
                     </summary>
-                    <div class="p-4 border-t border-gray-200 dark:border-slate-600 space-y-4 bg-white dark:bg-slate-800 rounded-b-lg">
+                    <div class="p-4 border-t border-gray-200 dark:border-slate-600 space-y-4 bg-white dark:bg-slate-800 rounded-b-xl">
                         <div class="flex items-center justify-between">
                             <div class="flex-1">
                                 <span class="text-[11px] text-gray-500 font-semibold uppercase tracking-wider block mb-1 t-display-name-2">Tên hiển thị</span>
                                 <div id="display-name-text" class="font-medium text-gray-800 dark:text-gray-100 text-sm">...</div>
-                                <input type="text" id="setting-name" autocomplete="off" maxlength="50" class="hidden w-[90%] px-2 py-1.5 border border-gray-300 dark:border-slate-500 rounded text-sm bg-transparent outline-none focus:border-primary">
+                                <input type="text" id="setting-name" autocomplete="off" maxlength="50" class="hidden w-[90%] px-2 py-1.5 border border-gray-300 dark:border-slate-500 text-sm bg-transparent outline-none focus:border-primary">
                             </div>
                             <div class="shrink-0 ml-2">
-                                <button onclick="window.toggleEditName()" id="btn-edit-name" class="text-gray-400 hover:text-primary p-2 transition-colors"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="window.saveName()" id="btn-save-name" class="hidden text-emerald-500 hover:text-emerald-600 p-2 transition-colors"><i class="fa-solid fa-check text-lg"></i></button>
+                                <button onclick="window.toggleEditName()" id="btn-edit-name" class="text-gray-400 hover:text-primary w-8 h-8 transition-colors"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="window.saveName()" id="btn-save-name" class="hidden text-emerald-500 hover:text-emerald-600 w-8 h-8 transition-colors"><i class="fa-solid fa-check text-lg"></i></button>
                             </div>
                         </div>
                         <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-700">
@@ -510,24 +523,24 @@
                                 <div class="text-xs text-gray-500 dark:text-gray-400 mb-1" id="display-email-text">email@...</div>
                                 <div class="flex items-center gap-2">
                                     <span id="fake-password" class="font-bold tracking-[0.2em] text-gray-800 dark:text-gray-100 mt-0.5">********</span>
-                                    <input type="password" id="setting-pass" autocomplete="new-password" class="t-ph-new-pass hidden w-[90%] px-2 py-1.5 border border-gray-300 dark:border-slate-500 rounded text-sm bg-transparent outline-none focus:border-primary">
-                                    <button onclick="window.togglePassVisibility()" id="btn-eye-pass" class="hidden text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-1"><i class="fa-solid fa-eye text-xs" id="icon-eye-pass"></i></button>
+                                    <input type="password" id="setting-pass" autocomplete="new-password" class="t-ph-new-pass hidden w-[90%] px-2 py-1.5 border border-gray-300 dark:border-slate-500 text-sm bg-transparent outline-none focus:border-primary">
+                                    <button onclick="window.togglePassVisibility()" id="btn-eye-pass" class="hidden text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 w-6 h-6"><i class="fa-solid fa-eye text-xs" id="icon-eye-pass"></i></button>
                                 </div>
                             </div>
                             <div class="shrink-0 ml-2 self-end mb-0.5">
-                                <button onclick="window.toggleEditPass()" id="btn-edit-pass" class="text-gray-400 hover:text-primary p-2 transition-colors"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="window.savePass()" id="btn-save-pass" class="hidden text-emerald-500 hover:text-emerald-600 p-2 transition-colors"><i class="fa-solid fa-check text-lg"></i></button>
+                                <button onclick="window.toggleEditPass()" id="btn-edit-pass" class="text-gray-400 hover:text-primary w-8 h-8 transition-colors"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="window.savePass()" id="btn-save-pass" class="hidden text-emerald-500 hover:text-emerald-600 w-8 h-8 transition-colors"><i class="fa-solid fa-check text-lg"></i></button>
                             </div>
                         </div>
                     </div>
                 </details>
 
-                <details class="group bg-gray-50 dark:bg-slate-700 border border-gray-100 dark:border-slate-600 rounded-lg open:shadow-sm" open>
-                    <summary class="font-semibold p-3 cursor-pointer flex justify-between items-center outline-none">
+                <details class="group bg-gray-50 dark:bg-slate-700 border border-gray-100 dark:border-slate-600 rounded-xl open:shadow-sm" open>
+                    <summary class="font-semibold p-4 cursor-pointer flex justify-between items-center outline-none">
                         <span class="text-gray-800 dark:text-gray-100"><i class="fa-solid fa-sliders mr-2 text-primary"></i><span class="t-ui-noti">Giao diện & Thông báo</span></span>
                         <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
                     </summary>
-                    <div class="p-4 border-t border-gray-200 dark:border-slate-600 space-y-4 bg-white dark:bg-slate-800 rounded-b-lg">
+                    <div class="p-4 border-t border-gray-200 dark:border-slate-600 space-y-4 bg-white dark:bg-slate-800 rounded-b-xl">
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-200 t-dark-mode">Chế độ Tối (Dark Mode)</span>
                             <input type="checkbox" id="dark-mode-toggle" onchange="window.toggleDarkModeSetting(this.checked)" class="toggle-checkbox">
@@ -543,7 +556,7 @@
                 </details>
 
                 <div class="pwa-install-section">
-                    <button type="button" onclick="window.installPWA()" class="pwa-install-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg shadow transition-all flex justify-center items-center gap-2 text-sm">
+                    <button type="button" onclick="window.installPWA()" class="pwa-install-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 shadow transition-all flex justify-center items-center gap-2 text-sm">
                         <i class="fa-solid fa-mobile-screen-button"></i> <span class="t-pwa-btn pwa-btn-text">Thêm ứng dụng vào Màn hình</span>
                     </button>
                 </div>
@@ -583,7 +596,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // BỘ TỪ ĐIỂN ĐA NGÔN NGỮ HOÀN CHỈNH 100%
         const translations = {
             vi: {
                 "t-login-title": "Đăng Nhập Workspace", "t-login-desc": "Nền tảng cộng tác trực tuyến của team",
@@ -620,7 +632,6 @@
                 "t-ios-step1": "1. Bấm nút ", "t-ios-share": "Chia sẻ", "t-ios-step1b": "ở thanh dưới Safari",
                 "t-ios-step2": "2. Kéo xuống, chọn ", "t-ios-add": "Thêm vào MH chính", 
                 "t-ios-step3": "3. Bấm ", "t-ios-add-btn": "Thêm", "t-ios-step3b": "ở góc trên phải", "t-ios-got-it": "Đã hiểu",
-                // JS Dynamic Text
                 "t-no-tasks": "Chưa có công việc nào.", "t-no-gantt": "Không có dữ liệu vẽ sơ đồ.",
                 "t-status-label": "Trạng thái", "t-ph-status": "Trống...", "t-note-label": "Ghi chú thêm", "t-ph-note": "Thêm ghi chú...",
                 "t-by": "Bởi:", "t-upload-date": "Ngày tải:", "t-ph-task-name": "Công việc mới...", "t-ph-assignee": "Tên người...",
@@ -663,7 +674,6 @@
                 "t-ios-step1": "1. Tap the ", "t-ios-share": "Share", "t-ios-step1b": " button at the bottom",
                 "t-ios-step2": "2. Scroll down, select ", "t-ios-add": "Add to Home Screen", 
                 "t-ios-step3": "3. Tap ", "t-ios-add-btn": "Add", "t-ios-step3b": " in the top right", "t-ios-got-it": "Got it",
-                // JS Dynamic Text
                 "t-no-tasks": "No tasks available.", "t-no-gantt": "No data for chart.",
                 "t-status-label": "Status", "t-ph-status": "Empty...", "t-note-label": "Notes", "t-ph-note": "Add note...",
                 "t-by": "By:", "t-upload-date": "Uploaded:", "t-ph-task-name": "New task...", "t-ph-assignee": "Name...",
@@ -676,8 +686,20 @@
         window.currentLang = 'vi';
         window.langSelected = false;
         
-        // Helper function for JS injected strings
-        const getT = (key) => translations[window.currentLang][key] || key;
+        // Khai báo getT toàn cục để HTML (onclick) có thể gọi được
+        window.getT = (key) => translations[window.currentLang][key] || key;
+        
+        // Hàm trung gian xử lý sự kiện nút đăng xuất
+        window.handleLogoutClick = function() {
+            window.openConfirm(
+                window.getT('t-logout-ask'), 
+                window.processLogout, 
+                window.getT('t-logout-yes'), 
+                window.getT('t-btn-cancel'), 
+                null, 
+                true
+            );
+        };
 
         window.setLanguage = function(lang) {
             window.currentLang = lang;
@@ -694,7 +716,7 @@
             }
             document.getElementById('welcome-screen').classList.replace('flex', 'hidden');
             document.getElementById('auth-screen').classList.remove('hidden');
-            if (currentUser) renderTasksAndDocs(true); // Re-render table if logged in
+            if (currentUser) renderTasksAndDocs(true); 
         };
 
         const COL_TASKS = collection(db, 'artifacts', APP_ID, 'public', 'data', 'tasks');
@@ -721,9 +743,9 @@
         const setPwaText = (txt) => document.querySelectorAll('.pwa-btn-text').forEach(el => el.innerText = txt);
 
         if (isStandalone()) pwaButtons().forEach(b => b.classList.add('hidden'));
-        if (window.__deferredPrompt) setPwaText(getT('t-pwa-btn'));
+        if (window.__deferredPrompt) setPwaText(window.getT('t-pwa-btn'));
         
-        document.addEventListener('pwa-ready', () => setPwaText(getT('t-pwa-btn')));
+        document.addEventListener('pwa-ready', () => setPwaText(window.getT('t-pwa-btn')));
         document.addEventListener('pwa-installed', () => { pwaButtons().forEach(b => b.classList.add('hidden')); });
 
         window.installPWA = async function () {
@@ -751,36 +773,36 @@
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
                 <button onclick="window.toggleAccordion('${s.type}')" class="w-full flex items-center justify-between px-5 py-4 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded bg-${s.color}-100 dark:bg-${s.color}-900/50 text-${s.color}-600 dark:text-${s.color}-400 flex items-center justify-center font-bold text-sm"><i class="fa-regular fa-calendar"></i></div>
-                        <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-left"><span class="t-sec-title-${s.type}">${getT(`t-sec-title-${s.type}`)}</span></h3>
+                        <div class="w-8 h-8 rounded-lg bg-${s.color}-100 dark:bg-${s.color}-900/50 text-${s.color}-600 dark:text-${s.color}-400 flex items-center justify-center font-bold text-sm"><i class="fa-regular fa-calendar"></i></div>
+                        <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-left"><span class="t-sec-title-${s.type}">${window.getT(`t-sec-title-${s.type}`)}</span></h3>
                     </div>
                     <i id="icon-acc-${s.type}" class="fa-solid fa-chevron-down text-gray-400 transition-transform ${s.open ? 'rotate-180' : ''}"></i>
                 </button>
                 <div id="content-acc-${s.type}" class="${s.open ? 'block' : 'hidden'} border-t border-gray-200 dark:border-slate-700">
                     <div class="p-4 bg-white dark:bg-slate-800 flex justify-between items-center border-b border-gray-100 dark:border-slate-700 flex-wrap gap-3">
-                        <div class="flex gap-1 bg-slate-100 dark:bg-slate-700 p-1 rounded-md shrink-0">
-                            <button id="subtab-${s.type}-ongoing" onclick="window.switchPlanSubTab('${s.type}', 'ongoing')" class="px-3 py-1.5 rounded text-sm font-medium bg-white dark:bg-slate-600 text-primary dark:text-blue-400 shadow-sm transition-all"><span class="t-sub-ongoing">${getT('t-sub-ongoing')}</span></button>
-                            <button id="subtab-${s.type}-completed" onclick="window.switchPlanSubTab('${s.type}', 'completed')" class="px-3 py-1.5 rounded text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all"><span class="t-sub-completed">${getT('t-sub-completed')}</span></button>
+                        <div class="flex gap-1 bg-slate-100 dark:bg-slate-700 p-1 rounded-2xl shrink-0">
+                            <button id="subtab-${s.type}-ongoing" onclick="window.switchPlanSubTab('${s.type}', 'ongoing')" class="px-4 py-1.5 font-medium bg-white dark:bg-slate-600 text-primary dark:text-blue-400 shadow-sm transition-all"><span class="t-sub-ongoing">${window.getT('t-sub-ongoing')}</span></button>
+                            <button id="subtab-${s.type}-completed" onclick="window.switchPlanSubTab('${s.type}', 'completed')" class="px-4 py-1.5 font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all"><span class="t-sub-completed">${window.getT('t-sub-completed')}</span></button>
                         </div>
-                        <button onclick="window.addNewTask('${s.type}')" class="btn-add-action bg-dark dark:bg-slate-700 hover:bg-darkHover dark:hover:bg-slate-600 text-white px-3 py-1.5 rounded text-sm font-medium transition-colors shrink-0"><i class="fa-solid fa-plus mr-1"></i> <span class="t-add-task">${getT('t-add-task')}</span></button>
+                        <button onclick="window.addNewTask('${s.type}')" class="btn-add-action bg-dark dark:bg-slate-700 hover:bg-darkHover dark:hover:bg-slate-600 text-white px-4 py-2 font-medium transition-colors shrink-0"><i class="fa-solid fa-plus mr-1"></i> <span class="t-add-task">${window.getT('t-add-task')}</span></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm whitespace-nowrap">
                             <thead>
                                 <tr class="bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-300 text-xs uppercase tracking-wider border-b border-gray-100 dark:border-slate-700">
-                                    <th class="p-3 pl-5 font-semibold w-72"><span class="t-th-name">${getT('t-th-name')}</span></th>
-                                    <th class="p-3 font-semibold w-36"><span class="t-th-start">${getT('t-th-start')}</span></th>
-                                    <th class="p-3 font-semibold w-36"><span class="t-th-end">${getT('t-th-end')}</span></th>
-                                    <th class="p-3 font-semibold w-24"><span class="t-th-prog">${getT('t-th-prog')}</span></th>
-                                    <th class="p-3 font-semibold w-32"><span class="t-th-assignee">${getT('t-th-assignee')}</span></th>
-                                    <th class="p-3 pr-5 font-semibold w-12 text-center col-action"><span class="t-th-del">${getT('t-th-del')}</span></th>
+                                    <th class="p-3 pl-5 font-semibold w-72"><span class="t-th-name">${window.getT('t-th-name')}</span></th>
+                                    <th class="p-3 font-semibold w-36"><span class="t-th-start">${window.getT('t-th-start')}</span></th>
+                                    <th class="p-3 font-semibold w-36"><span class="t-th-end">${window.getT('t-th-end')}</span></th>
+                                    <th class="p-3 font-semibold w-24"><span class="t-th-prog">${window.getT('t-th-prog')}</span></th>
+                                    <th class="p-3 font-semibold w-32"><span class="t-th-assignee">${window.getT('t-th-assignee')}</span></th>
+                                    <th class="p-3 pr-5 font-semibold w-12 text-center col-action"><span class="t-th-del">${window.getT('t-th-del')}</span></th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-tasks-${s.type}" class="divide-y divide-gray-50 dark:divide-slate-700"></tbody>
                         </table>
                     </div>
                     <div id="gantt-wrapper-${s.type}" class="p-5 bg-slate-50/50 dark:bg-slate-900/30 border-t border-gray-100 dark:border-slate-700 overflow-x-auto gantt-scroll">
-                        <div id="gantt-${s.type}" class="min-w-full relative pb-2 bg-white dark:bg-slate-800 rounded border border-gray-200 dark:border-slate-700"></div>
+                        <div id="gantt-${s.type}" class="min-w-full relative pb-2 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700"></div>
                     </div>
                 </div>
             </div>`).join('');
@@ -790,11 +812,11 @@
             const btnOng = document.getElementById(`subtab-${type}-ongoing`);
             const btnCmp = document.getElementById(`subtab-${type}-completed`);
             if (tab === 'ongoing') {
-                btnOng.className = "px-3 py-1.5 rounded text-sm font-medium bg-white dark:bg-slate-600 text-primary dark:text-blue-400 shadow-sm transition-all";
-                btnCmp.className = "px-3 py-1.5 rounded text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all";
+                btnOng.className = "px-4 py-1.5 font-medium bg-white dark:bg-slate-600 text-primary dark:text-blue-400 shadow-sm transition-all";
+                btnCmp.className = "px-4 py-1.5 font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all";
             } else {
-                btnCmp.className = "px-3 py-1.5 rounded text-sm font-medium bg-white dark:bg-slate-600 text-primary dark:text-blue-400 shadow-sm transition-all";
-                btnOng.className = "px-3 py-1.5 rounded text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all";
+                btnCmp.className = "px-4 py-1.5 font-medium bg-white dark:bg-slate-600 text-primary dark:text-blue-400 shadow-sm transition-all";
+                btnOng.className = "px-4 py-1.5 font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all";
             }
             renderTasksAndDocs(true);
         };
@@ -813,13 +835,13 @@
 
         window.openConfirm = function(msg, action, yesText = "Đồng ý", noText = "Hủy bỏ", cancelFn = null, isDanger = true) {
             isConfirming = true;
-            document.getElementById('confirm-title').innerText = getT('t-confirm-title');
+            document.getElementById('confirm-title').innerText = window.getT('t-confirm-title');
             document.getElementById('confirm-text').innerText = msg;
             
             const yesBtn = document.getElementById('confirm-yes-btn'); const noBtn = document.getElementById('confirm-no-btn');
             yesBtn.innerText = yesText; noBtn.innerText = noText;
-            if (isDanger) { yesBtn.className = "px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm t-btn-agree"; document.getElementById('confirm-icon-box').className = "w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0 text-red-500"; document.getElementById('confirm-icon').className = "fa-solid fa-triangle-exclamation text-xl"; } 
-            else { yesBtn.className = "px-5 py-2.5 bg-primary hover:bg-primaryHover text-white font-semibold rounded-xl text-sm transition-colors shadow-sm t-btn-agree"; document.getElementById('confirm-icon-box').className = "w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-primary"; document.getElementById('confirm-icon').className = "fa-solid fa-circle-check text-xl"; }
+            if (isDanger) { yesBtn.className = "px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm transition-colors shadow-sm t-btn-agree !rounded-xl"; document.getElementById('confirm-icon-box').className = "w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0 text-red-500"; document.getElementById('confirm-icon').className = "fa-solid fa-triangle-exclamation text-xl"; } 
+            else { yesBtn.className = "px-5 py-2.5 bg-primary hover:bg-primaryHover text-white font-semibold text-sm transition-colors shadow-sm t-btn-agree !rounded-xl"; document.getElementById('confirm-icon-box').className = "w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-primary"; document.getElementById('confirm-icon').className = "fa-solid fa-circle-check text-xl"; }
 
             confirmAction = action; cancelAction = cancelFn;
             const modal = document.getElementById('confirm-modal'); const box = document.getElementById('confirm-modal-box');
@@ -905,10 +927,10 @@
         };
 
         window.toggleAuthMode = function() {
-            isLoginMode = !isLoginMode; document.getElementById('auth-title').innerText = isLoginMode ? getT("t-login-title") : getT("t-register-now");
-            document.getElementById('btn-submit-text').innerText = isLoginMode ? getT("t-login-btn") : getT("t-register-now");
-            document.getElementById('auth-toggle-text').innerText = isLoginMode ? getT("t-no-account") : "";
-            document.getElementById('auth-toggle-btn').innerText = isLoginMode ? getT("t-register-now") : getT("t-login-btn");
+            isLoginMode = !isLoginMode; document.getElementById('auth-title').innerText = isLoginMode ? window.getT("t-login-title") : window.getT("t-register-now");
+            document.getElementById('btn-submit-text').innerText = isLoginMode ? window.getT("t-login-btn") : window.getT("t-register-now");
+            document.getElementById('auth-toggle-text').innerText = isLoginMode ? window.getT("t-no-account") : "";
+            document.getElementById('auth-toggle-btn').innerText = isLoginMode ? window.getT("t-register-now") : window.getT("t-login-btn");
             document.getElementById('name-field-group').classList.toggle('hidden', isLoginMode); document.getElementById('auth-password').autocomplete = isLoginMode ? 'current-password' : 'new-password';
         };
 
@@ -918,7 +940,7 @@
             try {
                 if (isLoginMode) { await signInWithEmailAndPassword(auth, email, pass); }
                 else { const cred = await createUserWithEmailAndPassword(auth, email, pass); await updateProfile(cred.user, { displayName: name }); await setDoc(doc(COL_USERS, cred.user.uid), { name, email, uid: cred.user.uid }, { merge: true }); }
-            } catch (err) { window.showToast("Error", "error"); } finally { btn.disabled = false; }
+            } catch (err) {} finally { btn.disabled = false; }
         };
 
         window.processLogout = async function() { await signOut(auth); window.location.reload(); };
@@ -950,7 +972,7 @@
             onSnapshot(COL_PERMISSIONS, snap => { systemPermissions = {}; snap.forEach(d => systemPermissions[d.id] = d.data()); if (document.getElementById('tab-permissions').classList.contains('block')) { window.renderPermissionsList(); } renderTasksAndDocs(true); });
             onSnapshot(query(COL_USERS), snap => {
                 systemUsers = {}; const select = document.getElementById('user-filter-select'); const permViewerSelect = document.getElementById('perm-viewer-select'); const assignTargetSelect = document.getElementById('assign-target');
-                select.innerHTML = ''; permViewerSelect.innerHTML = `<option value="">-- ${getT('t-perm-step1')} --</option>`; assignTargetSelect.innerHTML = `<option value="">-- ${getT('t-assign-step1')} --</option>`;
+                select.innerHTML = ''; permViewerSelect.innerHTML = `<option value="">-- ${window.getT('t-perm-step1')} --</option>`; assignTargetSelect.innerHTML = `<option value="">-- ${window.getT('t-assign-step1')} --</option>`;
                 snap.forEach(d => {
                     const u = d.data(); if (!u.uid) return; systemUsers[u.uid] = u;
                     const opt = document.createElement('option'); opt.value = u.uid; opt.textContent = u.uid === currentUser.uid ? `(Mine) ${u.name || u.email}` : (u.name || u.email); select.appendChild(opt);
@@ -966,7 +988,7 @@
                 const container = document.getElementById('chat-messages'); const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
                 if (!isFirstChatLoad) { snap.docChanges().forEach(change => { if (change.type === "added") { const msg = change.doc.data(); if (msg.uid !== currentUser.uid && isNotiEnabled) { const panel = document.getElementById('chat-panel'); if (panel.classList.contains('hidden')) { window.showNotiPopup(msg.userName || 'Unknown', msg.text || ''); document.getElementById('chat-badge').classList.remove('hidden'); } } } }); }
                 const namesForRegex = Object.values(systemUsers).map(u => u.name).filter(Boolean).sort((a, b) => b.length - a.length); const docs = snap.docs.slice().reverse(); 
-                let html = `<div class="text-center text-xs text-gray-400 my-2">${getT('t-chat-start')}</div>`;
+                let html = `<div class="text-center text-xs text-gray-400 my-2">${window.getT('t-chat-start')}</div>`;
                 docs.forEach(d => {
                     const msg = d.data(); const isMe = msg.uid === currentUser.uid; const timeStr = new Date(msg.timestamp || 0).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                     let safeText = esc(msg.text); namesForRegex.forEach(n => { const regex = new RegExp(`@${escapeRegex(n)}(?=\\s|$)`, 'g'); safeText = safeText.replace(regex, `<strong class="text-primary font-semibold">@${esc(n)}</strong>`); });
@@ -981,14 +1003,14 @@
 
         window.renderPermissionsList = function() {
             const viewerId = document.getElementById('perm-viewer-select').value; const container = document.getElementById('perm-list-container');
-            if (!viewerId) { container.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">${getT('t-perm-empty')}</div>`; return; }
+            if (!viewerId) { container.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">${window.getT('t-perm-empty')}</div>`; return; }
             const rules = systemPermissions[viewerId]?.targets || {}; let html = ''; let count = 0;
             Object.values(systemUsers).forEach(target => {
                 if (target.uid === viewerId) return; count++;
                 const targetRules = rules[target.uid] || {}; const planChecked = targetRules.plan !== false; const dataChecked = targetRules.data !== false;
-                html += `<div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"><span class="font-medium text-gray-800 dark:text-gray-200 mb-2 sm:mb-0"><i class="fa-solid fa-user text-gray-400 mr-2 text-xs"></i>${esc(target.name || target.email)}</span><div class="flex items-center gap-6 bg-gray-50 dark:bg-slate-900/50 px-4 py-2 rounded-lg border border-gray-100 dark:border-slate-700"><label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer"><input type="checkbox" ${planChecked ? 'checked' : ''} onchange="window.updatePerm('${viewerId}', '${target.uid}', 'plan', this.checked)" class="w-4 h-4 rounded text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-500"> ${getT('t-view-plan')}</label><div class="w-px h-4 bg-gray-300 dark:bg-slate-600"></div><label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer"><input type="checkbox" ${dataChecked ? 'checked' : ''} onchange="window.updatePerm('${viewerId}', '${target.uid}', 'data', this.checked)" class="w-4 h-4 rounded text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-500"> ${getT('t-view-data')}</label></div></div>`;
+                html += `<div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"><span class="font-medium text-gray-800 dark:text-gray-200 mb-2 sm:mb-0"><i class="fa-solid fa-user text-gray-400 mr-2 text-xs"></i>${esc(target.name || target.email)}</span><div class="flex items-center gap-6 bg-gray-50 dark:bg-slate-900/50 px-4 py-2 rounded-lg border border-gray-100 dark:border-slate-700"><label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer"><input type="checkbox" ${planChecked ? 'checked' : ''} onchange="window.updatePerm('${viewerId}', '${target.uid}', 'plan', this.checked)" class="w-4 h-4 rounded text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-500"> ${window.getT('t-view-plan')}</label><div class="w-px h-4 bg-gray-300 dark:bg-slate-600"></div><label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer"><input type="checkbox" ${dataChecked ? 'checked' : ''} onchange="window.updatePerm('${viewerId}', '${target.uid}', 'data', this.checked)" class="w-4 h-4 rounded text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-500"> ${window.getT('t-view-data')}</label></div></div>`;
             });
-            if (count === 0) html = `<div class="p-4 text-center text-sm text-gray-500">${getT('t-perm-no-members')}</div>`; container.innerHTML = html;
+            if (count === 0) html = `<div class="p-4 text-center text-sm text-gray-500">${window.getT('t-perm-no-members')}</div>`; container.innerHTML = html;
         };
 
         window.updatePerm = async function(viewerUid, targetUid, field, isChecked) { if (currentUser.email !== 'test@gmail.com') return; try { await setDoc(doc(COL_PERMISSIONS, viewerUid), { targets: { [targetUid]: { [field]: isChecked } } }, { merge: true }); } catch(e) { } };
@@ -1017,15 +1039,15 @@
                     const tbody = document.getElementById(`tbody-tasks-${type}`); if (!tbody) return;
                     const isOngoingTab = activePlanSubTab[type] === 'ongoing';
                     const typeTasks = filteredTasks.filter(t => t.type === type && isValidDateStr(t.start) && isValidDateStr(t.end)).filter(t => isOngoingTab ? !t.isCompleted : t.isCompleted).sort((a, b) => a.start.localeCompare(b.start));
-                    if (typeTasks.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-sm text-gray-400 dark:text-gray-500 italic">${getT('t-no-tasks')}</td></tr>`; } 
+                    if (typeTasks.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-sm text-gray-400 dark:text-gray-500 italic">${window.getT('t-no-tasks')}</td></tr>`; } 
                     else {
                         tbody.innerHTML = typeTasks.map(task => `
                             <tr class="hover:bg-blue-50/20 dark:hover:bg-slate-700/50 transition-colors group">
-                                <td class="p-1 pl-4 border-b border-gray-50 dark:border-slate-700/50"><div class="flex items-center gap-2"><input type="text" maxlength="200" placeholder="${getT('t-ph-task-name')}" class="inline-input font-medium text-gray-800 dark:text-gray-100 flex-1" value="${esc(task.name)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'name', this.value)" ${enterSave}>${task.link ? `<a href="${esc(safeUrl(task.link))}" target="_blank" class="text-blue-500 hover:text-blue-700 bg-blue-50 dark:bg-blue-900/30 p-1.5 rounded-md shrink-0 transition-colors" title="Link"><i class="fa-solid fa-link"></i></a>` : ''}</div></td>
+                                <td class="p-1 pl-4 border-b border-gray-50 dark:border-slate-700/50"><div class="flex items-center gap-2"><input type="text" maxlength="200" placeholder="${window.getT('t-ph-task-name')}" class="inline-input font-medium text-gray-800 dark:text-gray-100 flex-1" value="${esc(task.name)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'name', this.value)" ${enterSave}>${task.link ? `<a href="${esc(safeUrl(task.link))}" target="_blank" class="text-blue-500 hover:text-blue-700 bg-blue-50 dark:bg-blue-900/30 p-1.5 rounded-md shrink-0 transition-colors" title="Link"><i class="fa-solid fa-link"></i></a>` : ''}</div></td>
                                 <td class="p-1 border-b border-gray-50 dark:border-slate-700/50"><input type="date" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.start)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'start', this.value)" ${enterSave}></td>
                                 <td class="p-1 border-b border-gray-50 dark:border-slate-700/50"><input type="date" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.end)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'end', this.value)" ${enterSave}></td>
                                 <td class="p-1 border-b border-gray-50 dark:border-slate-700/50"><input type="number" min="0" max="100" class="inline-input text-center dark:text-gray-100" value="${esc(task.progress)}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'progress', this.value)" ${enterSave}></td>
-                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50"><input type="text" maxlength="100" placeholder="${getT('t-ph-assignee')}" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.assignee || '')}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'assignee', this.value)" ${enterSave}></td>
+                                <td class="p-1 border-b border-gray-50 dark:border-slate-700/50"><input type="text" maxlength="100" placeholder="${window.getT('t-ph-assignee')}" class="inline-input text-gray-600 dark:text-gray-300" value="${esc(task.assignee || '')}" ${inputProps} onchange="window.updateTask('${esc(task.id)}', 'assignee', this.value)" ${enterSave}></td>
                                 <td class="p-1 pr-4 border-b border-gray-50 dark:border-slate-700/50 text-center ${!canDelete ? 'hidden' : ''} col-action"><button onclick="window.askDeleteTask('${esc(task.id)}')" class="text-gray-300 hover:text-red-500 p-1.5 rounded transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"><i class="fa-regular fa-trash-can"></i></button></td>
                             </tr>`).join('');
                     }
@@ -1046,28 +1068,28 @@
             const now = new Date(); const todayStr = toLocalDateStr(now); let endStr = todayStr;
             if (type === 'week') { const d = new Date(now); d.setDate(d.getDate() + 7); endStr = toLocalDateStr(d); }
             if (type === 'month') { const d = new Date(now); d.setMonth(d.getMonth() + 1); endStr = toLocalDateStr(d); }
-            try { await addDoc(COL_TASKS, { type, uid: currentUser.uid, name: getT('t-ph-task-name'), start: todayStr, end: endStr, progress: 0, isCompleted: false, assignee: currentUser.displayName || '', createdAt: Date.now() }); } catch (e) {}
+            try { await addDoc(COL_TASKS, { type, uid: currentUser.uid, name: window.getT('t-ph-task-name'), start: todayStr, end: endStr, progress: 0, isCompleted: false, assignee: currentUser.displayName || '', createdAt: Date.now() }); } catch (e) {}
         };
 
         window.updateTask = async function(id, field, value) {
             if (isReadOnly || !currentUser) return; const oldT = allTasks.find(t => t.id === id); if (!oldT) return; let updateObj = { [field]: value };
-            if (field === 'name') updateObj.name = String(value).trim().slice(0, 200) || getT('t-ph-task-name');
+            if (field === 'name') updateObj.name = String(value).trim().slice(0, 200) || window.getT('t-ph-task-name');
             if (field === 'progress') {
                 const numVal = Math.max(0, Math.min(100, parseInt(value) || 0));
                 if (numVal === 100 && !oldT.isCompleted) {
-                    window.openConfirm(getT('t-confirm-text'), async () => { try { await updateDoc(doc(COL_TASKS, id), { progress: 100, isCompleted: true }); } catch (e) { } }, getT('t-btn-agree'), getT('t-btn-cancel'), async () => { try { await updateDoc(doc(COL_TASKS, id), { progress: 100, isCompleted: false }); } catch (e) { } }, false); return;
+                    window.openConfirm(window.getT('t-confirm-text'), async () => { try { await updateDoc(doc(COL_TASKS, id), { progress: 100, isCompleted: true }); } catch (e) { } }, window.getT('t-btn-agree'), window.getT('t-btn-cancel'), async () => { try { await updateDoc(doc(COL_TASKS, id), { progress: 100, isCompleted: false }); } catch (e) { } }, false); return;
                 } else { updateObj.progress = numVal; if (numVal < 100 && oldT.isCompleted) { updateObj.isCompleted = false; } }
             }
             if (field === 'start' || field === 'end') { if (!isValidDateStr(value)) { renderTasksAndDocs(true); return; } if (field === 'start' && value > oldT.end) updateObj.end = value; if (field === 'end' && value < oldT.start) updateObj.start = value; }
             try { await updateDoc(doc(COL_TASKS, id), updateObj); } catch (e) { }
         };
 
-        window.askDeleteTask = function(id) { window.openConfirm(getT('t-confirm-text'), async () => { try { await deleteDoc(doc(COL_TASKS, id)); } catch (e) { } }); };
+        window.askDeleteTask = function(id) { window.openConfirm(window.getT('t-confirm-text'), async () => { try { await deleteDoc(doc(COL_TASKS, id)); } catch (e) { } }); };
 
        window.renderGantt = function(type, passedTasks) {
             const container = document.getElementById(`gantt-${type}`); if (!container) return; container.innerHTML = '';
             const tList = (passedTasks || allTasks.filter(t => t.type === type && t.uid === selectedUserId && !t.isCompleted)).filter(t => isValidDateStr(t.start) && isValidDateStr(t.end)).slice().sort((a, b) => a.start.localeCompare(b.start));
-            if (tList.length === 0) { container.style.width = ''; container.style.minWidth = ''; container.innerHTML = `<div class="p-4 text-center text-xs text-gray-400">${getT('t-no-gantt')}</div>`; return; }
+            if (tList.length === 0) { container.style.width = ''; container.style.minWidth = ''; container.innerHTML = `<div class="p-4 text-center text-xs text-gray-400">${window.getT('t-no-gantt')}</div>`; return; }
 
             let minD = parseDate(tList[0].start), maxD = parseDate(tList[0].end);
             tList.forEach(t => { const s = parseDate(t.start), e = parseDate(t.end); if (s < minD) minD = s; if (e > maxD) maxD = e; });
@@ -1119,16 +1141,16 @@
                         ${canDelete ? `<button onclick="window.askDeleteDoc('${esc(item.id)}')" class="text-gray-300 hover:text-red-500 shrink-0 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"><i class="fa-solid fa-trash-can text-sm"></i></button>` : ''}
                     </div>
                     <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
-                        <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded px-2 py-1.5"><span class="text-gray-400 block mb-0.5">${getT('t-status-label')}</span><input type="text" maxlength="100" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${esc(item.status)}" ${inputProps} placeholder="${getT('t-ph-status')}" onchange="window.updateDocField('${esc(item.id)}', 'status', this.value)" ${enterSave}></div>
-                        <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded px-2 py-1.5"><span class="text-gray-400 block mb-0.5">${getT('t-note-label')}</span><input type="text" maxlength="500" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${esc(item.notes)}" ${inputProps} placeholder="${getT('t-ph-note')}" onchange="window.updateDocField('${esc(item.id)}', 'notes', this.value)" ${enterSave}></div>
+                        <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-2 py-1.5"><span class="text-gray-400 block mb-0.5">${window.getT('t-status-label')}</span><input type="text" maxlength="100" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${esc(item.status)}" ${inputProps} placeholder="${window.getT('t-ph-status')}" onchange="window.updateDocField('${esc(item.id)}', 'status', this.value)" ${enterSave}></div>
+                        <div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-2 py-1.5"><span class="text-gray-400 block mb-0.5">${window.getT('t-note-label')}</span><input type="text" maxlength="500" class="w-full bg-transparent border-none outline-none text-gray-700 dark:text-gray-200 p-0" value="${esc(item.notes)}" ${inputProps} placeholder="${window.getT('t-ph-note')}" onchange="window.updateDocField('${esc(item.id)}', 'notes', this.value)" ${enterSave}></div>
                     </div>
-                    <div class="mt-2 text-[10px] text-gray-400 flex items-center justify-between"><span>${getT('t-by')} <strong class="text-gray-500">${esc(uName)}</strong></span><span>${getT('t-upload-date')} ${esc(item.uploadDateStr)}</span></div>
+                    <div class="mt-2 text-[10px] text-gray-400 flex items-center justify-between"><span>${window.getT('t-by')} <strong class="text-gray-500">${esc(uName)}</strong></span><span>${window.getT('t-upload-date')} ${esc(item.uploadDateStr)}</span></div>
                 </div>`;
             }).join('');
         }
 
         window.updateDocField = async function(id, field, val) { if (isReadOnly || !currentUser) return; if (!['status', 'notes'].includes(field)) return; try { await updateDoc(doc(COL_DOCS, id), { [field]: String(val).slice(0, 500) }); } catch (e) { } };
-        window.askDeleteDoc = function(id) { window.openConfirm(getT('t-confirm-text'), async () => { try { await deleteDoc(doc(COL_DOCS, id)); } catch (e) { } }); };
+        window.askDeleteDoc = function(id) { window.openConfirm(window.getT('t-confirm-text'), async () => { try { await deleteDoc(doc(COL_DOCS, id)); } catch (e) { } }); };
 
         window.toggleChat = function() {
             const panel = document.getElementById('chat-panel'); const badge = document.getElementById('chat-badge');
